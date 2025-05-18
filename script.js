@@ -142,12 +142,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const marketPermaEvoStoneIcon = document.querySelector('.market-item[data-item-id="permaevolutionstone"] .item-icon');
     if (marketPermaEvoStoneIcon) marketPermaEvoStoneIcon.style.backgroundImage = 'var(--item-icon-evolutionstone)';
 
-    const marketTcgPackIcon = document.querySelector('.market-item[data-item-id="tcgpack"] .item-icon'); // TCG Pack Icon
+    const marketTcgPackIcon = document.querySelector('.market-item[data-item-id="tcgpack"] .item-icon');
     if (marketTcgPackIcon) marketTcgPackIcon.style.backgroundImage = 'var(--item-icon-tcgpack)';
 });
 
 const trainersData = { "Bea": { name: "Bea", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Bea-TG25-Astral-Radiance.png" }, "Brock": { name: "Brock", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/brocks-scouting-179-sv9-eng.png" }, "Giovanni": { name: "Giovanni", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Giovannis-Charisma-204-151.jpg" } };
-const SAVE_KEY = 'blazingThunder_savedData_v1_2_0_layout_tcg'; // Versie aangepast
+const SAVE_KEY = 'blazingThunder_savedData_v1_2_1_tcg_api'; // Versie aangepast voor TCG API integratie
 
 const typeChart = { "Normal": {"Rock": 0.5, "Ghost": 0, "Steel": 0.5}, "Fire": {"Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 2, "Bug": 2, "Rock": 0.5, "Dragon": 0.5, "Steel": 2}, "Water": {"Fire": 2, "Water": 0.5, "Grass": 0.5, "Ground": 2, "Rock": 2, "Dragon": 0.5}, "Electric": {"Water": 2, "Electric": 0.5, "Grass": 0.5, "Ground": 0, "Flying": 2, "Dragon": 0.5}, "Grass": {"Fire": 0.5, "Water": 2, "Grass": 0.5, "Poison": 0.5, "Ground": 2, "Flying": 0.5, "Bug": 0.5, "Rock": 2, "Dragon": 0.5, "Steel": 0.5}, "Ice": {"Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 0.5, "Ground": 2, "Flying": 2, "Dragon": 2, "Steel": 0.5}, "Fighting": {"Normal": 2, "Ice": 2, "Poison": 0.5, "Flying": 0.5, "Psychic": 0.5, "Bug": 0.5, "Rock": 2, "Ghost": 0, "Dark": 2, "Steel": 2, "Fairy": 0.5}, "Poison": {"Grass": 2, "Poison": 0.5, "Ground": 0.5, "Rock": 0.5, "Ghost": 0.5, "Steel": 0, "Fairy": 2}, "Ground": {"Fire": 2, "Electric": 2, "Grass": 0.5, "Poison": 2, "Flying": 0, "Bug": 0.5, "Rock": 2, "Steel": 2}, "Flying": {"Electric": 0.5, "Grass": 2, "Fighting": 2, "Bug": 2, "Rock": 0.5, "Steel": 0.5}, "Psychic": {"Fighting": 2, "Poison": 2, "Psychic": 0.5, "Dark": 0, "Steel": 0.5}, "Bug": {"Fire": 0.5, "Grass": 2, "Fighting": 0.5, "Poison": 0.5, "Flying": 0.5, "Psychic": 2, "Ghost": 0.5, "Dark": 2, "Steel": 0.5, "Fairy": 0.5}, "Rock": {"Fire": 2, "Ice": 2, "Fighting": 0.5, "Ground": 0.5, "Flying": 2, "Bug": 2, "Steel": 0.5}, "Ghost": {"Normal": 0, "Psychic": 2, "Ghost": 2, "Dark": 0.5}, "Dragon": {"Dragon": 2, "Steel": 0.5, "Fairy": 0}, "Steel": {"Fire": 0.5, "Water": 0.5, "Electric": 0.5, "Ice": 2, "Rock": 2, "Steel": 0.5, "Fairy": 2}, "Dark": {"Fighting": 0.5, "Psychic": 2, "Ghost": 2, "Dark": 0.5, "Fairy": 0.5}, "Fairy": {"Fire": 0.5, "Fighting": 2, "Poison": 0.5, "Dragon": 2, "Dark": 2, "Steel": 0.5} };
 const statStageMultipliers = [1/4, 2/7, 1/3, 2/5, 1/2, 2/3, 1, 1.5, 2, 2.5, 3, 3.5, 4];
@@ -3827,7 +3827,6 @@ const eliteFourData = {
         pokemonTeam: ["MACHAMP", "HITMONLEE", "HITMONCHAN", "ONIX", "GOLEM", "HERACROSS"], // MACHAMP (68), HITMONLEE (106), HITMONCHAN (107), ONIX (95), GOLEM (76), HERACROSS (214)
         dialog: "Hahaha! I am Bruno of the Elite Four! I've lived and trained with my Fighting Pokémon! And I'm ready to take you on! Bring it!"
     }
-    // ... (andere elite four members hier weggelaten)
 };
 
 
@@ -3996,9 +3995,9 @@ function showInventoryScreen() {
             itemIcon.classList.add('item-icon');
             if (itemName.toLowerCase().includes("great")) { itemIcon.style.backgroundImage = 'var(--item-icon-greatball)'; itemIcon.alt = "Great Ball"; }
             else if (itemName.toLowerCase().includes("evolution")) { itemIcon.style.backgroundImage = 'var(--item-icon-evolutionstone)'; itemIcon.alt = "Evolution Stone"; }
-            else if (itemName.toLowerCase().includes("tcg pack")) { itemIcon.style.backgroundImage = 'var(--item-icon-tcgpack)'; itemIcon.alt = "TCG Pack"; itemIcon.classList.add('tcgpack-icon'); } // TCG Pack
+            else if (itemName.toLowerCase().includes("tcg pack")) { itemIcon.style.backgroundImage = 'var(--item-icon-tcgpack)'; itemIcon.alt = "TCG Pack"; itemIcon.classList.add('tcgpack-icon'); }
             else { itemIcon.style.backgroundImage = 'var(--item-icon-pokeball)'; itemIcon.alt = "Poké Ball"; }
-            itemIcon.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+            itemIcon.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"; // Transparent pixel
             const itemDetails = document.createElement('div');
             itemDetails.classList.add('item-details');
             itemDetails.innerHTML = `<span class="item-name">${itemName}</span>: ${inventory[itemName]}`;
@@ -4171,66 +4170,140 @@ function movePokemonToTeam(pcIndex) {
     showPcBoxScreen();
 }
 
-function openTcgPackAnimation(cards) {
+function openTcgPackAnimation(cards) { // cards is an array of pulled TCG card objects
     screens.tcgPackOpeningOverlay.style.display = 'flex';
     tcgPackAnimationContainer.style.display = 'block';
     revealedTcgCardContainer.style.display = 'none';
-    tcgPackAnimationContainer.innerHTML = '<p>Opening Pack...</p>'; // Simple text for now
+    tcgPackAnimationContainer.innerHTML = '<p>Opening Pack...</p>'; // Initial message
 
-    // Placeholder for a more complex animation
+    // Simulate pack opening animation (e.g., shaking, tearing)
+    // You can use Anime.js here for more complex animations on tcgPackAnimationContainer
     setTimeout(() => {
-        tcgPackAnimationContainer.style.display = 'none';
-        revealedTcgCardContainer.style.display = 'flex'; // Use flex to center content
+        tcgPackAnimationContainer.style.display = 'none'; // Hide animation container
+        revealedTcgCardContainer.style.display = 'flex';  // Show card reveal container
 
-        // For now, just show the first card if multiple, or the single card
-        const cardToShow = cards[0];
-        revealedTcgCardImageEl.src = cardToShow.spriteUrl; // Use the sprite URL
-        revealedTcgCardImageEl.alt = cardToShow.name + " TCG Card";
-        revealedTcgCardNameEl.textContent = cardToShow.name.toUpperCase();
-
-    }, 2000); // Simulate opening time
+        if (cards && cards.length > 0) {
+            const cardToShow = cards[0]; // Show the first card (since TCG_CARDS_PER_PACK is 1)
+            revealedTcgCardImageEl.src = cardToShow.spriteUrl; // This is now the URL from PokemonTCG API
+            revealedTcgCardImageEl.alt = cardToShow.tcgCardName + " TCG Card";
+            revealedTcgCardNameEl.textContent = cardToShow.tcgCardName.toUpperCase();
+        } else {
+            // Fallback if somehow no cards were passed, though buyItem should prevent this
+            revealedTcgCardImageEl.src = "";
+            revealedTcgCardImageEl.alt = "No Card";
+            revealedTcgCardNameEl.textContent = "NO CARD PULLED";
+        }
+    }, 2000); // Delay to simulate opening
 }
 
 
 function buyItem(itemName, price) {
     if (!selectedTrainerData) return;
     price = parseInt(price);
-    if (selectedTrainerData.coins >= price) {
+
+    if (selectedTrainerData.coins < price) {
+        alert("Not enough coins!");
+        return;
+    }
+
+    if (itemName === "TCG Pack") {
         selectedTrainerData.coins -= price;
         selectedTrainerData.inventory[itemName] = (selectedTrainerData.inventory[itemName] || 0) + 1;
+        updateCoinDisplay(); // Update coins immediately
 
-        if (itemName === "TCG Pack") {
-            const pulledCards = [];
-            for (let i = 0; i < TCG_CARDS_PER_PACK; i++) {
-                const randomPokemonForTcg = pokemonPool[Math.floor(Math.random() * pokemonPool.length)];
-                if (randomPokemonForTcg) {
-                    const newTcgCard = {
-                        id: `tcg-${Date.now()}-${Math.random().toString(36).substr(2)}`, // Unique ID for TCG card
-                        name: randomPokemonForTcg.name,
-                        pokedexId: randomPokemonForTcg.pokedexId,
-                        // For now, use game sprite. Later, this could be a URL to an actual TCG card image.
-                        spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${randomPokemonForTcg.pokedexId}.png`,
-                        // You could add more TCG specific data here like set, rarity, etc.
-                    };
-                    pulledCards.push(newTcgCard);
-                    selectedTrainerData.collectedTcgCards = selectedTrainerData.collectedTcgCards || [];
-                    selectedTrainerData.collectedTcgCards.push(newTcgCard);
-                }
-            }
-            if (pulledCards.length > 0) {
-                openTcgPackAnimation(pulledCards); // Start animation
+        // Show loading state in TCG pack opening overlay
+        screens.tcgPackOpeningOverlay.style.display = 'flex';
+        tcgPackAnimationContainer.style.display = 'block';
+        revealedTcgCardContainer.style.display = 'none';
+        tcgPackAnimationContainer.innerHTML = '<p>Searching the Pokémon TCG database...</p>';
+
+        const fetchPromises = [];
+        for (let i = 0; i < TCG_CARDS_PER_PACK; i++) {
+            const randomPokemonForTcg = pokemonPool[Math.floor(Math.random() * pokemonPool.length)];
+            if (randomPokemonForTcg) {
+                const query = `nationalPokedexNumbers:${randomPokemonForTcg.pokedexId}`;
+                const promise = fetch(`https://api.pokemontcg.io/v2/cards?q=${query}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`PokemonTCG API request failed for PokedexID ${randomPokemonForTcg.pokedexId}: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(apiData => {
+                        if (apiData.data && apiData.data.length > 0) {
+                            const randomCardFromApi = apiData.data[Math.floor(Math.random() * apiData.data.length)];
+                            return {
+                                id: `tcg-${Date.now()}-${Math.random().toString(36).substr(2)}-${i}`,
+                                pokemonGameName: randomPokemonForTcg.name,
+                                pokedexId: randomPokemonForTcg.pokedexId,
+                                spriteUrl: randomCardFromApi.images.large, // Actual TCG card image
+                                tcgCardName: randomCardFromApi.name,       // Name as it appears on the TCG card
+                            };
+                        } else {
+                            console.warn(`No TCG card found for ${randomPokemonForTcg.name} (ID: ${randomPokemonForTcg.pokedexId}) via API. Using fallback sprite.`);
+                            return { // Fallback card object
+                                id: `tcg-fallback-${Date.now()}-${Math.random().toString(36).substr(2)}-${i}`,
+                                pokemonGameName: randomPokemonForTcg.name,
+                                pokedexId: randomPokemonForTcg.pokedexId,
+                                spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${randomPokemonForTcg.pokedexId}.png`, // Game sprite
+                                tcgCardName: randomPokemonForTcg.name.toUpperCase() + " (Card Art Not Found)",
+                            };
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching TCG card:", error);
+                        const fallbackPokemon = pokemonPool[Math.floor(Math.random() * pokemonPool.length)];
+                        return { // Error fallback card object
+                            id: `tcg-error-${Date.now()}-${Math.random().toString(36).substr(2)}-${i}`,
+                            pokemonGameName: fallbackPokemon.name,
+                            pokedexId: fallbackPokemon.pokedexId,
+                            spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${fallbackPokemon.pokedexId}.png`, // Game sprite
+                            tcgCardName: fallbackPokemon.name.toUpperCase() + " (API Error)",
+                        };
+                    });
+                fetchPromises.push(promise);
             } else {
-                alert(`Successfully bought 1 TCG Pack! (But no card could be drawn - pool empty?)`);
+                fetchPromises.push(Promise.resolve(null)); // In case pokemonPool is empty
             }
-        } else {
-            alert(`Successfully bought 1 ${itemName}!`);
         }
+
+        Promise.all(fetchPromises)
+            .then(pulledCardsData => {
+                const validPulledCards = pulledCardsData.filter(card => card); // Filter out nulls
+
+                if (validPulledCards.length > 0) {
+                    selectedTrainerData.collectedTcgCards = selectedTrainerData.collectedTcgCards || [];
+                    validPulledCards.forEach(card => selectedTrainerData.collectedTcgCards.push(card));
+                    openTcgPackAnimation(validPulledCards); // This will show "Opening Pack..." then reveal
+                } else {
+                    alert(`Successfully bought 1 TCG Pack! However, no specific TCG cards could be found for the Pokémon drawn (using fallback art).`);
+                    // If API always fails or returns no cards, you might still want to show something
+                    // For now, openTcgPackAnimation will be called with fallback cards if any were generated
+                    // If validPulledCards is empty, means even fallback failed.
+                    if (pulledCardsData.some(c => c && c.tcgCardName.includes("Fallback") || c.tcgCardName.includes("API Error"))) {
+                         openTcgPackAnimation(pulledCardsData.filter(c => c)); // Show fallback cards
+                    } else {
+                        screens.tcgPackOpeningOverlay.style.display = 'none'; // Hide overlay if truly nothing
+                    }
+                }
+                saveGame(); // Save game state including new cards and updated inventory
+            })
+            .catch(overallError => {
+                console.error("Error in processing TCG pack promises:", overallError);
+                alert("An error occurred while opening the TCG pack. The pack has been consumed.");
+                screens.tcgPackOpeningOverlay.style.display = 'none';
+                saveGame(); // Save inventory change even if Promise.all fails
+            });
+
+    } else { // For items other than TCG Pack
+        selectedTrainerData.coins -= price;
+        selectedTrainerData.inventory[itemName] = (selectedTrainerData.inventory[itemName] || 0) + 1;
+        alert(`Successfully bought 1 ${itemName}!`);
         updateCoinDisplay();
         saveGame();
-    } else {
-        alert("Not enough coins!");
     }
 }
+
 
 function getUniqueRandomPokemon(existingPokedexIds, fromPool) {
     const available = fromPool.filter(p => !existingPokedexIds.includes(p.pokedexId));
@@ -4306,7 +4379,7 @@ function prepareBattle(battleFunction, isEliteFour = false) {
             p.stats = { attack: 0, defense: 0, speed: 0, accuracy: 0, evasion: 0 };
             p.moves.forEach(m => m.currentPp = m.maxPp);
 
-            if (p.originalEvolutionData) { // Revert temporary evolutions
+            if (p.originalEvolutionData) {
                 const oldMaxHPBeforeRevert = p.maxHP;
                 const currentHPRatio = (oldMaxHPBeforeRevert > 0) ? (p.currentHP / oldMaxHPBeforeRevert) : 1;
 
@@ -4457,13 +4530,20 @@ function startGymBattleActual() {
         const pokemonBase = pokemonPool.find(p => p.name.toUpperCase() === pokemonName.toUpperCase());
         if (!pokemonBase) {
             console.error(`Pokemon ${pokemonName} not found in pool for Gym Leader ${leaderData.name}`);
-            return null;
+            // Try to find by Pokedex ID if name fails (e.g. if team was defined with IDs)
+            const idMatch = pokemonPool.find(p => p.pokedexId === parseInt(pokemonName));
+            if (!idMatch) {
+                console.error(`Pokemon ${pokemonName} also not found by ID for Gym Leader ${leaderData.name}`);
+                return null;
+            }
+            return createPokemonFromData(idMatch, true, false);
         }
         return createPokemonFromData(pokemonBase, true, false);
     }).filter(p => p !== null);
 
+
     if (battleState.opponentTeam.length === 0) {
-        alert(`Error: Could not set up Gym Leader ${leaderData.name}'s team.`);
+        alert(`Error: Could not set up Gym Leader ${leaderData.name}'s team. Check if Pokémon names in gymLeadersData are correct and exist in pokemonPool.`);
         switchScreen('playMenu');
         return;
     }
@@ -4498,13 +4578,18 @@ function startEliteFourBattleActual() {
         const pokemonBase = pokemonPool.find(p => p.name.toUpperCase() === pokemonName.toUpperCase());
         if (!pokemonBase) {
             console.error(`Pokemon ${pokemonName} not found in pool for Elite Four ${memberData.name}`);
-            return null;
+            const idMatch = pokemonPool.find(p => p.pokedexId === parseInt(pokemonName));
+            if (!idMatch) {
+                 console.error(`Pokemon ${pokemonName} also not found by ID for Elite Four ${memberData.name}`);
+                return null;
+            }
+            return createPokemonFromData(idMatch, true, false);
         }
         return createPokemonFromData(pokemonBase, true, false);
     }).filter(p => p !== null);
 
     if (battleState.opponentTeam.length === 0) {
-        alert(`Error: Could not set up Elite Four ${memberData.name}'s team.`);
+        alert(`Error: Could not set up Elite Four ${memberData.name}'s team. Check Pokémon names/IDs.`);
         switchScreen('playMenu');
         return;
     }
@@ -4553,7 +4638,7 @@ function playerActionPhase() {
                 hasAnyUsableItem = true;
             }
         }
-        itemButtonInActionMenu.disabled = !hasAnyUsableItem || battleState.isEliteFourBattle;
+        itemButtonInActionMenu.disabled = !hasAnyUsableItem || battleState.isEliteFourBattle; // Also disable in Gym Battles if desired
     }
 
     const runButtonInActionMenu = actionMenuEl.querySelector('button[data-action="run"]');
@@ -4586,7 +4671,7 @@ function opponentChooseAndExecuteMove() { if(!battleState.opponentTeam[battleSta
 function checkCanMove(pokemon, isPlayer) { if (!pokemon) return { canMove: false, message: null}; const name = pokemon.name.toUpperCase(); if (pokemon.flinch) { pokemon.flinch = false; return { canMove: false, message: `${name} flinched and couldn't move!` }; } if (pokemon.status === "SLP") { if (pokemon.sleepTurns > 0) { pokemon.sleepTurns--; return { canMove: false, message: `${name} is fast asleep.` }; } else { pokemon.status = null; updateStatusTag(pokemon, isPlayer ? playerStatusTagEl : opponentStatusTagEl); return { canMove: true, message: `${name} woke up!` }; } } if (pokemon.status === "FRZ") { if (Math.random() < FREEZE_THAW_CHANCE) { pokemon.status = null; updateStatusTag(pokemon, isPlayer ? playerStatusTagEl : opponentStatusTagEl); return { canMove: true, message: `${name} thawed out!` }; } else { return { canMove: false, message: `${name} is frozen solid!` }; } } if (pokemon.status === "PAR") { if (Math.random() < PARALYSIS_CHANCE_NO_MOVE) { return { canMove: false, message: `${name} is fully paralyzed!` }; } } return { canMove: true, message: null }; }
 function showMoveMenu() { if(!battleState.playerTeam[battleState.playerActiveIndex]) {console.warn("Attempted to show move menu with undefined active Pokemon.");return;} actionMenuEl.style.display = 'none'; battleTextboxEl.style.display = 'none'; itemMenuEl.style.display = 'none'; const pPok = battleState.playerTeam[battleState.playerActiveIndex]; const moveBtns = moveMenuEl.querySelectorAll('button:not(.battle-menu-back-button)'); moveBtns.forEach(b => b.style.visibility = 'hidden'); pPok.moves.forEach((m, i) => { if (moveBtns[i]) { moveBtns[i].style.visibility = 'visible'; moveBtns[i].querySelector('.move-name').textContent = m.name.toUpperCase(); moveBtns[i].querySelector('.move-pp').textContent = `PP ${m.currentPp}/${m.maxPp}`; moveBtns[i].disabled = m.currentPp <= 0; } }); moveMenuEl.style.display = 'grid'; }
 function applyStatChange(targetPokemon, stat, stages, targetName, isSelf) { const statNames = Array.isArray(stat) ? stat : [stat]; let messages = []; let anyChange = false; statNames.forEach(s => { const currentStage = targetPokemon.stats[s] || 0; let newStage = currentStage; if (stages > 0) newStage = Math.min(6, currentStage + stages); else if (stages < 0) newStage = Math.max(-6, currentStage + stages); if (newStage !== currentStage) { targetPokemon.stats[s] = newStage; anyChange = true; if (stages === 1) messages.push(`${targetName.toUpperCase()}'s ${s} rose!`); else if (stages > 1) messages.push(`${targetName.toUpperCase()}'s ${s} sharply rose!`); else if (stages === -1) messages.push(`${(isSelf ? targetName.toUpperCase() : "Foe " + targetName.toUpperCase())}'s ${s} fell!`); else if (stages < -1) messages.push(`${(isSelf ? targetName.toUpperCase() : "Foe " + targetName.toUpperCase())}'s ${s} harshly fell!`); } }); if (!anyChange) messages.push(`${targetName.toUpperCase()}'s ${statNames.join(' and ')} won't go any ${stages > 0 ? 'higher' : 'lower'}!`); return messages; }
-function executeMove(attacker, defender, move, isPlayerAttacking) { battleState.currentActingPokemonIsPlayer = isPlayerAttacking; const attackerName = attacker.name.toUpperCase(); const defenderName = defender.name.toUpperCase(); let turnMessages = []; if (isPlayerAttacking) battleState.playerSelectedMove = move; else battleState.opponentSelectedMove = move; if (attacker.flinch) { attacker.flinch = false; typeMessage(`${attackerName} flinched!`, () => { if (isPlayerAttacking && battleState.opponentTeam[battleState.opponentActiveIndex]?.currentHP > 0) { opponentActionPhase(); } else if (!isPlayerAttacking && battleState.playerTeam[battleState.playerActiveIndex]?.currentHP > 0) { handleEndOfTurnStatusEffects(); } else { handleEndOfTurnStatusEffects(); } }); return; } move.currentPp--; if(isPlayerAttacking) updateBattleUI(); turnMessages.push({ message: `${attackerName} used ${move.name.toUpperCase()}!`, callback: () => { let hit = true; if (!move.alwaysHits) { const moveAccuracy = move.accuracy || 100; const attackerAccStage = attacker.stats.accuracy || 0; const defenderEvaStage = defender.stats.evasion || 0; const accModifier = calculateStatWithStage(100, attackerAccStage, 'accuracy') / 100; const evaModifier = calculateStatWithStage(100, defenderEvaStage, 'evasion') / 100; const finalAccuracy = moveAccuracy * (accModifier / evaModifier); if (Math.random() * 100 >= finalAccuracy) hit = false; } if (!hit) { turnMessages.push({ message: `${attackerName}'s attack missed!`, callback: () => { if (isPlayerAttacking && battleState.opponentTeam[battleState.opponentActiveIndex]?.currentHP > 0) { opponentActionPhase(); } else { handleEndOfTurnStatusEffects(); } }}); processTurnMessages(turnMessages); return; } playAttackAnimation(move.type, isPlayerAttacking ? playerPokemonSpriteEl.parentElement : opponentPokemonSpriteEl.parentElement, isPlayerAttacking ? opponentPokemonSpriteEl.parentElement : playerPokemonSpriteEl.parentElement, () => { playShakeAnimation(isPlayerAttacking ? opponentPokemonSpriteEl.parentElement : playerPokemonSpriteEl.parentElement); let effectivenessMultiplier = 1; let calculatedDamage = 0; let isCrit = false; if (move.power > 0) { effectivenessMultiplier = calculateTypeEffectiveness(move.type, defender.types); if (effectivenessMultiplier === 0) { calculatedDamage = 0; } else { let critChance = CRITICAL_HIT_CHANCE_BASE * (move.highCritRatio ? 2 : 1); if (Math.random() < critChance) isCrit = true; let effAttackerAttack = calculateStatWithStage(attacker.baseStats.attack, attacker.stats.attack, 'attack'); let effDefenderDefense = calculateStatWithStage(defender.baseStats.defense, defender.stats.defense, 'defense'); if (isCrit) { if (attacker.stats.attack < 0) effAttackerAttack = attacker.baseStats.attack; if (defender.stats.defense > 0) effDefenderDefense = defender.baseStats.defense; } calculatedDamage = Math.max(1, Math.floor((((((2 * GAME_LEVEL / 5 + 2) * effAttackerAttack * move.power) / effDefenderDefense) / 50) + 2) * effectivenessMultiplier * (isCrit ? CRITICAL_HIT_MULTIPLIER : 1))); } defender.currentHP -= calculatedDamage; } updateBattleUI(); if (isCrit) turnMessages.push({ message: "A critical hit!" }); const effText = getEffectivenessText(effectivenessMultiplier, defenderName); if (effText && move.power > 0) turnMessages.push({ message: effText }); if (move.effect) { const effect = move.effect; const canApplyEffect = effectivenessMultiplier > 0; if (effect.type === "status" && defender.status === null && canApplyEffect && (!effect.chance || Math.random() < effect.chance)) { defender.status = effect.condition; if (effect.condition === "SLP") defender.sleepTurns = Math.floor(Math.random() * 3) + 2; else if (effect.condition === "FRZ" && defender.types.includes("Ice")) {} else turnMessages.push({ message: `${defenderName} was ${effect.condition === "BRN" ? "burned" : effect.condition === "PSN" ? "poisoned" : effect.condition === "PAR" ? "paralyzed" : effect.condition === "SLP" ? "put to sleep" : "frozen"}!` }); } else if (effect.type === "stat" && canApplyEffect && (!effect.chance || Math.random() < effect.chance)) { const target = effect.target === "self" ? attacker : defender; const targetN = effect.target === "self" ? attackerName : defenderName; const statMsgs = applyStatChange(target, effect.stat, effect.stages, targetN, effect.target === "self"); statMsgs.forEach(m => turnMessages.push({message: m})); } else if (effect.type === "heal" && effect.target === "self") { const healAmount = Math.floor(attacker.maxHP * effect.percentage); attacker.currentHP = Math.min(attacker.maxHP, attacker.currentHP + healAmount); turnMessages.push({ message: `${attackerName} recovered health!` }); } else if (effect.type === "switch" && effect.target === "opponent" && canApplyEffect) { const targetTeam = isPlayerAttacking ? battleState.opponentTeam : battleState.playerTeam; const currentActiveIdx = isPlayerAttacking ? battleState.opponentActiveIndex : battleState.playerActiveIndex; const availableSwitch = targetTeam.filter((p, i) => p.currentHP > 0 && i !== currentActiveIdx); if (availableSwitch.length > 0) { const oldTargetName = targetTeam[currentActiveIdx].name.toUpperCase(); const newTargetIdx = targetTeam.indexOf(availableSwitch[Math.floor(Math.random() * availableSwitch.length)]); if (isPlayerAttacking) battleState.opponentActiveIndex = newTargetIdx; else battleState.playerActiveIndex = newTargetIdx; turnMessages.push({ message: `${oldTargetName} was dragged out!` }); turnMessages.push({ message: `${(isPlayerAttacking ? "Opponent sent out " : "Go ")}${targetTeam[newTargetIdx].name.toUpperCase()}!`}); battleState.attackerUsedMoveFirstThisTurn = true; } else { turnMessages.push({ message: "But it failed!"}); } } else if (effect.type === "flinch" && canApplyEffect && (!effect.chance || Math.random() < effect.chance)) { if (battleState.attackerUsedMoveFirstThisTurn && !defender.flinch) { defender.flinch = true; } } updateBattleUI(); } processTurnMessages(turnMessages, isPlayerAttacking ? defender : attacker, isPlayerAttacking); }); }}); processTurnMessages(turnMessages, isPlayerAttacking ? defender : attacker, isPlayerAttacking); }
+function executeMove(attacker, defender, move, isPlayerAttacking) { battleState.currentActingPokemonIsPlayer = isPlayerAttacking; const attackerName = attacker.name.toUpperCase(); const defenderName = defender.name.toUpperCase(); let turnMessages = []; if (isPlayerAttacking) battleState.playerSelectedMove = move; else battleState.opponentSelectedMove = move; if (attacker.flinch) { attacker.flinch = false; typeMessage(`${attackerName} flinched!`, () => { if (isPlayerAttacking && battleState.opponentTeam[battleState.opponentActiveIndex]?.currentHP > 0) { opponentActionPhase(); } else if (!isPlayerAttacking && battleState.playerTeam[battleState.playerActiveIndex]?.currentHP > 0) { handleEndOfTurnStatusEffects(); } else { handleEndOfTurnStatusEffects(); } }); return; } move.currentPp--; if(isPlayerAttacking) updateBattleUI(); turnMessages.push({ message: `${attackerName} used ${move.name.toUpperCase()}!`, callback: () => { let hit = true; if (!move.alwaysHits) { const moveAccuracy = move.accuracy || 100; const attackerAccStage = attacker.stats.accuracy || 0; const defenderEvaStage = defender.stats.evasion || 0; const accModifier = calculateStatWithStage(100, attackerAccStage, 'accuracy') / 100; const evaModifier = calculateStatWithStage(100, defenderEvaStage, 'evasion') / 100; const finalAccuracy = moveAccuracy * (accModifier / evaModifier); if (Math.random() * 100 >= finalAccuracy) hit = false; } if (!hit) { turnMessages.push({ message: `${attackerName}'s attack missed!`, callback: () => { if (isPlayerAttacking && battleState.opponentTeam[battleState.opponentActiveIndex]?.currentHP > 0) { opponentActionPhase(); } else { handleEndOfTurnStatusEffects(); } }}); processTurnMessages(turnMessages); return; } playAttackAnimation(move.type, isPlayerAttacking ? playerPokemonSpriteEl.parentElement : opponentPokemonSpriteEl.parentElement, isPlayerAttacking ? opponentPokemonSpriteEl.parentElement : playerPokemonSpriteEl.parentElement, () => { playShakeAnimation(isPlayerAttacking ? opponentPokemonSpriteEl.parentElement : playerPokemonSpriteEl.parentElement); let effectivenessMultiplier = 1; let calculatedDamage = 0; let isCrit = false; if (move.power > 0) { effectivenessMultiplier = calculateTypeEffectiveness(move.type, defender.types); if (effectivenessMultiplier === 0) { calculatedDamage = 0; } else { let critChance = CRITICAL_HIT_CHANCE_BASE * (move.highCritRatio ? 2 : 1); if (Math.random() < critChance) isCrit = true; let effAttackerAttack = calculateStatWithStage(attacker.baseStats.attack, attacker.stats.attack, 'attack'); let effDefenderDefense = calculateStatWithStage(defender.baseStats.defense, defender.stats.defense, 'defense'); if (isCrit) { if (attacker.stats.attack < 0) effAttackerAttack = attacker.baseStats.attack; if (defender.stats.defense > 0) effDefenderDefense = defender.baseStats.defense; } calculatedDamage = Math.max(1, Math.floor((((((2 * GAME_LEVEL / 5 + 2) * effAttackerAttack * move.power) / effDefenderDefense) / 50) + 2) * effectivenessMultiplier * (isCrit ? CRITICAL_HIT_MULTIPLIER : 1))); } defender.currentHP -= calculatedDamage; } else if (move.effect && move.effect.type === "fixed_damage") { calculatedDamage = move.effect.damage; defender.currentHP -= calculatedDamage;} updateBattleUI(); if (isCrit) turnMessages.push({ message: "A critical hit!" }); const effText = getEffectivenessText(effectivenessMultiplier, defenderName); if (effText && move.power > 0) turnMessages.push({ message: effText }); if (move.effect) { const effect = move.effect; const canApplyEffect = effectivenessMultiplier > 0 || move.effect.type === "stat" || move.effect.type === "heal"; if (effect.type === "status" && defender.status === null && canApplyEffect && (!effect.chance || Math.random() < effect.chance)) { defender.status = effect.condition; if (effect.condition === "SLP") defender.sleepTurns = Math.floor(Math.random() * 3) + 2; else if (effect.condition === "FRZ" && defender.types.includes("Ice")) {} else turnMessages.push({ message: `${defenderName} was ${effect.condition === "BRN" ? "burned" : effect.condition === "PSN" ? "poisoned" : effect.condition === "PAR" ? "paralyzed" : effect.condition === "SLP" ? "put to sleep" : "frozen"}!` }); } else if (effect.type === "stat" && canApplyEffect && (!effect.chance || Math.random() < effect.chance)) { const target = effect.target === "self" ? attacker : defender; const targetN = effect.target === "self" ? attackerName : defenderName; const statMsgs = applyStatChange(target, effect.stat, effect.stages, targetN, effect.target === "self"); statMsgs.forEach(m => turnMessages.push({message: m})); } else if (effect.type === "heal" && effect.target === "self") { const healAmount = Math.floor(attacker.maxHP * effect.percentage); attacker.currentHP = Math.min(attacker.maxHP, attacker.currentHP + healAmount); turnMessages.push({ message: `${attackerName} recovered health!` }); } else if (effect.type === "switch" && effect.target === "opponent" && canApplyEffect) { const targetTeam = isPlayerAttacking ? battleState.opponentTeam : battleState.playerTeam; const currentActiveIdx = isPlayerAttacking ? battleState.opponentActiveIndex : battleState.playerActiveIndex; const availableSwitch = targetTeam.filter((p, i) => p.currentHP > 0 && i !== currentActiveIdx); if (availableSwitch.length > 0) { const oldTargetName = targetTeam[currentActiveIdx].name.toUpperCase(); const newTargetIdx = targetTeam.indexOf(availableSwitch[Math.floor(Math.random() * availableSwitch.length)]); if (isPlayerAttacking) battleState.opponentActiveIndex = newTargetIdx; else battleState.playerActiveIndex = newTargetIdx; turnMessages.push({ message: `${oldTargetName} was dragged out!` }); turnMessages.push({ message: `${(isPlayerAttacking ? "Opponent sent out " : "Go ")}${targetTeam[newTargetIdx].name.toUpperCase()}!`}); battleState.attackerUsedMoveFirstThisTurn = true; } else { turnMessages.push({ message: "But it failed!"}); } } else if (effect.type === "flinch" && canApplyEffect && (!effect.chance || Math.random() < effect.chance)) { if (battleState.attackerUsedMoveFirstThisTurn && !defender.flinch) { defender.flinch = true; } } updateBattleUI(); } processTurnMessages(turnMessages, isPlayerAttacking ? defender : attacker, isPlayerAttacking); }); }}); processTurnMessages(turnMessages, isPlayerAttacking ? defender : attacker, isPlayerAttacking); }
 function processTurnMessages(messages, nextPokemonToActIfApplicable, isOriginalAttackerPlayer) { if (messages.length > 0) { const nextMsg = messages.shift(); typeMessage(nextMsg.message, nextMsg.callback || (() => processTurnMessages(messages, nextPokemonToActIfApplicable, isOriginalAttackerPlayer))); } else { if(!battleState.playerTeam[battleState.playerActiveIndex] || !battleState.opponentTeam[battleState.opponentActiveIndex]) {console.warn("Attempted to process turn end with undefined active Pokemon."); return;} const playerPokemon = battleState.playerTeam[battleState.playerActiveIndex]; const opponentPokemon = battleState.opponentTeam[battleState.opponentActiveIndex]; if (playerPokemon.currentHP <= 0) { handlePlayerFaint(); return; } if (opponentPokemon.currentHP <= 0) { handleOpponentFaint(); return; } if (isOriginalAttackerPlayer) { opponentActionPhase(); } else { handleEndOfTurnStatusEffects(); } } }
 function playerAttack(moveIndex) { if(!battleState.playerTeam[battleState.playerActiveIndex] || !battleState.opponentTeam[battleState.opponentActiveIndex]) {console.warn("Attempted player attack with undefined active Pokemon."); return;} moveMenuEl.style.display = 'none'; const attacker = battleState.playerTeam[battleState.playerActiveIndex]; const defender = battleState.opponentTeam[battleState.opponentActiveIndex]; const move = attacker.moves[moveIndex]; if (!move || move.currentPp <= 0) { playerActionPhase(); return; } battleState.attackerUsedMoveFirstThisTurn = true; executeMove(attacker, defender, move, true); }
 function handleEndOfTurnStatusEffects() { if(!battleState.playerTeam[battleState.playerActiveIndex] || !battleState.opponentTeam[battleState.opponentActiveIndex]) {console.warn("Attempted EOT effects with undefined active Pokemon."); return;} let turnEndMessages = []; let playerFaintedFromStatus = false; let opponentFaintedFromStatus = false; const playerPokemon = battleState.playerTeam[battleState.playerActiveIndex]; const opponentPokemon = battleState.opponentTeam[battleState.opponentActiveIndex]; const applyEOT = (pokemon, isPlayer) => { if (pokemon.currentHP > 0 && pokemon.status) { if (pokemon.status === "BRN" || pokemon.status === "PSN") { const damage = Math.floor(pokemon.maxHP / (pokemon.status === "PSN" ? 8 : 16)); pokemon.currentHP -= damage; turnEndMessages.push({ message: `${pokemon.name.toUpperCase()} was hurt by its ${pokemon.status === "BRN" ? "burn" : "poison"}!` }); if (pokemon.currentHP <= 0) isPlayer ? playerFaintedFromStatus = true : opponentFaintedFromStatus = true; } } }; applyEOT(playerPokemon, true); if (playerFaintedFromStatus) turnEndMessages.push({ message: `${playerPokemon.name.toUpperCase()} fainted!` }); if (opponentPokemon.currentHP > 0) { applyEOT(opponentPokemon, false); if (opponentFaintedFromStatus) turnEndMessages.push({ message: `${opponentPokemon.name.toUpperCase()} fainted!` }); } updateBattleUI(); const showEOTMessages = () => { if (turnEndMessages.length > 0) { const msg = turnEndMessages.shift(); typeMessage(msg.message, showEOTMessages); } else { if (playerPokemon.currentHP <= 0) handlePlayerFaint(); else if (opponentPokemon.currentHP <= 0) handleOpponentFaint(); else setTimeout(startTurnPhase, 800); } }; showEOTMessages(); }
@@ -4713,7 +4798,7 @@ function handleOpponentFaint() {
                     selectedTrainerData.defeatedEliteFourMembers.push(battleState.currentEliteFourMemberKey);
                 }
             }
-        } else {
+        } else { // Quick Battle
              const remOpponent = battleState.opponentTeam.filter(pk => pk.currentHP > 0);
              if (remOpponent.length === 0) {
                 coinsEarned = 15;
@@ -4731,7 +4816,7 @@ function handleOpponentFaint() {
                 typeMessage(winMessages.shift(), processWinMessages);
             } else {
                 const remOpponent = battleState.opponentTeam.filter(pk => pk.currentHP > 0);
-                if (remOpponent.length === 0) {
+                if (remOpponent.length === 0) { // All opponent Pokémon fainted
                     setTimeout(() => {
                         finalizeBattleState();
                         battleState.isWildBattle = false;
@@ -4741,27 +4826,30 @@ function handleOpponentFaint() {
                         battleState.currentEliteFourMemberKey = null;
                         switchScreen('mainMenu');
                     }, 1200);
-                } else {
+                } else { // Opponent has more Pokémon
                     let nxtIdx = -1;
                     for (let i=0; i<battleState.opponentTeam.length; i++) if (battleState.opponentTeam[i].currentHP > 0) { nxtIdx = i; break; }
                     if (nxtIdx !== -1) {
                         battleState.opponentActiveIndex = nxtIdx;
                         const newOpp = battleState.opponentTeam[nxtIdx];
-                        typeMessage(`${(battleState.isGymBattle ? gymLeadersData[battleState.currentGymLeaderKey].name : (battleState.isEliteFourBattle ? eliteFourData[battleState.currentEliteFourMemberKey].name : "Opponent"))} sent out ${newOpp.name.toUpperCase()}!`, () => {
+                        const opponentName = battleState.isGymBattle ? gymLeadersData[battleState.currentGymLeaderKey].name :
+                                             battleState.isEliteFourBattle ? eliteFourData[battleState.currentEliteFourMemberKey].name : "Opponent";
+                        typeMessage(`${opponentName} sent out ${newOpp.name.toUpperCase()}!`, () => {
                             updateBattleUI();
                             setTimeout(startTurnPhase, 800);
                         });
-                    } else {
-                        typeMessage("Error: Opponent has no more Pokémon?", () => { finalizeBattleState(); switchScreen('mainMenu'); });
+                    } else { // Should not happen if remOpponent.length > 0
+                        typeMessage("Error: Opponent has no more Pokémon, but battle didn't end?", () => { finalizeBattleState(); switchScreen('mainMenu'); });
                     }
                 }
             }
         };
         typeMessage(`Foe's ${o.name.toUpperCase()} fainted!`, processWinMessages);
     };
-    cb();
+    cb(); // Directly call, typeMessage is handled inside processWinMessages
     updateBattleUI();
 }
+
 
 function getEvolutionTarget(currentPokedexId) {
     const currentPokemonData = pokemonPool.find(p => p.pokedexId === currentPokedexId);
@@ -4774,15 +4862,15 @@ function getEvolutionTarget(currentPokedexId) {
 function evolvePokemon(pokemonToEvolve, evolvedFormData, isPermanentEvolution = false) {
     const originalName = pokemonToEvolve.name.toUpperCase();
     const originalPokedexId = pokemonToEvolve.pokedexId;
-    const wasShiny = pokemonToEvolve.isShiny; // Store shiny status before evolution
+    const wasShiny = pokemonToEvolve.isShiny;
 
     if (!isPermanentEvolution && !pokemonToEvolve.originalEvolutionData) {
         pokemonToEvolve.originalEvolutionData = {
             pokedexId: originalPokedexId, name: pokemonToEvolve.name, types: [...pokemonToEvolve.types],
             maxHP: pokemonToEvolve.maxHP, baseStats: JSON.parse(JSON.stringify(pokemonToEvolve.baseStats)),
             moves: pokemonToEvolve.moves.map(m => ({ ...m })),
-            isShiny: wasShiny, // Save original shiny status
-            spriteFrontUrl: pokemonToEvolve.spriteFrontUrl, // Save original sprites
+            isShiny: wasShiny,
+            spriteFrontUrl: pokemonToEvolve.spriteFrontUrl,
             spriteBackUrl: pokemonToEvolve.spriteBackUrl,
             evolvesToPokedexId: pokemonToEvolve.evolvesToPokedexId
         };
@@ -4799,7 +4887,7 @@ function evolvePokemon(pokemonToEvolve, evolvedFormData, isPermanentEvolution = 
     pokemonToEvolve.baseStats = JSON.parse(JSON.stringify(evolvedFormData.baseStats));
     pokemonToEvolve.moves = evolvedFormData.moves.map(m => ({ ...m, currentPp: m.maxPp }));
     pokemonToEvolve.evolvesToPokedexId = evolvedFormData.evolvesToPokedexId || null;
-    pokemonToEvolve.isShiny = wasShiny; // Evolved form is also shiny if original was
+    pokemonToEvolve.isShiny = wasShiny;
 
     const shinyBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
     pokemonToEvolve.spriteFrontUrl = pokemonToEvolve.isShiny ? `${shinyBaseUrl}/shiny/${evolvedFormData.pokedexId}.png` : evolvedFormData.spriteFront;
@@ -4816,11 +4904,11 @@ function evolvePokemon(pokemonToEvolve, evolvedFormData, isPermanentEvolution = 
             teamPokemonInstance.currentHP = pokemonToEvolve.currentHP;
             teamPokemonInstance.baseStats = JSON.parse(JSON.stringify(pokemonToEvolve.baseStats));
             teamPokemonInstance.moves = pokemonToEvolve.moves.map(m => ({...m}));
-            teamPokemonInstance.isShiny = pokemonToEvolve.isShiny; // Ensure permanent evolution retains shiny
+            teamPokemonInstance.isShiny = pokemonToEvolve.isShiny;
             teamPokemonInstance.spriteFrontUrl = pokemonToEvolve.spriteFrontUrl;
             teamPokemonInstance.spriteBackUrl = pokemonToEvolve.spriteBackUrl;
             teamPokemonInstance.evolvesToPokedexId = pokemonToEvolve.evolvesToPokedexId;
-            teamPokemonInstance.originalEvolutionData = null; // Clear original data for permanent evo
+            teamPokemonInstance.originalEvolutionData = null;
             saveGame();
         }
     }
@@ -4834,7 +4922,7 @@ function useEvolutionItem(itemName) {
 
     if (evolutionTargetData && selectedTrainerData.inventory[itemName] > 0) {
         selectedTrainerData.inventory[itemName]--;
-        if (!isPermanent) saveGame();
+        if (!isPermanent) saveGame(); // Save immediately for temp stones as they are consumed
 
         itemMenuEl.style.display = 'none';
         typeMessage(`${selectedTrainerData.name} used a ${itemName}!`, () => {
@@ -4844,9 +4932,10 @@ function useEvolutionItem(itemName) {
                     playerPokemonSpriteEl.parentElement.classList.remove('flash-anim');
 
                     const originalName = evolvePokemon(playerPokemon, evolutionTargetData, isPermanent);
-                    updateBattleUI();
+                    updateBattleUI(); // Update UI with new Pokémon form
 
                     typeMessage(`Congratulations! Your ${originalName} evolved into ${playerPokemon.name.toUpperCase()}!${isPermanent ? " (Permanently)" : ""}`, () => {
+                        if (isPermanent) saveGame(); // Save again if permanent to persist the evolution itself
                         opponentActionPhase();
                     });
                 }, 1000);
@@ -4859,6 +4948,7 @@ function useEvolutionItem(itemName) {
     }
 }
 
+
 function throwPokeball(itemName) {
     if (!battleState.isWildBattle) {
         typeMessage("Can only use Poké Balls in wild battles!", playerActionPhase);
@@ -4870,7 +4960,7 @@ function throwPokeball(itemName) {
     }
 
     selectedTrainerData.inventory[itemName]--;
-    saveGame();
+    saveGame(); // Save inventory change
 
     const opponentPokemon = battleState.opponentTeam[battleState.opponentActiveIndex];
     typeMessage(`${selectedTrainerData.name} used a ${itemName}!`, () => {
@@ -4897,23 +4987,23 @@ function throwPokeball(itemName) {
             const catchRateBase = itemName === "Great Ball" ? 1.5 : 1;
             const maxHP = opponentPokemon.maxHP;
             const currentHP = opponentPokemon.currentHP;
-            let catchChance = (((3 * maxHP - 2 * currentHP) * 45 * catchRateBase) / (3 * maxHP)) / 255;
+            let catchChance = (((3 * maxHP - 2 * currentHP) * 45 * catchRateBase) / (3 * maxHP)) / 255; // Simplified catch rate
             if (opponentPokemon.status && (opponentPokemon.status === "SLP" || opponentPokemon.status === "FRZ")) catchChance *= 2.5;
             else if (opponentPokemon.status && (opponentPokemon.status === "PAR" || opponentPokemon.status === "PSN" || opponentPokemon.status === "BRN")) catchChance *= 1.5;
 
-            if (Math.random() < catchChance || opponentPokemon.currentHP <= 1) {
+            if (Math.random() < catchChance || opponentPokemon.currentHP <= 1) { // Auto-catch at 1HP or less
                 typeMessage(`Gotcha! ${opponentPokemon.name.toUpperCase()} was caught!`, () => {
                     opponentPokemonSpriteEl.parentElement.classList.add('pokemon-caught-flash');
                     setTimeout(() => {
                         opponentPokemonSpriteEl.parentElement.classList.remove('pokemon-caught-flash');
                         const caughtPokemonData = pokemonPool.find(p => p.pokedexId === opponentPokemon.pokedexId);
                         const newPlayerPokemon = createPokemonFromData(
-                            {...caughtPokemonData, isShiny: opponentPokemon.isShiny},
-                            false,
-                            true
+                            {...caughtPokemonData, isShiny: opponentPokemon.isShiny}, // Pass base data, preserve shiny status
+                            false, // isOpponent
+                            true   // forPlayerTeam
                         );
-                        newPlayerPokemon.currentHP = Math.max(1, opponentPokemon.currentHP);
-                        newPlayerPokemon.status = opponentPokemon.status;
+                        newPlayerPokemon.currentHP = Math.max(1, opponentPokemon.currentHP); // Retain HP (or at least 1)
+                        newPlayerPokemon.status = opponentPokemon.status; // Retain status
 
                         if (selectedTrainerData.team.length < MAX_TEAM_SIZE) {
                             selectedTrainerData.team.push(newPlayerPokemon);
@@ -4924,7 +5014,7 @@ function throwPokeball(itemName) {
                         } else {
                              alert(`Team and PC Box are full! Cannot catch ${newPlayerPokemon.name.toUpperCase()}.`);
                         }
-                        finalizeBattleState();
+                        finalizeBattleState(); // This will saveGame()
                         battleState.isWildBattle = false;
                         switchScreen('mainMenu');
                     }, 600);
@@ -4932,7 +5022,7 @@ function throwPokeball(itemName) {
             } else {
                 typeMessage(`Oh no! The Pokémon broke free!`, opponentActionPhase);
             }
-        }, 3500);
+        }, 3500); // Duration of pokeball throw/wiggle animation
     });
 }
 
@@ -5136,19 +5226,18 @@ function showTcgCardsScreen() {
         hasTcgCards = true;
         collectedTcgCards.forEach(tcgCard => {
             const cardItem = document.createElement('div');
-            cardItem.classList.add('collected-card-item');
+            cardItem.classList.add('collected-card-item'); // Use same class for consistent styling
 
             const cardImg = document.createElement('img');
-            // Using the spriteUrl which is currently the game sprite.
-            // Replace this with actual TCG card image URLs if you have them.
-            cardImg.src = tcgCard.spriteUrl;
-            cardImg.alt = tcgCard.name + " TCG Card";
+            cardImg.src = tcgCard.spriteUrl; // This URL is now from PokemonTCG API
+            cardImg.alt = (tcgCard.tcgCardName || tcgCard.pokemonGameName) + " TCG Card";
             cardItem.appendChild(cardImg);
 
             const nameP = document.createElement('p');
-            nameP.textContent = tcgCard.name.toUpperCase();
+            // Display TCG card name if available, otherwise fallback to game Pokémon name
+            nameP.textContent = (tcgCard.tcgCardName || tcgCard.pokemonGameName || "Unknown Card").toUpperCase();
             nameP.style.textAlign = 'center';
-            nameP.style.fontSize = '0.8em';
+            nameP.style.fontSize = '0.8em'; // Adjust as needed
             cardItem.appendChild(nameP);
 
             tcgCardsGridEl.appendChild(cardItem);
@@ -5212,6 +5301,12 @@ function loadGame() {
             selectedTrainerData.defeatedGymLeaders = selectedTrainerData.defeatedGymLeaders || [];
             selectedTrainerData.defeatedEliteFourMembers = selectedTrainerData.defeatedEliteFourMembers || [];
             selectedTrainerData.collectedTcgCards = selectedTrainerData.collectedTcgCards || [];
+            // Ensure new properties on TCG cards from older saves don't break things
+            selectedTrainerData.collectedTcgCards.forEach(card => {
+                card.pokemonGameName = card.pokemonGameName || card.name; // backwards compatibility if old cards only had 'name'
+                card.tcgCardName = card.tcgCardName || card.pokemonGameName;
+            });
+
             selectedTrainerData.hasChosenStarter = typeof selectedTrainerData.hasChosenStarter !== 'undefined' ? selectedTrainerData.hasChosenStarter : false;
 
             [selectedTrainerData.team, selectedTrainerData.pcBox].forEach(list => {
@@ -5289,6 +5384,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     switchScreen('mainMenu');
                 }
             } else switchScreen('characterSelect');
+            screens.confirmDialog.style.display = 'none'; // Close dialog
         });
         if(confirmNoButton) confirmNoButton.addEventListener('click', () => { selectedTrainerData = null; screens.confirmDialog.style.display = 'none'; switchScreen('characterSelect'); });
 
@@ -5369,8 +5465,16 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                         } else if (battleState.isGymBattle || battleState.isEliteFourBattle) {
                              typeMessage("You can't run from a Gym or Elite Four Battle!", playerActionPhase);
-                        } else {
-                            typeMessage("You can't run from a trainer battle!", playerActionPhase);
+                        } else { // Quick Battle
+                            typeMessage("You chose to forfeit the Quick Battle.", () => {
+                                finalizeBattleState(); // Update HP etc.
+                                // Optionally, give small penalty or just end
+                                selectedTrainerData.coins = Math.max(0, (selectedTrainerData.coins || 0) - 2); // Small coin penalty for forfeiting
+                                updateCoinDisplay();
+                                saveGame();
+                                battleState = { ...battleState, playerTeam: [], opponentTeam:[], isWildBattle: false, isGymBattle: false, isEliteFourBattle: false, currentGymLeaderKey: null, currentEliteFourMemberKey: null, switchingAfterFaint: false };
+                                switchScreen('mainMenu');
+                            });
                         }
                         break;
                 }
@@ -5426,8 +5530,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(closeTcgRevealButton) closeTcgRevealButton.addEventListener('click', () => {
             screens.tcgPackOpeningOverlay.style.display = 'none';
-            // Optioneel: ga terug naar market of inventory, afhankelijk van waar de pack is geopend.
-            // Voor nu, gewoon sluiten.
         });
     }
     setupEvtLstnrs();
@@ -5443,10 +5545,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     } else {
-        isNewGameSetup = true;
+        isNewGameSetup = true; // No save file, start new game setup
+         switchScreen('intro'); // Start from intro if no game loaded
     }
-    updateCoinDisplay();
-    if (screens[currentScreen] && screens[currentScreen].style.display === 'none' && currentScreen === 'intro') {
+    updateCoinDisplay(); // Ensure coins are updated on initial load/reset
+    // Default to intro screen if no specific screen is set and it's not a new game setup directing elsewhere
+    if (screens[currentScreen] && screens[currentScreen].style.display === 'none' && currentScreen === 'intro' && !isNewGameSetup) {
+        screens.intro.style.display = 'flex';
+    } else if (currentScreen === 'intro' && !isNewGameSetup && !loadGame()) { // Ensure intro screen if everything else fails
         screens.intro.style.display = 'flex';
     }
 });
