@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blazing Thunder - V1.1.8 (Elite Battles & New Gyms)</title>
+    <title>Blazing Thunder - TCG Expansion</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script> <!-- Anime.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
 <body id="gameBody">
 
@@ -22,14 +22,14 @@
                  <div class="trainer-card" data-trainer="Giovanni"><img src="https://www.pokemonkaart.nl/wp-content/uploads/Giovannis-Charisma-204-151.jpg" alt="Trainer Giovanni"><p>Giovanni</p></div>
              </div>
         </div>
-        
+
         <div id="starterSelectScreen" class="screen" style="display: none;">
             <h2>Kies je Starter Pokémon</h2>
             <div class="starters-grid">
                 <!-- Starter Pokémon cards will be populated here -->
             </div>
         </div>
-        
+
         <div id="confirmStarterDialog" class="dialog-overlay" style="display: none;">
             <div class="dialog-content">
                 <p>Weet je zeker dat je <span id="chosenStarterNameDialog">deze Pokémon</span> als je starter wilt?</p>
@@ -43,7 +43,7 @@
         <div id="confirmDialog" class="dialog-overlay" style="display: none;">
              <div class="dialog-content"><p>Weet je zeker dat je <span id="chosenTrainerName">deze trainer</span> wilt kiezen?</p><div class="dialog-buttons"><button id="confirmYes">Ja</button><button id="confirmNo">Nee</button></div></div>
         </div>
-        
+
         <div id="resetConfirmDialog" class="dialog-overlay" style="display: none;">
              <div class="dialog-content">
                  <p class="reset-warning">Weet je zeker dat je de game wilt resetten? Alle voortgang gaat verloren!</p>
@@ -63,29 +63,35 @@
                      <button class="submenu-tab" id="tabMarket">MARKET</button>
                      <button class="submenu-tab" id="tabInventory">INVENTORY</button>
                      <button class="submenu-tab" id="tabTeam">TEAM</button>
-                     <button class="submenu-tab" id="tabMyCards">MY CARDS</button> 
+                     <button class="submenu-tab" id="tabMyCards">MY CARDS & BADGES</button>
+                     <button class="submenu-tab" id="tabTcgCards">MY TCG CARDS</button>
                      <button class="submenu-tab" id="tabMyPc">MY PC</button>
                  </div>
              </div>
         </div>
 
+        <!-- START: Play Menu Screen - Updated with new modes -->
         <div id="playMenuScreen" class="screen" style="display: none;">
             <h2>PLAY MODES</h2>
             <button class="play-mode-button" id="btnQuickBattlePlay">QUICK BATTLE</button>
+            <button class="play-mode-button" id="btnTwoVsModePlay">2 VS 2 MODE</button> <!-- NEW -->
             <button class="play-mode-button" id="btnGymBattlePlay">GYM BATTLE</button>
-            <button class="play-mode-button" id="btnEliteBattlesPlay">ELITE FOUR</button> <!-- Text changed for clarity -->
+            <button class="play-mode-button" id="btnEliteBattlesPlay">ELITE FOUR</button>
+            <button class="play-mode-button" id="btnPokemonLeaguePlay">POKEMON LEAGUE</button> <!-- NEW -->
             <button class="play-mode-button" id="btnWildModePlay">WILD MODE</button>
             <button class="play-mode-button" id="btnBackToMainFromPlay">BACK</button>
         </div>
-        
+        <!-- END: Play Menu Screen -->
+
         <div id="optionsMenuScreen" class="screen" style="display: none;">
             <h2>OPTIONS</h2>
             <button class="options-button" id="btnSaveGameOpt">SAVE GAME</button>
             <button class="options-button" id="btnResetGameOpt">RESET GAME</button>
             <button class="options-button" id="btnDarkModeOpt">DARK MODE</button>
-            <button class="options-button" id="btnBackToMainOpts">BACK</button> 
+            <button class="options-button" id="btnBackToMainOpts">BACK</button>
         </div>
 
+        <!-- START: Market Screen - Updated with new items -->
         <div id="marketScreen" class="screen" style="display: none;">
             <h2>MARKET</h2>
             <div id="marketCoinDisplay">Coins: 0</div>
@@ -102,21 +108,40 @@
                     <p class="item-price">Price: 10 Coins</p>
                     <button class="buy-button" data-item-name="Great Ball" data-price="10">BUY</button>
                 </div>
+                <div class="market-item" data-item-id="ultraball"> <!-- NEW -->
+                    <img class="item-icon ultraball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Ultra Ball">
+                    <p class="item-name">Ultra Ball</p>
+                    <p class="item-price">Price: 15 Coins</p>
+                    <button class="buy-button" data-item-name="Ultra Ball" data-price="15">BUY</button>
+                </div>
                 <div class="market-item" data-item-id="evolutionstone">
-                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Evolution Stone"> 
+                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Evolution Stone">
                     <p class="item-name">Evolution Stone</p>
                     <p class="item-price">Price: 10 Coins</p>
                     <button class="buy-button" data-item-name="Evolution Stone" data-price="10">BUY</button>
                 </div>
                  <div class="market-item" data-item-id="permaevolutionstone">
-                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Perma Evolution Stone"> 
+                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Perma Evolution Stone">
                     <p class="item-name">Perma Evolution Stone</p>
                     <p class="item-price">Price: 100 Coins</p>
                     <button class="buy-button" data-item-name="Perma Evolution Stone" data-price="100">BUY</button>
                 </div>
+                <div class="market-item" data-item-id="jonko"> <!-- NEW -->
+                    <img class="item-icon jonko-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Jonko">
+                    <p class="item-name">Jonko</p>
+                    <p class="item-price">Price: 25 Coins</p>
+                    <button class="buy-button" data-item-name="Jonko" data-price="25">BUY</button>
+                </div>
+                <div class="market-item" data-item-id="tcgpack">
+                    <img class="item-icon tcgpack-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="TCG Pack">
+                    <p class="item-name">TCG Pack (7 Cards)</p>
+                    <p class="item-price">Price: 8 Coins</p>
+                    <button class="buy-button" data-item-name="TCG Pack" data-price="8">BUY</button>
+                </div>
             </div>
             <button id="btnBackToMainFromMarket" class="market-back-button">BACK TO MAIN MENU</button>
         </div>
+        <!-- END: Market Screen -->
 
         <div id="inventoryScreen" class="screen" style="display: none;">
             <h2>INVENTORY</h2>
@@ -125,7 +150,7 @@
             </div>
             <button id="btnBackToMainFromInventory" class="inventory-back-button">BACK TO MAIN MENU</button>
         </div>
-        
+
         <div id="teamScreen" class="screen" style="display: none;">
             <h2>YOUR TEAM</h2>
             <div id="teamGrid" class="team-grid">
@@ -134,6 +159,7 @@
             <button id="btnBackToMainFromTeam" class="team-back-button">BACK TO MAIN MENU</button>
         </div>
 
+        <!-- START: PC Box Screen - Updated with pagination -->
         <div id="pcBoxScreen" class="screen" style="display: none;">
             <h2>MY PC</h2>
             <div class="pc-interface">
@@ -144,27 +170,75 @@
                     </div>
                 </div>
                 <div class="pc-column">
-                    <h3>PC BOX (<span id="pcBoxCount">0</span>/<span id="pcBoxCapacity">30</span>)</h3>
+                    <h3>PC BOX (<span id="pcBoxCount">0</span>/<span id="pcBoxCapacity">50</span>)</h3> <!-- Capacity updated -->
                     <div id="pcBoxGrid" class="pc-grid">
                         <p class="no-pokemon-pc-box" style="display:none;">PC Box is empty.</p>
+                    </div>
+                    <div class="pc-pagination-controls"> <!-- NEW -->
+                        <button id="pcPrevPage" class="pc-page-btn" disabled>< Prev</button>
+                        <span id="pcPageInfo">Page 1 / 1</span>
+                        <button id="pcNextPage" class="pc-page-btn" disabled>Next ></button>
                     </div>
                 </div>
             </div>
             <button id="btnBackToMainFromPcBox" class="pc-back-button">BACK TO MAIN MENU</button>
         </div>
+        <!-- END: PC Box Screen -->
 
         <div id="teamSelectScreen" class="screen" style="display: none;">
-            <h2 id="teamSelectTitle">SELECT YOUR BATTLE TEAM</h2> <!-- Generic Title -->
+            <h2 id="teamSelectTitle">SELECT YOUR BATTLE TEAM</h2>
             <div id="teamSelectGrid">
-                <!-- Pokémon options will be populated here by JavaScript -->
             </div>
-            <button id="teamSelectConfirmButton" class="team-select-button" disabled>CONFIRM TEAM</button>
+            <div class="team-select-buttons-container">
+                <button id="teamSelectConfirmButton" class="team-select-button" disabled>CONFIRM TEAM</button>
+                <button id="teamSelectCancelButton" class="team-select-button back">CANCEL</button>
+            </div>
         </div>
+
+        <!-- START: 2VS Mode Team Select Screen (New) -->
+        <div id="twoVsTeamSelectScreen" class="screen" style="display: none;">
+            <h2>SELECT 2 POKÉMON FOR 2 VS 2</h2>
+            <div id="twoVsTeamSelectGrid" class="team-select-grid-style">
+                <!-- Pokémon options will be populated here by JS -->
+            </div>
+            <div class="team-select-buttons-container">
+                <button id="twoVsTeamSelectConfirmButton" class="team-select-button" disabled>CONFIRM TEAM (2)</button>
+                <button id="twoVsTeamSelectCancelButton" class="team-select-button back">CANCEL</button>
+            </div>
+        </div>
+        <!-- END: 2VS Mode Team Select Screen -->
+
+        <!-- START: Pokemon League Team Select Screen (New) -->
+        <div id="leagueTeamSelectScreen" class="screen" style="display: none;">
+            <h2>SELECT YOUR POKÉMON LEAGUE TEAM (6)</h2>
+            <div id="leagueTeamSelectGrid" class="team-select-grid-style">
+                <!-- Pokémon options will be populated here by JS -->
+            </div>
+            <div class="team-select-buttons-container">
+                <button id="leagueTeamSelectConfirmButton" class="team-select-button" disabled>CONFIRM LEAGUE TEAM (6)</button>
+                <button id="leagueTeamSelectCancelButton" class="team-select-button back">CANCEL</button>
+            </div>
+        </div>
+        <!-- END: Pokemon League Team Select Screen -->
+
+        <!-- START: Pokemon League Match Screen (New) -->
+        <div id="pokemonLeagueMatchScreen" class="screen" style="display: none;">
+            <h2 id="pokemonLeagueMatchTitle">POKÉMON LEAGUE - ROUND X</h2>
+            <div class="league-match-info">
+                <p>Your opponent: <span id="leagueOpponentName">Trainer Name</span></p>
+                <img id="leagueOpponentImage" src="" alt="Opponent Trainer" class="league-opponent-image-style">
+                <p id="leagueOpponentDialog"></p>
+            </div>
+            <div class="league-match-buttons">
+                <button id="startLeagueBattleButton" class="play-mode-button">START BATTLE</button>
+                <button id="exitLeagueButton" class="play-mode-button back">EXIT LEAGUE</button>
+            </div>
+        </div>
+        <!-- END: Pokemon League Match Screen -->
 
         <div id="gymLeaderSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE A GYM LEADER</h2>
-            <div id="gymLeaderGrid" class="trainers-grid"> 
-                <!-- Gym Leaders will be populated here -->
+            <div id="gymLeaderGrid" class="trainers-grid">
             </div>
             <button id="btnBackToPlayMenuFromGymSelect" class="gym-leader-button back">BACK TO PLAY MODES</button>
         </div>
@@ -177,11 +251,9 @@
             <button id="btnBackToGymSelectFromDetail" class="gym-detail-button back">BACK TO GYM LEADERS</button>
         </div>
 
-        <!-- NEW ELITE FOUR SCREENS -->
         <div id="eliteFourSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE AN ELITE FOUR MEMBER</h2>
             <div id="eliteFourGrid" class="trainers-grid">
-                <!-- Elite Four Members will be populated here by JavaScript -->
             </div>
             <button id="btnBackToPlayMenuFromEliteFourSelect" class="elite-four-button back">BACK TO PLAY MODES</button>
         </div>
@@ -193,7 +265,6 @@
             <button id="btnStartEliteFourBattle" class="elite-four-detail-button">START BATTLE</button>
             <button id="btnBackToEliteFourSelectFromDetail" class="elite-four-detail-button back">BACK TO ELITE FOUR</button>
         </div>
-        <!-- END OF NEW ELITE FOUR SCREENS -->
 
         <div id="myCardsScreen" class="screen" style="display: none;">
             <h2>MY CARDS & BADGES</h2>
@@ -201,7 +272,7 @@
             <div id="collectedCardsGrid" class="cards-collection-grid">
                 <p class="no-collected-items" id="noCollectedCardsMsg" style="display:none;">No Gym Leader cards collected yet.</p>
             </div>
-            <h3>Collected Elite Four Cards</h3> <!-- New Section for Elite Four Cards -->
+            <h3>Collected Elite Four Cards</h3>
             <div id="collectedEliteFourCardsGrid" class="cards-collection-grid">
                 <p class="no-collected-items" id="noCollectedEliteFourCardsMsg" style="display:none;">No Elite Four cards collected yet.</p>
             </div>
@@ -211,6 +282,29 @@
             </div>
             <button id="btnBackToMainFromMyCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
         </div>
+
+        <div id="tcgCardsScreen" class="screen" style="display: none;">
+            <h2>MY TCG CARDS</h2>
+            <div id="tcgCardsGrid" class="cards-collection-grid tcg-collection-view">
+                <p class="no-collected-items" id="noTcgCardsMsg" style="display:none;">No TCG cards collected yet.</p>
+            </div>
+            <button id="btnBackToMainFromTcgCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
+        </div>
+
+        <!-- START: TCG Pack Opening Overlay - Updated for 7 cards & animation -->
+        <div id="tcgPackOpeningOverlay" class="dialog-overlay" style="display: none;">
+            <div class="tcg-pack-content">
+                <div class="tcg-pack-visual-container">
+                    <img id="tcgPackImageVisual" src="https://www.serebii.net/card/tcgpack/paldeanfates.png" alt="TCG Pack" class="tcg-pack-visual">
+                    <p id="tcgPackOpeningStatusText">Opening Pack...</p>
+                </div>
+                <div id="revealedTcgCardsDisplayArea" class="revealed-cards-grid" style="display:none;">
+                    <!-- JS will populate this with 7 card elements -->
+                </div>
+                <button id="closeTcgRevealButton" class="tcg-reveal-close-button" style="display:none;">DONE</button>
+            </div>
+        </div>
+        <!-- END: TCG Pack Opening Overlay -->
 
 
         <div id="battleScreen" class="screen" style="display: none;">
@@ -244,9 +338,9 @@
                     <button data-move-index="1"><span class="move-name"></span><span class="move-pp"></span></button>
                     <button data-move-index="2"><span class="move-name"></span><span class="move-pp"></span></button>
                     <button data-move-index="3"><span class="move-name"></span><span class="move-pp"></span></button>
+                    <button id="btnBackFromMoves" class="battle-menu-back-button">BACK</button>
                 </div>
                  <div class="battle-menu battle-item-menu" id="itemMenu" style="display: none;">
-                     <!-- Items will be populated here by JavaScript -->
                  </div>
             </div>
         </div>
