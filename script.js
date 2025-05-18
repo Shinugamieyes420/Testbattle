@@ -30,6 +30,7 @@ const PARALYSIS_CHANCE_NO_MOVE = 0.25;
 const FREEZE_THAW_CHANCE = 0.2;
 const MAX_TEAM_SIZE = 6;
 const MAX_PC_BOX_SIZE = 30;
+const TCG_CARDS_PER_PACK = 1; // Aantal kaarten per TCG pack
 
 
 const gameBody = document.getElementById('gameBody');
@@ -53,7 +54,8 @@ const screens = {
     eliteFourSelect: document.getElementById('eliteFourSelectScreen'),
     eliteFourDetail: document.getElementById('eliteFourDetailScreen'),
     myCards: document.getElementById('myCardsScreen'),
-    tcgCards: document.getElementById('tcgCardsScreen'), // NEW TCG SCREEN
+    tcgCards: document.getElementById('tcgCardsScreen'),
+    tcgPackOpeningOverlay: document.getElementById('tcgPackOpeningOverlay'), // TCG Pack Overlay
     battle: document.getElementById('battleScreen'),
     switchPokemon: document.getElementById('switchPokemonScreen')
 };
@@ -66,7 +68,7 @@ const btnWildModePlay = document.getElementById('btnWildModePlay');
 const btnBackToMainFromPlay = document.getElementById('btnBackToMainFromPlay');
 const btnOptions = document.getElementById('btnOptions'); const btnSaveGameOpt = document.getElementById('btnSaveGameOpt'); const btnResetGameOpt = document.getElementById('btnResetGameOpt'); const btnDarkModeOpt = document.getElementById('btnDarkModeOpt'); const btnBackToMainOpts = document.getElementById('btnBackToMainOpts'); const resetConfirmYesButton = document.getElementById('resetConfirmYes'); const resetConfirmNoButton = document.getElementById('resetConfirmNo'); const opponentPokemonNameEl = document.getElementById('opponentPokemonName'); const opponentHpFillEl = document.getElementById('opponentHpFill'); const opponentHpNumbersEl = document.getElementById('opponentHpNumbers'); const opponentTeamStatusEl = document.getElementById('opponentTeamStatus'); const opponentPokemonSpriteEl = document.getElementById('opponentPokemonSprite'); const opponentStatusTagEl = document.getElementById('opponentStatusTag'); const playerPokemonNameEl = document.getElementById('playerPokemonName'); const playerHpFillEl = document.getElementById('playerHpFill'); const playerHpNumbersEl = document.getElementById('playerHpNumbers'); const playerTeamStatusEl = document.getElementById('playerTeamStatus'); const playerPokemonSpriteEl = document.getElementById('playerPokemonSprite'); const playerStatusTagEl = document.getElementById('playerStatusTag'); const battleTextboxEl = document.getElementById('battleTextbox'); const battleMessageEl = document.getElementById('battleMessage'); const actionMenuEl = document.getElementById('actionMenu'); const moveMenuEl = document.getElementById('moveMenu'); const itemMenuEl = document.getElementById('itemMenu'); const attackAnimationLayer = document.getElementById('attackAnimationLayer'); const switchGridEl = document.getElementById('switchGrid'); const switchCancelButton = document.getElementById('switchCancelButton');
 const tabMarket = document.getElementById('tabMarket'); const tabInventory = document.getElementById('tabInventory'); const tabTeam = document.getElementById('tabTeam'); const tabMyCards = document.getElementById('tabMyCards');
-const tabTcgCards = document.getElementById('tabTcgCards'); // NEW TCG TAB
+const tabTcgCards = document.getElementById('tabTcgCards');
 const tabMyPc = document.getElementById('tabMyPc');
 const marketCoinDisplayEl = document.getElementById('marketCoinDisplay'); const marketItemsGridEl = document.querySelector('#marketScreen .market-items-grid'); const btnBackToMainFromMarket = document.getElementById('btnBackToMainFromMarket'); const inventoryGridEl = document.getElementById('inventoryGrid'); const btnBackToMainFromInventory = document.getElementById('btnBackToMainFromInventory'); const teamGridEl = document.getElementById('teamGrid'); const btnBackToMainFromTeam = document.getElementById('btnBackToMainFromTeam');
 const noInventoryItemsMsg = document.querySelector('#inventoryGrid .no-items');
@@ -115,6 +117,14 @@ const tcgCardsGridEl = document.getElementById('tcgCardsGrid');
 const noTcgCardsMsgEl = document.getElementById('noTcgCardsMsg');
 const btnBackToMainFromTcgCards = document.getElementById('btnBackToMainFromTcgCards');
 
+// TCG Pack Opening Elements
+const tcgPackAnimationContainer = screens.tcgPackOpeningOverlay.querySelector('.tcg-pack-animation-container');
+const revealedTcgCardContainer = screens.tcgPackOpeningOverlay.querySelector('#revealedTcgCardContainer');
+const revealedTcgCardImageEl = document.getElementById('revealedTcgCardImage');
+const revealedTcgCardNameEl = document.getElementById('revealedTcgCardName');
+const closeTcgRevealButton = document.getElementById('closeTcgRevealButton');
+
+
 // Battle Move Menu Back Button
 const btnBackFromMoves = document.getElementById('btnBackFromMoves');
 
@@ -137,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const trainersData = { "Bea": { name: "Bea", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Bea-TG25-Astral-Radiance.png" }, "Brock": { name: "Brock", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/brocks-scouting-179-sv9-eng.png" }, "Giovanni": { name: "Giovanni", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Giovannis-Charisma-204-151.jpg" } };
-const SAVE_KEY = 'blazingThunder_savedData_v1_1_9_tcg_shinyfix'; // Versie aangepast
+const SAVE_KEY = 'blazingThunder_savedData_v1_2_0_layout_tcg'; // Versie aangepast
 
 const typeChart = { "Normal": {"Rock": 0.5, "Ghost": 0, "Steel": 0.5}, "Fire": {"Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 2, "Bug": 2, "Rock": 0.5, "Dragon": 0.5, "Steel": 2}, "Water": {"Fire": 2, "Water": 0.5, "Grass": 0.5, "Ground": 2, "Rock": 2, "Dragon": 0.5}, "Electric": {"Water": 2, "Electric": 0.5, "Grass": 0.5, "Ground": 0, "Flying": 2, "Dragon": 0.5}, "Grass": {"Fire": 0.5, "Water": 2, "Grass": 0.5, "Poison": 0.5, "Ground": 2, "Flying": 0.5, "Bug": 0.5, "Rock": 2, "Dragon": 0.5, "Steel": 0.5}, "Ice": {"Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 0.5, "Ground": 2, "Flying": 2, "Dragon": 2, "Steel": 0.5}, "Fighting": {"Normal": 2, "Ice": 2, "Poison": 0.5, "Flying": 0.5, "Psychic": 0.5, "Bug": 0.5, "Rock": 2, "Ghost": 0, "Dark": 2, "Steel": 2, "Fairy": 0.5}, "Poison": {"Grass": 2, "Poison": 0.5, "Ground": 0.5, "Rock": 0.5, "Ghost": 0.5, "Steel": 0, "Fairy": 2}, "Ground": {"Fire": 2, "Electric": 2, "Grass": 0.5, "Poison": 2, "Flying": 0, "Bug": 0.5, "Rock": 2, "Steel": 2}, "Flying": {"Electric": 0.5, "Grass": 2, "Fighting": 2, "Bug": 2, "Rock": 0.5, "Steel": 0.5}, "Psychic": {"Fighting": 2, "Poison": 2, "Psychic": 0.5, "Dark": 0, "Steel": 0.5}, "Bug": {"Fire": 0.5, "Grass": 2, "Fighting": 0.5, "Poison": 0.5, "Flying": 0.5, "Psychic": 2, "Ghost": 0.5, "Dark": 2, "Steel": 0.5, "Fairy": 0.5}, "Rock": {"Fire": 2, "Ice": 2, "Fighting": 0.5, "Ground": 0.5, "Flying": 2, "Bug": 2, "Steel": 0.5}, "Ghost": {"Normal": 0, "Psychic": 2, "Ghost": 2, "Dark": 0.5}, "Dragon": {"Dragon": 2, "Steel": 0.5, "Fairy": 0}, "Steel": {"Fire": 0.5, "Water": 0.5, "Electric": 0.5, "Ice": 2, "Rock": 2, "Steel": 0.5, "Fairy": 2}, "Dark": {"Fighting": 0.5, "Psychic": 2, "Ghost": 2, "Dark": 0.5, "Fairy": 0.5}, "Fairy": {"Fire": 0.5, "Fighting": 2, "Poison": 0.5, "Dragon": 2, "Dark": 2, "Steel": 0.5} };
 const statStageMultipliers = [1/4, 2/7, 1/3, 2/5, 1/2, 2/3, 1, 1.5, 2, 2.5, 3, 3.5, 4];
@@ -3810,7 +3820,6 @@ const pokemonPool = [
         dialog: "...You're a kind person. ...Allow me to see your Pokémon's power."
     }
         };
-
 const eliteFourData = {
     "Bruno": {
         name: "Bruno",
@@ -3848,7 +3857,7 @@ function createPokemon(name, types, hp, baseStats, moves, spriteFront, spriteBac
 }
 function createPokemonFromData(data, isOpponent = false, forPlayerTeam = false) {
     let isShiny = false;
-    if (data.isShiny) { // If data already specifies shiny (e.g. from save or caught shiny)
+    if (data.isShiny) {
         isShiny = true;
     } else if ((isOpponent || battleState.isWildBattle) && !forPlayerTeam && Math.random() < SHINY_CHANCE) {
         isShiny = true;
@@ -4162,6 +4171,26 @@ function movePokemonToTeam(pcIndex) {
     showPcBoxScreen();
 }
 
+function openTcgPackAnimation(cards) {
+    screens.tcgPackOpeningOverlay.style.display = 'flex';
+    tcgPackAnimationContainer.style.display = 'block';
+    revealedTcgCardContainer.style.display = 'none';
+    tcgPackAnimationContainer.innerHTML = '<p>Opening Pack...</p>'; // Simple text for now
+
+    // Placeholder for a more complex animation
+    setTimeout(() => {
+        tcgPackAnimationContainer.style.display = 'none';
+        revealedTcgCardContainer.style.display = 'flex'; // Use flex to center content
+
+        // For now, just show the first card if multiple, or the single card
+        const cardToShow = cards[0];
+        revealedTcgCardImageEl.src = cardToShow.spriteUrl; // Use the sprite URL
+        revealedTcgCardImageEl.alt = cardToShow.name + " TCG Card";
+        revealedTcgCardNameEl.textContent = cardToShow.name.toUpperCase();
+
+    }, 2000); // Simulate opening time
+}
+
 
 function buyItem(itemName, price) {
     if (!selectedTrainerData) return;
@@ -4171,16 +4200,25 @@ function buyItem(itemName, price) {
         selectedTrainerData.inventory[itemName] = (selectedTrainerData.inventory[itemName] || 0) + 1;
 
         if (itemName === "TCG Pack") {
-            // "Open" the pack immediately and add a random Pokémon TCG card
-            const randomPokemonForTcg = pokemonPool[Math.floor(Math.random() * pokemonPool.length)];
-            if (randomPokemonForTcg) {
-                selectedTrainerData.collectedTcgCards = selectedTrainerData.collectedTcgCards || [];
-                selectedTrainerData.collectedTcgCards.push({
-                    name: randomPokemonForTcg.name,
-                    pokedexId: randomPokemonForTcg.pokedexId,
-                    spriteUrl: randomPokemonForTcg.spriteFront // Using game sprite for now
-                });
-                alert(`Successfully bought 1 TCG Pack! You got a ${randomPokemonForTcg.name.toUpperCase()} card!`);
+            const pulledCards = [];
+            for (let i = 0; i < TCG_CARDS_PER_PACK; i++) {
+                const randomPokemonForTcg = pokemonPool[Math.floor(Math.random() * pokemonPool.length)];
+                if (randomPokemonForTcg) {
+                    const newTcgCard = {
+                        id: `tcg-${Date.now()}-${Math.random().toString(36).substr(2)}`, // Unique ID for TCG card
+                        name: randomPokemonForTcg.name,
+                        pokedexId: randomPokemonForTcg.pokedexId,
+                        // For now, use game sprite. Later, this could be a URL to an actual TCG card image.
+                        spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${randomPokemonForTcg.pokedexId}.png`,
+                        // You could add more TCG specific data here like set, rarity, etc.
+                    };
+                    pulledCards.push(newTcgCard);
+                    selectedTrainerData.collectedTcgCards = selectedTrainerData.collectedTcgCards || [];
+                    selectedTrainerData.collectedTcgCards.push(newTcgCard);
+                }
+            }
+            if (pulledCards.length > 0) {
+                openTcgPackAnimation(pulledCards); // Start animation
             } else {
                 alert(`Successfully bought 1 TCG Pack! (But no card could be drawn - pool empty?)`);
             }
@@ -4270,7 +4308,7 @@ function prepareBattle(battleFunction, isEliteFour = false) {
 
             if (p.originalEvolutionData) { // Revert temporary evolutions
                 const oldMaxHPBeforeRevert = p.maxHP;
-                const currentHPRatio = (oldMaxHPBeforeRevert > 0) ? (p.currentHP / oldMaxHPBeforeRevert) : 1; // Default to 1 if oldMaxHP was 0
+                const currentHPRatio = (oldMaxHPBeforeRevert > 0) ? (p.currentHP / oldMaxHPBeforeRevert) : 1;
 
                 p.pokedexId = p.originalEvolutionData.pokedexId;
                 p.name = p.originalEvolutionData.name;
@@ -4279,9 +4317,8 @@ function prepareBattle(battleFunction, isEliteFour = false) {
                 p.currentHP = Math.max(0, Math.floor(currentHPRatio * p.maxHP));
                 p.baseStats = JSON.parse(JSON.stringify(p.originalEvolutionData.baseStats));
                 p.moves = p.originalEvolutionData.moves.map(m => ({ ...m, currentPp: m.maxPp }));
-                p.isShiny = p.originalEvolutionData.isShiny; // Restore shiny status
+                p.isShiny = p.originalEvolutionData.isShiny;
 
-                // Update sprite URLs based on restored shiny status and Pokedex ID
                 const shinyBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
                 const basePokemonForSprite = pokemonPool.find(baseP => baseP.pokedexId === p.pokedexId) || {};
                 p.spriteFrontUrl = p.isShiny ? `${shinyBaseUrl}/shiny/${p.pokedexId}.png` : (basePokemonForSprite.spriteFront || `${shinyBaseUrl}/${p.pokedexId}.png`);
@@ -4573,7 +4610,7 @@ function finalizeBattleState() {
                 tpMove.currentPp = tpMove.maxPp;
             });
 
-            if (battlePok.originalEvolutionData) { // If the battle Pokémon had temporary evolution data
+            if (battlePok.originalEvolutionData) {
                 const oldMaxHPBeforeRevert = trainerPok.maxHP;
                 const currentHPRatio = (oldMaxHPBeforeRevert > 0) ? (trainerPok.currentHP / oldMaxHPBeforeRevert) : 1;
 
@@ -4783,7 +4820,7 @@ function evolvePokemon(pokemonToEvolve, evolvedFormData, isPermanentEvolution = 
             teamPokemonInstance.spriteFrontUrl = pokemonToEvolve.spriteFrontUrl;
             teamPokemonInstance.spriteBackUrl = pokemonToEvolve.spriteBackUrl;
             teamPokemonInstance.evolvesToPokedexId = pokemonToEvolve.evolvesToPokedexId;
-            teamPokemonInstance.originalEvolutionData = null;
+            teamPokemonInstance.originalEvolutionData = null; // Clear original data for permanent evo
             saveGame();
         }
     }
@@ -4797,7 +4834,7 @@ function useEvolutionItem(itemName) {
 
     if (evolutionTargetData && selectedTrainerData.inventory[itemName] > 0) {
         selectedTrainerData.inventory[itemName]--;
-        if (!isPermanent) saveGame(); // Save only if not permanent, as permanent evolution saves in evolvePokemon
+        if (!isPermanent) saveGame();
 
         itemMenuEl.style.display = 'none';
         typeMessage(`${selectedTrainerData.name} used a ${itemName}!`, () => {
@@ -4870,15 +4907,13 @@ function throwPokeball(itemName) {
                     setTimeout(() => {
                         opponentPokemonSpriteEl.parentElement.classList.remove('pokemon-caught-flash');
                         const caughtPokemonData = pokemonPool.find(p => p.pokedexId === opponentPokemon.pokedexId);
-                        // Pass the shiny status of the caught wild Pokémon
                         const newPlayerPokemon = createPokemonFromData(
-                            {...caughtPokemonData, isShiny: opponentPokemon.isShiny}, // Spread existing data and explicitly set shiny status
+                            {...caughtPokemonData, isShiny: opponentPokemon.isShiny},
                             false,
                             true
                         );
                         newPlayerPokemon.currentHP = Math.max(1, opponentPokemon.currentHP);
                         newPlayerPokemon.status = opponentPokemon.status;
-                        // isShiny is already set by createPokemonFromData
 
                         if (selectedTrainerData.team.length < MAX_TEAM_SIZE) {
                             selectedTrainerData.team.push(newPlayerPokemon);
@@ -4947,7 +4982,7 @@ function showItemMenu() {
 
     const backBtn = document.createElement('button');
     backBtn.dataset.action = "back-to-actions";
-    backBtn.classList.add("battle-menu-back-button"); // Reuse style if desired or make new
+    backBtn.classList.add("battle-menu-back-button");
     backBtn.innerHTML = 'BACK';
     itemMenuEl.appendChild(backBtn);
 
@@ -5087,7 +5122,7 @@ function showMyCardsScreen() {
     switchScreen('myCards');
 }
 
-function showTcgCardsScreen() { // NEW FUNCTION
+function showTcgCardsScreen() {
     if (!selectedTrainerData) {
         alert("No trainer data found.");
         switchScreen('mainMenu');
@@ -5101,15 +5136,15 @@ function showTcgCardsScreen() { // NEW FUNCTION
         hasTcgCards = true;
         collectedTcgCards.forEach(tcgCard => {
             const cardItem = document.createElement('div');
-            cardItem.classList.add('collected-card-item'); // Reusing style
+            cardItem.classList.add('collected-card-item');
 
             const cardImg = document.createElement('img');
-            // For now, use the game sprite. Ideally, you'd have actual TCG card images.
-            cardImg.src = tcgCard.spriteUrl || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${tcgCard.pokedexId}.png`;
+            // Using the spriteUrl which is currently the game sprite.
+            // Replace this with actual TCG card image URLs if you have them.
+            cardImg.src = tcgCard.spriteUrl;
             cardImg.alt = tcgCard.name + " TCG Card";
             cardItem.appendChild(cardImg);
 
-            // Optional: Add Pokémon name below the image
             const nameP = document.createElement('p');
             nameP.textContent = tcgCard.name.toUpperCase();
             nameP.style.textAlign = 'center';
@@ -5127,7 +5162,7 @@ function showTcgCardsScreen() { // NEW FUNCTION
 
 function showStarterSelectScreen() {
     startersGridEl.innerHTML = '';
-    const starterPokedexIds = [1, 4, 7, 152, 155, 158]; // Kanto & Johto starters
+    const starterPokedexIds = [1, 4, 7, 152, 155, 158];
     starterPokedexIds.forEach(pokedexId => {
         const pokemonData = pokemonPool.find(p => p.pokedexId === pokedexId);
         if (pokemonData) {
@@ -5165,7 +5200,7 @@ function loadGame() {
             selectedTrainerData.coins = selectedTrainerData.coins || 0;
 
             selectedTrainerData.inventory = selectedTrainerData.inventory || {};
-            const defaultItems = { "Poke Ball": 0, "Great Ball": 0, "Evolution Stone": 0, "Perma Evolution Stone": 0, "TCG Pack": 0 }; // Added TCG Pack
+            const defaultItems = { "Poke Ball": 0, "Great Ball": 0, "Evolution Stone": 0, "Perma Evolution Stone": 0, "TCG Pack": 0 };
             for (const item in defaultItems) {
                 if (typeof selectedTrainerData.inventory[item] === 'undefined') {
                     selectedTrainerData.inventory[item] = defaultItems[item];
@@ -5176,14 +5211,13 @@ function loadGame() {
             selectedTrainerData.pcBox = selectedTrainerData.pcBox || [];
             selectedTrainerData.defeatedGymLeaders = selectedTrainerData.defeatedGymLeaders || [];
             selectedTrainerData.defeatedEliteFourMembers = selectedTrainerData.defeatedEliteFourMembers || [];
-            selectedTrainerData.collectedTcgCards = selectedTrainerData.collectedTcgCards || []; // NEW
+            selectedTrainerData.collectedTcgCards = selectedTrainerData.collectedTcgCards || [];
             selectedTrainerData.hasChosenStarter = typeof selectedTrainerData.hasChosenStarter !== 'undefined' ? selectedTrainerData.hasChosenStarter : false;
 
             [selectedTrainerData.team, selectedTrainerData.pcBox].forEach(list => {
                 (list || []).forEach(p => {
                     if(p) {
                         p.originalEvolutionData = p.originalEvolutionData || null;
-                        // Ensure sprite URLs are correct based on shiny status after loading
                         const shinyBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
                         const basePokemonData = pokemonPool.find(baseP => baseP.pokedexId === p.pokedexId) || {};
                         p.spriteFrontUrl = p.isShiny ? `${shinyBaseUrl}/shiny/${p.pokedexId}.png` : (basePokemonData.spriteFront || `${shinyBaseUrl}/${p.pokedexId}.png`);
@@ -5245,7 +5279,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 selectedTrainerData.pcBox = [];
                 selectedTrainerData.defeatedGymLeaders = [];
                 selectedTrainerData.defeatedEliteFourMembers = [];
-                selectedTrainerData.collectedTcgCards = []; // Initialize TCG cards
+                selectedTrainerData.collectedTcgCards = [];
                 selectedTrainerData.hasChosenStarter = false;
 
                 if (isNewGameSetup) {
@@ -5290,7 +5324,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(btnOptions) btnOptions.addEventListener('click', () => switchScreen('optionsMenu'));
         if(tabMyCards) tabMyCards.addEventListener('click', showMyCardsScreen);
-        if(tabTcgCards) tabTcgCards.addEventListener('click', showTcgCardsScreen); // TCG Tab
+        if(tabTcgCards) tabTcgCards.addEventListener('click', showTcgCardsScreen);
         if(tabTeam) tabTeam.addEventListener('click', showTeamScreen);
         if(tabMyPc) tabMyPc.addEventListener('click', showPcBoxScreen);
         if(tabMarket) tabMarket.addEventListener('click', showMarketScreen);
@@ -5300,7 +5334,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(btnBackToMainFromInventory) btnBackToMainFromInventory.addEventListener('click', () => switchScreen('mainMenu'));
         if(btnBackToMainFromTeam) btnBackToMainFromTeam.addEventListener('click', () => switchScreen('mainMenu'));
         if(btnBackToMainFromPcBox) btnBackToMainFromPcBox.addEventListener('click', () => switchScreen('mainMenu'));
-        if(btnBackToMainFromTcgCards) btnBackToMainFromTcgCards.addEventListener('click', () => switchScreen('mainMenu')); // TCG Screen Back
+        if(btnBackToMainFromTcgCards) btnBackToMainFromTcgCards.addEventListener('click', () => switchScreen('mainMenu'));
         if(btnSaveGameOpt) btnSaveGameOpt.addEventListener('click', saveGame);
         if(btnResetGameOpt) btnResetGameOpt.addEventListener('click', () => {screens.resetConfirmDialog.style.display = 'flex'});
         if(btnDarkModeOpt) btnDarkModeOpt.addEventListener('click', () => { gameBody.classList.toggle('dark-mode'); localStorage.setItem('blazingThunder_darkMode', gameBody.classList.contains('dark-mode')); });
@@ -5379,16 +5413,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-        if(btnBackFromMoves) { // Event listener for the new back button in move menu
+        if(btnBackFromMoves) {
             btnBackFromMoves.addEventListener('click', () => {
                 if (currentScreen === 'battle' && !battleState.isProcessingMessage && battleState.playerTurn) {
                     moveMenuEl.style.display = 'none';
-                    playerActionPhase(); // Go back to action selection
+                    playerActionPhase();
                 }
             });
         }
 
         if(switchCancelButton) switchCancelButton.addEventListener('click', () => { if (currentScreen === 'switchPokemon' && !battleState.switchingAfterFaint) { switchScreen('battle'); playerActionPhase(); }});
+
+        if(closeTcgRevealButton) closeTcgRevealButton.addEventListener('click', () => {
+            screens.tcgPackOpeningOverlay.style.display = 'none';
+            // Optioneel: ga terug naar market of inventory, afhankelijk van waar de pack is geopend.
+            // Voor nu, gewoon sluiten.
+        });
     }
     setupEvtLstnrs();
     if (loadGame()) {
@@ -5404,7 +5444,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     } else {
         isNewGameSetup = true;
-        // switchScreen('intro'); // Standaard al ingesteld
     }
     updateCoinDisplay();
     if (screens[currentScreen] && screens[currentScreen].style.display === 'none' && currentScreen === 'intro') {

@@ -32,7 +32,7 @@
     --item-icon-greatball: url('https://www.serebii.net/itemdex/sprites/sv/greatball.png');
     --item-icon-evolutionstone: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIj48cGF0aCBmaWxsPSIjRkZBRjAwIiBkPSJNMTIgMi42NWwtMi4wOTEgNC4yMDkgNC42NjcgMi4xODItMi41NzYgNi4zOTIgNi4xODQgMS4wMzktMy41NzkgNS40MDctNC45NTUtNC4wNjUtNC45NTUgNC4wNjUtMy41NzktNS40MDcgNi4xODQtMS4wMzktMi41NzYtNi4zOTIgNC42NjctMi4xODJ6Ii8+PHBhdGggZmlsbD0iI0ZGRDg4MiIgZD0iTTEyIDRsLTEuNSA0IDQgMi0yIDUtNSAyLTEuNS01IDEuNS01LTUgMi0yLTQtMS41LTQgMS41IDIgMyA0IDMtNC0zLTQtMyAyIDUgMiA1eiIvPjwvc3ZnPg==');
     /* CORRECTED TCG PACK ICON SVG */
-    --item-icon-tcgpack: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIj48cGF0aCBmaWxsPSIjMzA2MEJGIiBkPSJNMjAuNCA0SDMuNkMxLjYxIDQgMCA1LjYxIDAgNy42VjE2LjRDMCAxOC4zOSAxLjYxIDIwIDMuNiAyMEgyMC40QzIyLjM5IDIwIDI0IDE4LjM5IDI0IDE2LjRWMi42QzI0IDUuNjEgMjIuMzkgNCAyMC40IDRabS0xIDExSDE0djJoLTJ2LTJIMTB2Mkg4di0ySDQuNlY3LjZIMTlWMTVabTAtMkg0LjZWMTdoMTRWMTVabTAtNEg0LjZWMTFoMTRWN0gxMXoiLz48cGF0aCBmaWxsPSIjRkZFMUEwIiBkPSJNMTAuNSA5LjVjLS44MyAwLTEuNS42Ny0xLjUgMS41di41aDF2LS41YzAtLjI4LjIyLS41LjUtLjVoLjVjLjI4IDAgLjUuMjIuNS41di41aDF2LS41YzAtLjgzLS42Ny0xLjUtMS41LTEuNVptMyAwYy0uODMgMC0xLjUuNjctMS41IDEuNXYuNWgxdjItLjVjMC0uMjguMjItLjUuNS0uNWguNWMuMjggMCAuNS4yMi41LjV2LjVoMXYtLjVjMC0uODMtLjY3LTEuNS0xLjUtMS41WiIvPjwvc3ZnPg==');
+    --item-icon-tcgpack: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjMDA3NUJGIiBkPSJNMjAuNSA0LjVIMy41QzIuNjcgNC41IDIgNS4xNyAyIDZWMTlDMiAxOS44MyAyLjY3IDIwLjUgMy41IDIwLjVIMjAuNUMyMS4zMyAyMC41IDIyIDE5LjgzIDIyIDE5VjdDMjIgNS4xNyAyMS4zMyA0LjUgMjAuNSA0LjVaTTQgN0gyMFYxMUg0VjdaTTQgMTNIMTBWMTVINFYxM1pNNCAxN0gxMFYxOUg0VjE3Wk0xMiAxM0gxNFYxNUgxMlYxM1pNMTYgMTNIMThWMTVIMTZWMTNaTTEyIDE3SDE0VjE5SDEyVjE3Wk0xNiAxN0gxOFYxOUgxNlYxN1oiLz48cGF0aCBmaWxsPSIjRkZDMzA5IiBkPSJNMjAgMTFWMThIMjFWMTEiLz48cGF0aCBmaWxsPSIjRkZDMzA5IiBkPSJNMjEgN0gyMFYxMEgyMVY3WiIvPjxwYXRoIGZpbGw9IiNGRkMzMDkiIGQ9Ik0xMiA4QzExLjQ1IDggMTEgOC40NSAxMSA5VjEwLjVDMTEgMTEuMDUsMTEuNDUgMTEuNSAxMiAxMS41QzEyLjU1IDExLjUgMTMgMTEuMDUgMTMgMTAuNVY5QzEzIDguNDUgMTIuNTUgOCAxMiA4WiIvPjwvc3ZnPg==');
     --pokeball-svg-battle: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI5IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTEsMTAgYTksOSAwIDAsMSAxOCwwIiBmaWxsPSJyZWQiLz48cGF0aCBkPSJNMSwxMCBoMTgiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjMiIGZpbGw9IndoaXRlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEiLz48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxLjUiIGZpbGw9IndoaXRlIi8+PC9zdmc+');
 }
 body.dark-mode {
@@ -58,23 +58,30 @@ body, html { height: 100%; margin: 0; padding: 0; background-color: #000; font-f
 .game-container {
     aspect-ratio: 16 / 10;
     width: 100vw;
-    height: calc(100vw * 10 / 16);
-    max-width: 100vw;
-    max-height: 100vh;
-    display: flex; flex-direction: column; background-color: #000; position: relative;
+    height: calc(100vw * 10 / 16); /* Maintain aspect ratio */
+    max-width: 100vw; /* Ensure it doesn't exceed viewport width */
+    max-height: 100vh; /* Ensure it doesn't exceed viewport height */
+    background-color: #000; position: relative;
     image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;
     overflow: hidden; border: 2px solid #333; box-sizing: border-box;
-    margin: auto;
+    margin: auto; /* Center it */
     box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
-@media (max-aspect-ratio: 16/10) {
+@media (max-aspect-ratio: 16/10) { /* If screen is TALLER than 16:10 */
     .game-container {
         height: 100vh;
-        width: calc(100vh * 16 / 10);
+        width: calc(100vh * 16 / 10); /* Adjust width based on height */
     }
 }
 body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(100,100,100,0.3); }
-.screen { width: 100%; height: 100%; display: flex; flex-direction: column; color: var(--text-color-default); box-sizing: border-box; overflow: hidden; }
+
+.screen {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    color: var(--text-color-default);
+    box-sizing: border-box;
+    overflow: hidden; /* Default to hidden, specific screens can override to auto */
+}
 
 #introScreen .top-bar { flex-shrink: 0; height: 10%; background-color: #E85828; border-bottom: 2px solid #000; } #introScreen .main-content { flex-grow: 1; background-color: #003366; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2% 3%; position: relative; overflow: hidden; } #introScreen .title-area { z-index: 1; flex-shrink: 0; max-width: 90%; text-align: center; margin-bottom: 2vmin; } #introScreen .game-title { font-size: clamp(1.8em, 7vmin, 3em); color: #FFF; background-color: #000; padding: 0.2em 0.4em; margin-bottom: 0.3em; transform: skewX(-10deg); text-shadow: 1px 1px #555; line-height: 1.1; display: inline-block; } #introScreen .game-title .line1, #introScreen .game-title .line2 { display: block; } #introScreen .pokemon-image-container { width: clamp(200px, 60vmin, 350px); height: auto; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; position: relative; margin-top: 2vmin; } #introScreen .pokemon-image { width: 100%; height: 100%; background-image: url('https://www.pokemonunited.nl/wp-content/uploads/pokemon-legendary-2018-entei-raikou.jpg'); background-repeat: no-repeat; background-position: center center; background-size: contain; } #introScreen .press-start-area { flex-shrink: 0; height: 15%; background-color: #000; display: flex; align-items: center; justify-content: center; border-top: 3px solid #000; width: 100%; } #introScreen .start-button { font-size: clamp(1.2em, 5vmin, 2em); color: #DDD; background-color: transparent; border: none; padding: 0.8em 1.2em; cursor: pointer; text-transform: uppercase; animation: blink-animation 1.5s steps(2, start) infinite; } @keyframes blink-animation { to { visibility: hidden; } } #introScreen .start-button:hover { color: #FFF; } #introScreen .bottom-bar { flex-shrink: 0; height: 10%; background-color: #A02010; border-top: 2px solid #000; display: flex; align-items: center; justify-content: center; color: #FFF; font-size: clamp(0.7em, 2.8vmin, 1em); text-align: center; padding: 0 5px; }
 #characterSelectScreen, #starterSelectScreen { background-color: #111; padding: 3vmin; align-items: center; justify-content: flex-start; overflow-y: auto; }
@@ -93,7 +100,6 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     align-items: center;
     justify-content: space-between;
     gap: 1.5vmin;
-    height: 100%;
 }
 @media (min-width: 768px) {
     #mainMenuScreen {
@@ -125,21 +131,21 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 
 .trainer-display-area {
     width: 100%; max-width: 400px;
-    flex-grow: 1;
-    min-height: 0;
+    flex-grow: 1; /* Allows it to take remaining space */
+    min-height: 0; /* Important for flex children that need to scroll */
     display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
     background-color: var(--bg-trainer-display); padding: 1.5vmin;
     border-radius: 15px; box-sizing: border-box; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    overflow-y: auto;
+    /* overflow-y: auto; Removed, let submenu-tabs-container handle its own scroll */
 }
 @media (min-width: 768px) {
     .trainer-display-area {
-        width: 45%; max-width: none; height: 100%; flex-grow: 0; overflow-y: hidden;
+        width: 45%; max-width: none; height: 100%; flex-grow: 0;
     }
 }
 .trainer-card-frame {
     width: 100%;
-    height: 55%;
+    height: 55%; /* Can be adjusted */
     max-height: 280px;
     min-height: clamp(100px, 20vh, 180px);
     flex-shrink: 0;
@@ -165,11 +171,12 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     flex-direction: column;
     align-items: center;
     gap: 1vmin;
-    flex-shrink: 0;
+    flex-shrink: 1; /* Allow shrinking */
+    flex-grow: 1; /* Allow growing to fill space */
     margin-top: 1vmin;
     padding-bottom: 0.5vmin;
-    overflow-y: auto; /* Zorg dat tabs scrollen als er te veel zijn */
-    max-height: calc(100% - 280px - 4vmin - 30px); /* Pas aan op basis van trainer card frame en coins display hoogte */
+    overflow-y: auto; /* This will handle scrolling for tabs if they overflow */
+    min-height: 0; /* Important for flex children that need to scroll */
 }
 .submenu-tab {
     font-family: 'Pokemon Pixel', sans-serif;
@@ -184,7 +191,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     max-width: 320px;
     transition: background-color 0.2s, transform 0.1s;
     box-shadow: 0 2px 3px rgba(0,0,0,0.2);
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevent individual tabs from shrinking too much */
 }
 .submenu-tab:hover { background-color: var(--button-subtle-hover); }
 .submenu-tab:active { transform: translateY(1px); border-bottom-width: 2px; box-shadow: none; }
@@ -193,31 +200,30 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 #optionsMenuScreen, #playMenuScreen, #marketScreen, #inventoryScreen, #teamScreen,
 #teamSelectScreen, #gymLeaderSelectScreen, #gymLeaderDetailScreen,
 #myCardsScreen, #starterSelectScreen, #pcBoxScreen,
-#eliteFourSelectScreen, #eliteFourDetailScreen, #tcgCardsScreen { /* Added tcgCardsScreen */
+#eliteFourSelectScreen, #eliteFourDetailScreen, #tcgCardsScreen {
     background-color: var(--bg-options-menu);
     align-items: center;
     gap: 2.5vmin;
-    overflow-y: auto;
+    overflow-y: auto; /* Allow scrolling if content overflows screen height */
+    padding: 3vmin; /* Consistent padding */
 }
 #optionsMenuScreen h2, #playMenuScreen h2, #marketScreen h2,
 #inventoryScreen h2, #teamScreen h2, #teamSelectScreen h2,
 #gymLeaderSelectScreen h2, #gymLeaderDetailScreen h2, #myCardsScreen h2,
 #starterSelectScreen h2, #pcBoxScreen h2,
-#eliteFourSelectScreen h2, #eliteFourDetailScreen h2, #tcgCardsScreen h2 { /* Added tcgCardsScreen */
+#eliteFourSelectScreen h2, #eliteFourDetailScreen h2, #tcgCardsScreen h2 {
     font-size: clamp(1.6em, 6vmin, 2.5em); margin-bottom: 2vmin; text-align: center; flex-shrink: 0;
 }
 
-#optionsMenuScreen, #playMenuScreen, #marketScreen, #inventoryScreen, #teamScreen,
+/* Specific alignment for screens that need centering vs top alignment */
+#optionsMenuScreen, #playMenuScreen,
 #teamSelectScreen, #gymLeaderSelectScreen, #gymLeaderDetailScreen,
-#myCardsScreen, #starterSelectScreen,
-#eliteFourSelectScreen, #eliteFourDetailScreen, #tcgCardsScreen { /* Added tcgCardsScreen */
+#eliteFourSelectScreen, #eliteFourDetailScreen {
     justify-content: center;
-    padding: 4vmin;
 }
-#pcBoxScreen {
+/* Screens with grids that should start from top */
+#marketScreen, #inventoryScreen, #teamScreen, #myCardsScreen, #tcgCardsScreen, #pcBoxScreen, #starterSelectScreen {
     justify-content: flex-start;
-    padding: 3vmin;
-    flex-direction: column;
 }
 
 
@@ -229,15 +235,23 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 #myCardsScreen .my-cards-back-button, #pcBoxScreen .pc-back-button,
 #eliteFourSelectScreen .elite-four-button,
 #eliteFourDetailScreen .elite-four-detail-button,
-#tcgCardsScreen .my-cards-back-button { /* Added tcgCardsScreen button (reusing style) */
+#tcgCardsScreen .my-cards-back-button {
     font-family: 'Pokemon Pixel', sans-serif; font-size: clamp(1em, 4vmin, 1.5em);
     padding: 2vmin 3.5vmin; width: 80%; max-width: 400px; border-radius: 12px;
     color: #FFF; text-shadow: 1px 1px #222; cursor: pointer;
     transition: transform 0.1s, box-shadow 0.2s; text-align: center;
     border-style: solid; border-width: 2px 3px 4px 2px;
     margin-bottom: 2vmin;
+    flex-shrink: 0; /* Prevent buttons from shrinking too much */
 }
-#pcBoxScreen .pc-back-button { margin-top: 2vmin; flex-shrink: 0; }
+#pcBoxScreen .pc-back-button { margin-top: auto; /* Push to bottom if space allows */ flex-shrink: 0; }
+#marketScreen .market-back-button,
+#inventoryScreen .inventory-back-button,
+#teamScreen .team-back-button,
+#myCardsScreen .my-cards-back-button,
+#tcgCardsScreen .my-cards-back-button {
+    margin-top: auto; /* Push back button to bottom of scrollable area */
+}
 
 
 #optionsMenuScreen #btnSaveGameOpt { background-color: #95a5a6; border-color: #7f8c8d; color: #2c3e50;}
@@ -250,7 +264,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 #myCardsScreen .my-cards-back-button, #pcBoxScreen .pc-back-button,
 #eliteFourSelectScreen .elite-four-button.back,
 #eliteFourDetailScreen .elite-four-detail-button.back,
-#tcgCardsScreen .my-cards-back-button { /* Added tcgCardsScreen button */
+#tcgCardsScreen .my-cards-back-button {
     background-color: #3498db; border-color: #2980b9;
 }
 
@@ -266,7 +280,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 #myCardsScreen .my-cards-back-button:active, #pcBoxScreen .pc-back-button:active,
 #eliteFourSelectScreen .elite-four-button:active,
 #eliteFourDetailScreen .elite-four-detail-button:active,
-#tcgCardsScreen .my-cards-back-button:active { /* Added tcgCardsScreen button */
+#tcgCardsScreen .my-cards-back-button:active {
     transform: translateY(1px); border-bottom-width: 2px; box-shadow: none;
 }
 
@@ -289,13 +303,15 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 
 
 #myCardsScreen .cards-collection-grid, #myCardsScreen .badges-collection-grid,
-#myCardsScreen #collectedEliteFourCardsGrid, #tcgCardsScreen #tcgCardsGrid { /* Added tcgCardsGrid */
+#myCardsScreen #collectedEliteFourCardsGrid, #tcgCardsScreen #tcgCardsGrid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(clamp(120px, 25vw, 180px), 1fr));
     gap: 2vmin; width: 100%; max-width: 700px; margin-bottom: 3vmin;
     padding: 1vmin; background-color: rgba(0,0,0,0.15); border-radius: 8px;
+    max-height: 70vh; /* Added max-height to allow internal scroll if needed */
+    overflow-y: auto;
 }
 #myCardsScreen .collected-card-item img,
-#tcgCardsScreen .collected-card-item img { /* Style for TCG card items */
+#tcgCardsScreen .collected-card-item img {
     width: 100%; height: auto; object-fit: contain; border-radius: 6px; border: 2px solid var(--button-subtle-border);
 }
 #myCardsScreen .collected-badge-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
@@ -303,7 +319,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 #myCardsScreen .collected-badge-item p { font-size: clamp(0.7em, 2.5vmin, 0.9em); margin: 0; }
 @keyframes badge-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 #myCardsScreen .no-collected-items,
-#tcgCardsScreen .no-collected-items { /* Style for no TCG cards message */
+#tcgCardsScreen .no-collected-items {
     text-align: center; font-style: italic; opacity: 0.7; width: 100%; padding: 2vmin;
 }
 
@@ -337,7 +353,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .market-item img.item-icon.pokeball-icon { background-image: var(--item-icon-pokeball); }
 .market-item img.item-icon.greatball-icon { background-image: var(--item-icon-greatball); }
 .market-item img.item-icon.evolutionstone-icon { background-image: var(--item-icon-evolutionstone); }
-.market-item img.item-icon.tcgpack-icon { background-image: var(--item-icon-tcgpack); } /* TCG Pack Icon */
+.market-item img.item-icon.tcgpack-icon { background-image: var(--item-icon-tcgpack); }
 
 .market-item .item-name { font-size: clamp(0.9em, 3vmin, 1.1em); font-weight: bold; }
 .market-item .item-price { font-size: clamp(0.8em, 2.8vmin, 1em); }
@@ -423,7 +439,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .opponent-sprite img, .player-sprite img { width: 100%; height: 100%; object-fit: contain; }
 .battle-info-box { position: absolute; background-color: var(--battle-info-box-bg); border: 3px solid var(--battle-info-box-border); border-radius: 10px; padding: clamp(8px, 1.5vmin, 12px) clamp(10px, 2vmin, 15px); width: clamp(170px, 42%, 280px); box-shadow: 0 3px 8px rgba(0,0,0,0.5); color: var(--battle-text-color); font-size: clamp(0.75em, 2.2vmin, 1em); z-index: 60; display: flex; flex-direction: column; }
 .opponent-info { top: 3%; left: 2%; }
-.player-info { bottom: calc(28% + 2vmin); right: 2%; }
+.player-info { bottom: calc(28% + 2vmin); right: 2%; } /* Adjusted to ensure visibility above battle-ui-bottom */
 .info-line { display: flex; justify-content: space-between; margin-bottom: 0.6vmin; align-items: center;}
 .info-line .name { font-weight: bold; font-size: 1.15em; }
 .info-line .status-tag { font-size: 0.85em; padding: 0.2em 0.5em; border-radius: 4px; color: white; margin-left: 0.5em; font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); }
@@ -439,7 +455,17 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .team-status { display: flex; gap: 1.2vmin; margin-top: 1.2vmin; justify-content: flex-start; padding-left: 3px; }
 .status-ball { width: clamp(12px, 2.8vmin, 18px); height: clamp(12px, 2.8vmin, 18px); display: inline-block; background-image: var(--pokeball-svg-battle); background-size: contain; background-repeat: no-repeat; background-position: center; transition: filter 0.3s, opacity 0.3s; }
 .status-ball.fainted { filter: grayscale(100%) contrast(0.5); opacity: 0.5; }
-.battle-ui-bottom { flex-shrink: 0; height: 28%; display: flex; border-top: 4px solid var(--battle-ui-border); background-color: var(--battle-ui-bg); border-radius: 12px 12px 0 0; z-index: 70; box-shadow: 0 -3px 10px rgba(0,0,0,0.4); }
+.battle-ui-bottom {
+    flex-shrink: 0;
+    height: 28%; /* Increased slightly, can be adjusted */
+    display: flex;
+    border-top: 4px solid var(--battle-ui-border);
+    background-color: var(--battle-ui-bg);
+    border-radius: 12px 12px 0 0;
+    z-index: 70;
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.4);
+    overflow: hidden; /* Prevent internal content from pushing this container */
+}
 .battle-textbox { flex-grow: 1; height: 100%; border: none; padding: clamp(10px, 2vmin, 16px); box-sizing: border-box; color: var(--battle-text-color); font-size: clamp(0.9em, 2.5vmin, 1.2em); line-height: 1.35; position: relative; overflow-y: auto; }
 #battleMessage { margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
 .battle-menu { background-color: transparent; padding: clamp(0.8vmin, 1.2vmin, 1.8vmin); box-sizing: border-box; }
@@ -448,7 +474,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     width: clamp(130px, 30%, 180px); height: 100%;
     display: grid; grid-template-columns: 1fr;
     gap: clamp(0.6vmin, 1vmin, 1.2vmin);
-    align-content: center;
+    align-content: center; /* Or stretch if buttons should fill height */
     padding: clamp(1vmin, 1.5vmin, 2vmin);
     border-left: 3px solid var(--battle-ui-border);
 }
@@ -463,13 +489,17 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     gap: clamp(1vmin, 1.3vmin, 1.8vmin);
     padding: clamp(1vmin, 1.5vmin, 2vmin);
     align-items: stretch; align-content: center;
+    box-sizing: border-box; /* Ensure padding is included in height */
 }
 .battle-item-menu {
     width: 100%; height: 100%; display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto; /* Allow rows to adjust height */
     gap: clamp(1vmin, 1.3vmin, 1.8vmin);
     padding: clamp(1vmin, 1.5vmin, 2vmin);
-    align-items: stretch; align-content: center;
+    align-items: stretch; align-content: flex-start; /* Start items from top */
+    overflow-y: auto; /* Allow item menu to scroll if many items */
+    box-sizing: border-box;
 }
 .battle-menu button { font-family: 'Pokemon Pixel', sans-serif; font-size: clamp(0.8em, 2.3vmin, 1em); color: var(--battle-text-color); background-color: var(--battle-button-bg); border: 2px solid var(--battle-button-border); border-radius: 8px; padding: clamp(0.6vmin, 1.2vmin, 1.5vmin) clamp(0.3vmin, 0.5vmin, 0.7vmin); cursor: pointer; text-align: center; transition: background-color 0.2s, border-color 0.2s, transform 0.1s; box-shadow: 0 2px 3px rgba(0,0,0,0.3); overflow: hidden; text-overflow: ellipsis;}
 .battle-menu button:hover:not(:disabled) { background-color: var(--battle-button-hover-bg); border-color: lighten(var(--battle-button-border), 10%); transform: translateY(-1px); }
@@ -479,12 +509,12 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     justify-content: center; line-height: 1.3;
     min-height: clamp(38px, 8.5vmin, 58px);
 }
-.battle-menu-back-button { /* Style for the new back button in move/item menu */
-    grid-column: 1 / -1; /* Span across both columns */
+.battle-menu-back-button {
+    grid-column: 1 / -1;
     margin-top: clamp(0.5vmin, 0.8vmin, 1vmin);
     padding: clamp(0.5vmin, 1vmin, 1.2vmin) clamp(0.3vmin, 0.5vmin, 0.7vmin);
     font-size: clamp(0.75em, 2.1vmin, 0.95em);
-    background-color: #7f8c8d; /* A more neutral/back color */
+    background-color: #7f8c8d;
     border-color: #6c7a7b;
 }
 .battle-menu-back-button:hover {
@@ -525,3 +555,49 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .pokeball-throw-animation { position: absolute; width: clamp(20px, 5vmin, 30px); height: clamp(20px, 5vmin, 30px); background-image: var(--item-icon-pokeball); background-size: contain; background-repeat: no-repeat; z-index: 100; animation: throwAndWiggle 3.5s forwards; transform-origin: center bottom; }
 @keyframes throwAndWiggle { 0% { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1;} 15% { transform: translate(calc(var(--target-x) / 2), calc(var(--target-y) / 2 - 50px)) scale(1.2) rotate(-180deg); opacity: 1;} 30% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-360deg); opacity: 1;} 32% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-360deg); opacity: 1;} 40% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-375deg); opacity: 1;} 50% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-345deg); opacity: 1;} 60% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-370deg); opacity: 1;} 70% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-350deg); opacity: 1;} 80% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-365deg); opacity: 1;} 90% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-355deg); opacity: 1;} 95% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-360deg); opacity: 1;} 100% { transform: translate(var(--target-x), var(--target-y)) scale(1.5) rotate(-360deg); opacity: 1;} }
 .pokemon-caught-flash > img { animation: flash 0.15s linear 3; }
+
+/* TCG Pack Opening Animation Styles */
+.tcg-pack-animation-container {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5em;
+    color: var(--text-color-default); /* Ensure text is visible */
+}
+.revealed-tcg-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    background-color: rgba(0,0,0,0.7); /* Semi-transparent background */
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid gold; /* Add a border to make it pop */
+}
+#revealedTcgCardImage {
+    max-width: 80%; /* Limit width to 80% of container */
+    max-height: 60vh; /* Limit height to 60% of viewport height */
+    object-fit: contain; /* Ensure aspect ratio is maintained */
+    border: 3px solid gold; /* Border around the card image */
+    border-radius: 10px; /* Rounded corners for the card image */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); /* Gold glow */
+}
+#revealedTcgCardName {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--text-color-default); /* Ensure text is visible */
+    margin-top: 10px;
+}
+#closeTcgRevealButton {
+    font-family: 'Pokemon Pixel', sans-serif;
+    font-size: 1em;
+    padding: 10px 20px;
+    background-color: var(--battle-button-bg);
+    color: var(--battle-text-color);
+    border: 2px solid var(--battle-button-border);
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+#closeTcgRevealButton:hover {
+    background-color: var(--battle-button-hover-bg);
+}

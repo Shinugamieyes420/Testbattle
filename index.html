@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blazing Thunder - V1.1.9 (TCG Packs & Shiny Fixes)</title>
+    <title>Blazing Thunder - V1.2.0 (Layout Fixes & TCG Prep)</title> <!-- Versie update -->
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script> <!-- Anime.js CDN -->
 </head>
@@ -22,14 +22,14 @@
                  <div class="trainer-card" data-trainer="Giovanni"><img src="https://www.pokemonkaart.nl/wp-content/uploads/Giovannis-Charisma-204-151.jpg" alt="Trainer Giovanni"><p>Giovanni</p></div>
              </div>
         </div>
-        
+
         <div id="starterSelectScreen" class="screen" style="display: none;">
             <h2>Kies je Starter Pokémon</h2>
             <div class="starters-grid">
                 <!-- Starter Pokémon cards will be populated here -->
             </div>
         </div>
-        
+
         <div id="confirmStarterDialog" class="dialog-overlay" style="display: none;">
             <div class="dialog-content">
                 <p>Weet je zeker dat je <span id="chosenStarterNameDialog">deze Pokémon</span> als je starter wilt?</p>
@@ -43,7 +43,7 @@
         <div id="confirmDialog" class="dialog-overlay" style="display: none;">
              <div class="dialog-content"><p>Weet je zeker dat je <span id="chosenTrainerName">deze trainer</span> wilt kiezen?</p><div class="dialog-buttons"><button id="confirmYes">Ja</button><button id="confirmNo">Nee</button></div></div>
         </div>
-        
+
         <div id="resetConfirmDialog" class="dialog-overlay" style="display: none;">
              <div class="dialog-content">
                  <p class="reset-warning">Weet je zeker dat je de game wilt resetten? Alle voortgang gaat verloren!</p>
@@ -63,8 +63,8 @@
                      <button class="submenu-tab" id="tabMarket">MARKET</button>
                      <button class="submenu-tab" id="tabInventory">INVENTORY</button>
                      <button class="submenu-tab" id="tabTeam">TEAM</button>
-                     <button class="submenu-tab" id="tabMyCards">MY CARDS & BADGES</button> 
-                     <button class="submenu-tab" id="tabTcgCards">MY TCG CARDS</button> <!-- NEW TCG TAB -->
+                     <button class="submenu-tab" id="tabMyCards">MY CARDS & BADGES</button>
+                     <button class="submenu-tab" id="tabTcgCards">MY TCG CARDS</button>
                      <button class="submenu-tab" id="tabMyPc">MY PC</button>
                  </div>
              </div>
@@ -78,13 +78,13 @@
             <button class="play-mode-button" id="btnWildModePlay">WILD MODE</button>
             <button class="play-mode-button" id="btnBackToMainFromPlay">BACK</button>
         </div>
-        
+
         <div id="optionsMenuScreen" class="screen" style="display: none;">
             <h2>OPTIONS</h2>
             <button class="options-button" id="btnSaveGameOpt">SAVE GAME</button>
             <button class="options-button" id="btnResetGameOpt">RESET GAME</button>
             <button class="options-button" id="btnDarkModeOpt">DARK MODE</button>
-            <button class="options-button" id="btnBackToMainOpts">BACK</button> 
+            <button class="options-button" id="btnBackToMainOpts">BACK</button>
         </div>
 
         <div id="marketScreen" class="screen" style="display: none;">
@@ -104,19 +104,19 @@
                     <button class="buy-button" data-item-name="Great Ball" data-price="10">BUY</button>
                 </div>
                 <div class="market-item" data-item-id="evolutionstone">
-                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Evolution Stone"> 
+                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Evolution Stone">
                     <p class="item-name">Evolution Stone</p>
                     <p class="item-price">Price: 10 Coins</p>
                     <button class="buy-button" data-item-name="Evolution Stone" data-price="10">BUY</button>
                 </div>
                  <div class="market-item" data-item-id="permaevolutionstone">
-                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Perma Evolution Stone"> 
+                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Perma Evolution Stone">
                     <p class="item-name">Perma Evolution Stone</p>
                     <p class="item-price">Price: 100 Coins</p>
                     <button class="buy-button" data-item-name="Perma Evolution Stone" data-price="100">BUY</button>
                 </div>
-                <div class="market-item" data-item-id="tcgpack"> <!-- NEW TCG PACK ITEM -->
-                    <img class="item-icon tcgpack-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="TCG Pack"> 
+                <div class="market-item" data-item-id="tcgpack">
+                    <img class="item-icon tcgpack-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="TCG Pack">
                     <p class="item-name">TCG Pack</p>
                     <p class="item-price">Price: 8 Coins</p>
                     <button class="buy-button" data-item-name="TCG Pack" data-price="8">BUY</button>
@@ -132,7 +132,7 @@
             </div>
             <button id="btnBackToMainFromInventory" class="inventory-back-button">BACK TO MAIN MENU</button>
         </div>
-        
+
         <div id="teamScreen" class="screen" style="display: none;">
             <h2>YOUR TEAM</h2>
             <div id="teamGrid" class="team-grid">
@@ -169,7 +169,7 @@
 
         <div id="gymLeaderSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE A GYM LEADER</h2>
-            <div id="gymLeaderGrid" class="trainers-grid"> 
+            <div id="gymLeaderGrid" class="trainers-grid">
             </div>
             <button id="btnBackToPlayMenuFromGymSelect" class="gym-leader-button back">BACK TO PLAY MODES</button>
         </div>
@@ -214,15 +214,26 @@
             <button id="btnBackToMainFromMyCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
         </div>
 
-        <!-- NEW TCG CARDS SCREEN -->
         <div id="tcgCardsScreen" class="screen" style="display: none;">
             <h2>MY TCG CARDS</h2>
-            <div id="tcgCardsGrid" class="cards-collection-grid"> <!-- Reusing existing style -->
+            <div id="tcgCardsGrid" class="cards-collection-grid">
                 <p class="no-collected-items" id="noTcgCardsMsg" style="display:none;">No TCG cards collected yet.</p>
             </div>
-            <button id="btnBackToMainFromTcgCards" class="my-cards-back-button">BACK TO MAIN MENU</button> <!-- Reusing existing style -->
+            <button id="btnBackToMainFromTcgCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
         </div>
-        <!-- END OF NEW TCG CARDS SCREEN -->
+
+        <!-- TCG Pack Opening Animation Overlay (Hidden by default) -->
+        <div id="tcgPackOpeningOverlay" class="dialog-overlay" style="display: none;">
+            <div class="tcg-pack-animation-container">
+                <!-- Animation will happen here via JS -->
+                <p>Opening Pack...</p>
+            </div>
+            <div id="revealedTcgCardContainer" class="revealed-tcg-card-container" style="display:none;">
+                <img id="revealedTcgCardImage" src="" alt="Revealed TCG Card">
+                <p id="revealedTcgCardName"></p>
+                <button id="closeTcgRevealButton">Close</button>
+            </div>
+        </div>
 
 
         <div id="battleScreen" class="screen" style="display: none;">
@@ -256,7 +267,7 @@
                     <button data-move-index="1"><span class="move-name"></span><span class="move-pp"></span></button>
                     <button data-move-index="2"><span class="move-name"></span><span class="move-pp"></span></button>
                     <button data-move-index="3"><span class="move-name"></span><span class="move-pp"></span></button>
-                    <button id="btnBackFromMoves" class="battle-menu-back-button">BACK</button> <!-- NEW BACK BUTTON -->
+                    <button id="btnBackFromMoves" class="battle-menu-back-button">BACK</button>
                 </div>
                  <div class="battle-menu battle-item-menu" id="itemMenu" style="display: none;">
                  </div>
