@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blazing Thunder - V1.3.0 (PC Paginering & Scroll)</title> <!-- Versie update -->
+    <title>Blazing Thunder - V1.3.1 (Layout & Scroll Fixes)</title> <!-- Versie update -->
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
@@ -72,46 +72,52 @@
 
         <div id="playMenuScreen" class="screen" style="display: none;">
             <h2>PLAY MODES</h2>
-            <button class="play-mode-button" id="btnQuickBattlePlay">QUICK BATTLE</button>
-            <button class="play-mode-button" id="btnGymBattlePlay">GYM BATTLE</button>
-            <button class="play-mode-button" id="btnEliteBattlesPlay">ELITE FOUR</button>
-            <button class="play-mode-button" id="btnWildModePlay">WILD MODE</button>
-            <button class="play-mode-button" id="btnBackToMainFromPlay">BACK</button>
+            <div class="play-menu-content"> <!-- Extra wrapper voor scroll -->
+                <button class="play-mode-button" id="btnQuickBattlePlay">QUICK BATTLE</button>
+                <button class="play-mode-button" id="btnGymBattlePlay">GYM BATTLE</button>
+                <button class="play-mode-button" id="btnEliteBattlesPlay">ELITE FOUR</button>
+                <button class="play-mode-button" id="btnWildModePlay">WILD MODE</button>
+            </div>
+            <button class="play-mode-button screen-back-button" id="btnBackToMainFromPlay">BACK</button>
         </div>
 
         <div id="optionsMenuScreen" class="screen" style="display: none;">
             <h2>OPTIONS</h2>
-            <button class="options-button" id="btnSaveGameOpt">SAVE GAME</button>
-            <button class="options-button" id="btnPasswordOpt">PASSWORD</button>
-            <button class="options-button" id="btnResetGameOpt">RESET GAME</button>
-            <button class="options-button" id="btnDarkModeOpt">DARK MODE</button>
-            <button class="options-button" id="btnBackToMainOpts">BACK</button>
+            <div class="options-menu-content"> <!-- Extra wrapper voor scroll -->
+                <button class="options-button" id="btnSaveGameOpt">SAVE GAME</button>
+                <button class="options-button" id="btnPasswordOpt">PASSWORD</button>
+                <button class="options-button" id="btnResetGameOpt">RESET GAME</button>
+                <button class="options-button" id="btnDarkModeOpt">DARK MODE</button>
+            </div>
+            <button class="options-button screen-back-button" id="btnBackToMainOpts">BACK</button>
         </div>
 
         <div id="passwordScreen" class="screen" style="display: none;">
             <h2>PASSWORD</h2>
-            <div class="password-section">
-                <h3>Generate & Copy Password</h3>
-                <textarea id="generatedPasswordArea" rows="4" readonly placeholder="Click 'Generate' to create your password."></textarea>
-                <div class="password-button-group">
-                    <button id="generateNewPasswordBtn" class="options-button">GENERATE</button>
-                    <button id="copyPasswordBtn" class="options-button">COPY</button>
+            <div class="password-content-area"> <!-- Wrapper voor scroll -->
+                <div class="password-section">
+                    <h3>Generate & Copy Password</h3>
+                    <textarea id="generatedPasswordArea" rows="3" readonly placeholder="Click 'Generate' to create your password."></textarea>
+                    <div class="password-button-group">
+                        <button id="generateNewPasswordBtn" class="options-button">GENERATE</button>
+                        <button id="copyPasswordBtn" class="options-button">COPY</button>
+                    </div>
                 </div>
+                <div class="password-section">
+                    <h3>Load Game from Password</h3>
+                    <textarea id="passwordInput" rows="3" placeholder="Paste your password here..."></textarea>
+                    <button id="loadPasswordBtn" class="options-button">LOAD PASSWORD</button>
+                </div>
+                <p id="passwordStatusMessage" class="password-status"></p>
             </div>
-            <div class="password-section">
-                <h3>Load Game from Password</h3>
-                <textarea id="passwordInput" rows="4" placeholder="Paste your password here..."></textarea>
-                <button id="loadPasswordBtn" class="options-button">LOAD PASSWORD</button>
-            </div>
-            <p id="passwordStatusMessage" class="password-status"></p>
-            <button id="btnBackToOptionsFromPassword" class="options-button back-button">BACK TO OPTIONS</button>
+            <button id="btnBackToOptionsFromPassword" class="options-button screen-back-button">BACK TO OPTIONS</button>
         </div>
 
 
         <div id="marketScreen" class="screen" style="display: none;">
             <h2>MARKET</h2>
             <div id="marketCoinDisplay">Coins: 0</div>
-            <div class="market-items-grid">
+            <div class="market-items-grid scrollable-content">
                 <div class="market-item" data-item-id="pokeball">
                     <img class="item-icon pokeball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Poké Ball">
                     <p class="item-name">Poké Ball</p>
@@ -143,23 +149,23 @@
                     <button class="buy-button" data-item-name="TCG Pack" data-price="8">BUY</button>
                 </div>
             </div>
-            <button id="btnBackToMainFromMarket" class="market-back-button">BACK TO MAIN MENU</button>
+            <button id="btnBackToMainFromMarket" class="market-back-button screen-back-button">BACK TO MAIN MENU</button>
         </div>
 
         <div id="inventoryScreen" class="screen" style="display: none;">
             <h2>INVENTORY</h2>
-            <div id="inventoryGrid" class="inventory-grid">
+            <div id="inventoryGrid" class="inventory-grid scrollable-content">
                  <p class="no-items" style="display:none;">Your inventory is empty.</p>
             </div>
-            <button id="btnBackToMainFromInventory" class="inventory-back-button">BACK TO MAIN MENU</button>
+            <button id="btnBackToMainFromInventory" class="inventory-back-button screen-back-button">BACK TO MAIN MENU</button>
         </div>
 
         <div id="teamScreen" class="screen" style="display: none;">
             <h2>YOUR TEAM</h2>
-            <div id="teamGrid" class="team-grid">
+            <div id="teamGrid" class="team-grid scrollable-content">
                  <p class="no-pokemon" style="display:none;">You have no Pokémon in your team.</p>
             </div>
-            <button id="btnBackToMainFromTeam" class="team-back-button">BACK TO MAIN MENU</button>
+            <button id="btnBackToMainFromTeam" class="team-back-button screen-back-button">BACK TO MAIN MENU</button>
         </div>
 
         <div id="pcBoxScreen" class="screen" style="display: none;">
@@ -167,15 +173,14 @@
             <div class="pc-interface">
                 <div class="pc-column">
                     <h3>YOUR TEAM (<span id="pcTeamCount">0</span>/6)</h3>
-                    <div id="pcTeamGrid" class="pc-grid">
+                    <div id="pcTeamGrid" class="pc-grid scrollable-content"> <!-- Team kan ook scrollen -->
                         <p class="no-pokemon-pc-team" style="display:none;">Team is empty.</p>
                     </div>
                 </div>
-                <div class="pc-column pc-box-column"> <!-- Extra class voor styling -->
+                <div class="pc-column pc-box-column">
                     <h3>PC BOX (<span id="pcBoxCount">0</span>/<span id="pcBoxCapacity">400</span>)</h3>
-                    <div id="pcBoxGrid" class="pc-grid">
+                    <div id="pcBoxGrid" class="pc-grid scrollable-content"> <!-- Box grid scrollbaar -->
                         <p class="no-pokemon-pc-box" style="display:none;">PC Box is empty.</p>
-                        <!-- Pokémon kaarten komen hier -->
                     </div>
                     <div class="pc-pagination-controls">
                         <button id="pcPrevPageBtn">< Prev</button>
@@ -184,69 +189,79 @@
                     </div>
                 </div>
             </div>
-            <button id="btnBackToMainFromPcBox" class="pc-back-button">BACK TO MAIN MENU</button>
+            <button id="btnBackToMainFromPcBox" class="pc-back-button screen-back-button">BACK TO MAIN MENU</button>
         </div>
 
         <div id="teamSelectScreen" class="screen" style="display: none;">
             <h2 id="teamSelectTitle">SELECT YOUR BATTLE TEAM</h2>
-            <div id="teamSelectGrid">
+            <div id="teamSelectGrid" class="scrollable-content"> <!-- Scrollable team select -->
             </div>
-            <button id="teamSelectConfirmButton" class="team-select-button" disabled>CONFIRM TEAM</button>
+            <button id="teamSelectConfirmButton" class="team-select-button">CONFIRM TEAM</button>
         </div>
 
         <div id="gymLeaderSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE A GYM LEADER</h2>
-            <div id="gymLeaderGrid" class="trainers-grid">
+            <div id="gymLeaderGrid" class="trainers-grid scrollable-content"> <!-- Scrollable gym leaders -->
             </div>
-            <button id="btnBackToPlayMenuFromGymSelect" class="gym-leader-button back">BACK TO PLAY MODES</button>
+            <button id="btnBackToPlayMenuFromGymSelect" class="gym-leader-button screen-back-button back">BACK TO PLAY MODES</button>
         </div>
 
         <div id="gymLeaderDetailScreen" class="screen" style="display: none;">
-            <h2 id="gymLeaderDetailName">Gym Leader</h2>
-            <img id="gymLeaderCardImage" src="" alt="Gym Leader Card">
-            <p id="gymLeaderDialog"></p>
-            <button id="btnStartGymBattle" class="gym-detail-button">START BATTLE</button>
-            <button id="btnBackToGymSelectFromDetail" class="gym-detail-button back">BACK TO GYM LEADERS</button>
+            <div class="detail-content-area scrollable-content"> <!-- Scrollable content area -->
+                <h2 id="gymLeaderDetailName">Gym Leader</h2>
+                <img id="gymLeaderCardImage" src="" alt="Gym Leader Card">
+                <p id="gymLeaderDialog"></p>
+            </div>
+            <div class="detail-button-area"> <!-- Knoppen buiten scrollgebied -->
+                <button id="btnStartGymBattle" class="gym-detail-button">START BATTLE</button>
+                <button id="btnBackToGymSelectFromDetail" class="gym-detail-button back">BACK TO GYM LEADERS</button>
+            </div>
         </div>
 
         <div id="eliteFourSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE AN ELITE FOUR MEMBER</h2>
-            <div id="eliteFourGrid" class="trainers-grid">
+            <div id="eliteFourGrid" class="trainers-grid scrollable-content"> <!-- Scrollable E4 members -->
             </div>
-            <button id="btnBackToPlayMenuFromEliteFourSelect" class="elite-four-button back">BACK TO PLAY MODES</button>
+            <button id="btnBackToPlayMenuFromEliteFourSelect" class="elite-four-button screen-back-button back">BACK TO PLAY MODES</button>
         </div>
 
         <div id="eliteFourDetailScreen" class="screen" style="display: none;">
-            <h2 id="eliteFourDetailName">Elite Four Member</h2>
-            <img id="eliteFourCardImage" src="" alt="Elite Four Member Card">
-            <p id="eliteFourDialog"></p>
-            <button id="btnStartEliteFourBattle" class="elite-four-detail-button">START BATTLE</button>
-            <button id="btnBackToEliteFourSelectFromDetail" class="elite-four-detail-button back">BACK TO ELITE FOUR</button>
+             <div class="detail-content-area scrollable-content"> <!-- Scrollable content area -->
+                <h2 id="eliteFourDetailName">Elite Four Member</h2>
+                <img id="eliteFourCardImage" src="" alt="Elite Four Member Card">
+                <p id="eliteFourDialog"></p>
+            </div>
+            <div class="detail-button-area"> <!-- Knoppen buiten scrollgebied -->
+                <button id="btnStartEliteFourBattle" class="elite-four-detail-button">START BATTLE</button>
+                <button id="btnBackToEliteFourSelectFromDetail" class="elite-four-detail-button back">BACK TO ELITE FOUR</button>
+            </div>
         </div>
 
         <div id="myCardsScreen" class="screen" style="display: none;">
             <h2>MY CARDS & BADGES</h2>
-            <h3>Collected Gym Leader Cards</h3>
-            <div id="collectedCardsGrid" class="cards-collection-grid">
-                <p class="no-collected-items" id="noCollectedCardsMsg" style="display:none;">No Gym Leader cards collected yet.</p>
+            <div class="my-cards-content scrollable-content"> <!-- Scrollable content area -->
+                <h3>Collected Gym Leader Cards</h3>
+                <div id="collectedCardsGrid" class="cards-collection-grid">
+                    <p class="no-collected-items" id="noCollectedCardsMsg" style="display:none;">No Gym Leader cards collected yet.</p>
+                </div>
+                <h3>Collected Elite Four Cards</h3>
+                <div id="collectedEliteFourCardsGrid" class="cards-collection-grid">
+                    <p class="no-collected-items" id="noCollectedEliteFourCardsMsg" style="display:none;">No Elite Four cards collected yet.</p>
+                </div>
+                <h3>Collected Badges</h3>
+                <div id="collectedBadgesGrid" class="badges-collection-grid">
+                     <p class="no-collected-items" id="noCollectedBadgesMsg" style="display:none;">No badges earned yet.</p>
+                </div>
             </div>
-            <h3>Collected Elite Four Cards</h3>
-            <div id="collectedEliteFourCardsGrid" class="cards-collection-grid">
-                <p class="no-collected-items" id="noCollectedEliteFourCardsMsg" style="display:none;">No Elite Four cards collected yet.</p>
-            </div>
-            <h3>Collected Badges</h3>
-            <div id="collectedBadgesGrid" class="badges-collection-grid">
-                 <p class="no-collected-items" id="noCollectedBadgesMsg" style="display:none;">No badges earned yet.</p>
-            </div>
-            <button id="btnBackToMainFromMyCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
+            <button id="btnBackToMainFromMyCards" class="my-cards-back-button screen-back-button">BACK TO MAIN MENU</button>
         </div>
 
         <div id="tcgCardsScreen" class="screen" style="display: none;">
             <h2>MY TCG CARDS</h2>
-            <div id="tcgCardsGrid" class="cards-collection-grid">
+            <div id="tcgCardsGrid" class="cards-collection-grid scrollable-content"> <!-- Scrollable TCG cards -->
                 <p class="no-collected-items" id="noTcgCardsMsg" style="display:none;">No TCG cards collected yet.</p>
             </div>
-            <button id="btnBackToMainFromTcgCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
+            <button id="btnBackToMainFromTcgCards" class="my-cards-back-button screen-back-button">BACK TO MAIN MENU</button>
         </div>
 
         <div id="tcgPackOpeningOverlay" class="dialog-overlay" style="display: none;">
@@ -261,25 +276,27 @@
         </div>
 
 
-        <div id="battleScreen" class="screen" style="display: none;">
+        <div id="battleScreen" class="screen" style="display: none;"> <!-- Battle screen zelf is nu flex column -->
             <div class="battle-arena">
                  <div id="attackAnimationLayer"></div>
                  <div class="pokemon-sprite opponent-sprite"><img id="opponentPokemonSprite" src="" alt="Opponent"></div>
                  <div class="pokemon-sprite player-sprite"><img id="playerPokemonSprite" src="" alt="Player"></div>
             </div>
-            <div class="battle-info-box opponent-info">
-                 <div class="info-line"><span class="name" id="opponentPokemonName"></span><span id="opponentStatusTag" class="status-tag" style="display:none;"></span></div>
-                 <div class="hp-bar-container"><span>HP</span><div class="hp-bar-fill" id="opponentHpFill"></div></div>
-                 <div class="hp-numbers" id="opponentHpNumbers"></div>
-                 <div class="team-status" id="opponentTeamStatus"></div>
+            <div class="battle-info-container"> <!-- Container voor beide info boxes -->
+                <div class="battle-info-box opponent-info">
+                     <div class="info-line"><span class="name" id="opponentPokemonName"></span><span id="opponentStatusTag" class="status-tag" style="display:none;"></span></div>
+                     <div class="hp-bar-container"><span>HP</span><div class="hp-bar-fill" id="opponentHpFill"></div></div>
+                     <div class="hp-numbers" id="opponentHpNumbers"></div>
+                     <div class="team-status" id="opponentTeamStatus"></div>
+                </div>
+                <div class="battle-info-box player-info">
+                    <div class="info-line"><span class="name" id="playerPokemonName"></span><span id="playerStatusTag" class="status-tag" style="display:none;"></span></div>
+                     <div class="hp-bar-container"><span>HP</span><div class="hp-bar-fill" id="playerHpFill"></div></div>
+                     <div class="hp-numbers" id="playerHpNumbers"></div>
+                     <div class="team-status" id="playerTeamStatus"></div>
+                </div>
             </div>
-            <div class="battle-info-box player-info">
-                <div class="info-line"><span class="name" id="playerPokemonName"></span><span id="playerStatusTag" class="status-tag" style="display:none;"></span></div>
-                 <div class="hp-bar-container"><span>HP</span><div class="hp-bar-fill" id="playerHpFill"></div></div>
-                 <div class="hp-numbers" id="playerHpNumbers"></div>
-                 <div class="team-status" id="playerTeamStatus"></div>
-            </div>
-            <div class="battle-ui-bottom">
+            <div class="battle-ui-bottom"> <!-- Dit element blijft onderaan -->
                 <div class="battle-textbox" id="battleTextbox"><p id="battleMessage"></p></div>
                 <div class="battle-menu battle-action-menu" id="actionMenu" style="display: none;">
                     <button data-action="fight">FIGHT</button>
@@ -301,8 +318,8 @@
 
         <div id="switchPokemonScreen" class="screen" style="display: none;">
             <h2>Choose a Pokémon</h2>
-            <div class="switch-grid" id="switchGrid"></div>
-            <button id="switchCancelButton">CANCEL</button>
+            <div class="switch-grid scrollable-content" id="switchGrid"></div> <!-- Scrollable switch grid -->
+            <button id="switchCancelButton" class="screen-back-button">CANCEL</button>
         </div>
 
     </div>
