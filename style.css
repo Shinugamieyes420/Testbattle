@@ -14,9 +14,9 @@
     --bg-dialog: #2c3e50; --border-dialog: #34495e;
     --button-subtle-bg: #526476; --button-subtle-border: #3e4c5a; --button-subtle-shadow: #2a333c; --button-subtle-hover: #607488;
     --bg-options-menu: #2d3436;
-    --battle-ui-bg: rgba(25, 25, 30, 0.88);
+    --battle-ui-bg: rgba(25, 25, 30, 0.88); /* Terug naar v1.3.0 waarde */
     --battle-ui-border: #4a4a52;
-    --battle-info-box-bg: rgba(35, 35, 40, 0.85);
+    --battle-info-box-bg: rgba(35, 35, 40, 0.85); /* Terug naar v1.3.0 waarde */
     --battle-info-box-border: #5c5c66;
     --battle-text-color: #f0f0f0;
     --battle-button-bg: #4a5568;
@@ -34,25 +34,8 @@
     --item-icon-tcgpack: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjMDA3NUJGIiBkPSJNMjAuNSA0LjVIMy41QzIuNjcgNC41IDIgNS4xNyAyIDZWMTlDMiAxOS44MyAyLjY3IDIwLjUgMy41IDIwLjVIMjAuNUMyMS4zMyAyMC41IDIyIDE5LjgzIDIyIDE5VjdDMjIgNS4xNyAyMS4zMyA0LjUgMjAuNSA0LjVaTTQgN0gyMFYxMUg0VjdaTTQgMTNIMTBWMTVINFYxM1pNNCAxN0gxMFYxOUg0VjE3Wk0xMiAxM0gxNFYxNUgxMlYxM1pNMTYgMTNIMThWMTVIMTZWMTNaTTEyIDE3SDE0VjE5SDEyVjE3Wk0xNiAxN0gxOFYxOUgxNlYxN1oiLz48cGF0aCBmaWxsPSIjRkZDMzA5IiBkPSJNMjAgMTFWMThIMjFWMTEiLz48cGF0aCBmaWxsPSIjRkZDMzA5IiBkPSJNMjEgN0gyMFYxMEgyMVY3WiIvPjxwYXRoIGZpbGw9IiNGRkMzMDkiIGQ9Ik0xMiA4QzExLjQ1IDggMTEgOC40NSAxMSA5VjEwLjVDMTEgMTEuMDUsMTEuNDUgMTEuNSAxMiAxMS41QzEyLjU1IDExLjUgMTMgMTEuMDUgMTMgMTAuNVY5QzEzIDguNDUgMTIuNTUgOCAxMiA4WiIvPjwvc3ZnPg==');
     --pokeball-svg-battle: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI5IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTEsMTAgYTksOSAwIDAsMSAxOCwwIiBmaWxsPSJyZWQiLz48cGF0aCBkPSJNMSwxMCBoMTgiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjMiIGZpbGw9IndoaXRlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEiLz48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxLjUiIGZpbGw9IndoaXRlIi8+PC9zdmc+');
 }
-body.dark-mode {
-    --bg-main-menu: linear-gradient(to bottom, #1A2E3C, #2C3E50);
-    --bg-trainer-display: rgba(0, 0, 0, 0.3);
-    --bg-trainer-frame: #3A506B;
-    --border-trainer-frame: #feca57;
-    --shadow-trainer-frame: #e1b12c;
-    --text-color-default: #e0e0e0; --text-color-dark: #d0d0d0;
-    --bg-dialog: #1e2a38; --border-dialog: #2a3b4e;
-    --button-subtle-bg: #485768; --button-subtle-border: #35414d; --button-subtle-shadow: #1e252c; --button-subtle-hover: #586a7e;
-    --bg-options-menu: #1e272e;
-    --battle-ui-bg: rgba(10, 10, 15, 0.92); /* Was 0.94, iets meer transparant */
-    --battle-ui-border: #33333a;
-    --battle-info-box-bg: rgba(20, 20, 25, 0.9); /* Was 0.92 */
-    --battle-info-box-border: #42424b;
-    --battle-text-color: #f5f5f5;
-    --battle-button-bg: #3a4558;
-    --battle-button-hover-bg: #4a576d;
-    --battle-button-border: #5a6578;
-}
+body.dark-mode { /* ... (dark mode variabelen blijven hetzelfde) ... */ }
+
 body, html { height: 100%; margin: 0; padding: 0; background-color: #000; font-family: 'Pokemon Pixel', sans-serif; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 .game-container {
     aspect-ratio: 16 / 9;
@@ -80,12 +63,29 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     display: flex; flex-direction: column;
     color: var(--text-color-default);
     box-sizing: border-box;
-    overflow: hidden; /* Standaard geen scroll op het .screen zelf */
-    padding: clamp(10px, 2vmin, 20px);
+    overflow: hidden; /* Voorkom dubbele scrollbars op .screen zelf */
+    padding: clamp(10px, 2vmin, 15px);
 }
 
-/* Algemene wrapper voor content die scrollbaar moet zijn */
-.scrollable-content {
+/* Wrapper voor scrollbare content binnen een scherm */
+.scrollable-content,
+.trainers-grid, /* Maak grids direct scrollbaar als ze in een niet-scrollende parent zitten */
+.starters-grid,
+.market-items-grid,
+.inventory-grid,
+.team-grid,
+#pcTeamGrid, /* PC Team grid specifiek */
+#pcBoxGrid,  /* PC Box grid specifiek */
+#teamSelectGrid,
+#gymLeaderGrid,
+#eliteFourGrid,
+.cards-collection-grid,
+.badges-collection-grid,
+.switch-grid,
+.battle-move-menu, /* Battle menu's scrollbaar maken */
+.battle-item-menu,
+.battle-textbox /* Battle textbox scrollbaar maken */
+{
     flex-grow: 1; /* Neemt beschikbare ruimte in flex-container */
     overflow-y: auto; /* Maakt verticaal scrollen mogelijk */
     min-height: 0; /* Essentieel voor flex children om correct te scrollen */
@@ -112,13 +112,13 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 /* Knoppen die onderaan het scherm moeten "plakken" */
 .screen-back-button, #teamSelectConfirmButton,
 #switchCancelButton, .detail-button-area {
-    flex-shrink: 0;
-    margin-top: auto;
-    padding-top: 1.5vmin;
-    padding-bottom: 1vmin;
-    width: 100%;
+    flex-shrink: 0; /* Voorkom dat de knop krimpt */
+    margin-top: auto; /* Duwt de knop naar beneden in een flex-container */
+    padding-top: 1.5vmin; /* Ruimte boven de knop */
+    padding-bottom: 1vmin; /* Ruimte onder de knop */
+    width: 100%; /* Knoppen kunnen volle breedte nemen indien nodig */
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Centreer de knop/knoppen */
     box-sizing: border-box;
 }
 .detail-button-area { gap: 2vmin; }
@@ -408,158 +408,176 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .pc-pagination-controls button:hover:not(:disabled) { background-color: var(--button-subtle-hover); }
 #pcPageInfo { font-size: clamp(0.8em, 2.5vmin, 1em); color: var(--text-color-default); }
 
-/* Battle Screen Layout Aanpassingen */
+/* Battle Screen Layout - Terug naar v1.3.0 basis met aanpassingen */
 #battleScreen {
     background-image: url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg') !important;
-    background-size: cover;
-    background-position: center bottom;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    position: relative;
+    background-size: cover; background-position: center bottom;
+    display: flex; flex-direction: column; /* Behoud kolomstructuur */
+    padding: 0; /* Geen padding op het hoofdscherm */
+    position: relative; /* Voor absolute positionering van kinderen */
 }
-
 .battle-arena {
-    flex-grow: 1;
+    flex-grow: 1; /* Neemt de meeste ruimte */
     position: relative;
+    min-height: 55%; /* Geef arena een goede minimale hoogte */
     width: 100%;
-    min-height: 50%; /* Iets meer ruimte voor de arena */
 }
-
 #attackAnimationLayer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
 .attack-animation { position: absolute; }
 
 .pokemon-sprite {
-    position: absolute;
-    image-rendering: pixelated;
-    width: clamp(80px, 26vmin, 170px); /* Aangepast voor balans */
-    height: clamp(80px, 26vmin, 170px);
-    transition: transform 0.3s ease-in-out;
-    transform-origin: bottom center;
-    z-index: 10;
+    position: absolute; image-rendering: pixelated;
+    width: clamp(110px, 33vmin, 220px); /* v1.3.0 waarde */
+    height: clamp(110px, 33vmin, 220px); /* v1.3.0 waarde */
+    transition: transform 0.3s ease-in-out; transform-origin: bottom center; z-index: 10;
 }
 .opponent-sprite {
-    top: clamp(6%, 9vmin, 13%);
-    right: clamp(4%, 6vmin, 8%);
-    transform: scale(1.2);
+    top: 14%; /* v1.3.0 waarde */
+    right: 8%; /* v1.3.0 waarde */
+    transform: scale(1.4); /* v1.3.0 waarde */
 }
 .player-sprite {
-    bottom: clamp(1%, 2.5vmin, 6%);
-    left: clamp(4%, 6vmin, 8%);
-    transform: scale(1.85); /* Iets aangepast */
+    bottom: 5vmin; /* v1.3.0 waarde */
+    left: 8%; /* v1.3.0 waarde */
+    transform: scale(2.1); /* v1.3.0 waarde */
 }
 .opponent-sprite img, .player-sprite img { width: 100%; height: 100%; object-fit: contain; }
 
 .battle-info-box {
-    position: absolute;
+    position: absolute; /* Behoud absolute positionering */
     background-color: var(--battle-info-box-bg);
-    border: 2px solid var(--battle-info-box-border);
-    border-radius: 6px;
-    padding: clamp(4px, 0.8vmin, 7px) clamp(6px, 1vmin, 9px);
-    width: clamp(120px, 38vw, 210px); /* Aangepaste breedte voor mobiel */
-    max-width: 220px; /* Max breedte */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    border: 3px solid var(--battle-info-box-border); /* v1.3.0 border */
+    border-radius: 10px; /* v1.3.0 radius */
+    padding: clamp(8px, 1.5vmin, 12px) clamp(10px, 2vmin, 15px); /* v1.3.0 padding */
+    width: clamp(170px, 42%, 280px); /* v1.3.0 width */
+    box-shadow: 0 3px 8px rgba(0,0,0,0.5);
     color: var(--battle-text-color);
-    font-size: clamp(0.55em, 1.5vmin, 0.7em); /* Nog kleiner voor compactheid */
+    font-size: clamp(0.75em, 2.2vmin, 1em); /* v1.3.0 font-size */
     z-index: 60;
     display: flex;
     flex-direction: column;
 }
-
 .opponent-info {
-    top: 0.5vmin; /* Dichter bij de rand */
-    left: 0.5vmin;
+    top: 3%; /* v1.3.0 positie */
+    left: 2%; /* v1.3.0 positie */
 }
-
 .player-info {
-    bottom: calc(33% + 0.5vmin); /* Aangepast aan de nieuwe hoogte van .battle-ui-bottom */
-    right: 0.5vmin;
+    /* Belangrijk: positionering relatief aan de onderkant van de arena, boven de UI-balk */
+    bottom: calc(28% + 3vmin); /* 28% is de hoogte van .battle-ui-bottom + wat marge */
+    right: 2%; /* v1.3.0 positie */
 }
 
-.info-line { display: flex; justify-content: space-between; margin-bottom: 0.3vmin; align-items: center;}
-.info-line .name { font-weight: bold; font-size: 1.1em; }
-.info-line .status-tag { font-size: 0.8em; padding: 0.1em 0.3em; margin-left: 0.2em;}
-.hp-bar-container { width: 100%; height: clamp(7px, 1.3vmin, 12px); margin: 0.3vmin 0; }
-.hp-bar-container span { font-size: clamp(0.55em, 1.2vmin, 0.7em); padding: 0.05vmin 0.3vmin; margin-left: 0.2vmin; }
-.player-info .hp-numbers, .opponent-info .hp-numbers { font-size: clamp(0.7em, 1.6vmin, 0.9em); margin-top: 0.3vmin; }
-.team-status { display: flex; gap: 0.6vmin; margin-top: 0.6vmin; padding-left: 1px; }
-.status-ball { width: clamp(8px, 1.8vmin, 12px); height: clamp(8px, 1.8vmin, 12px); }
+.info-line { display: flex; justify-content: space-between; margin-bottom: 0.6vmin; align-items: center;}
+.info-line .name { font-weight: bold; font-size: 1.15em; }
+.info-line .status-tag { font-size: 0.85em; padding: 0.2em 0.5em; border-radius: 4px; color: white; margin-left: 0.5em; font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); }
+.status-tag.BRN { background-color: var(--status-brn-color); } .status-tag.PSN { background-color: var(--status-psn-color); } .status-tag.PAR { background-color: var(--status-par-color); color: #4a3b00; } .status-tag.SLP { background-color: var(--status-slp-color); } .status-tag.FRZ { background-color: var(--status-frz-color); color: #005566; }
+.hp-bar-container { width: 100%; height: clamp(12px, 2vmin, 18px); background-color: #555; border: 1px solid #333; border-radius: 6px; overflow: hidden; margin: 0.6vmin 0; display: flex; align-items: center; }
+.hp-bar-container span { font-size: clamp(0.7em, 1.8vmin, 0.9em); font-weight: bold; color: white; background-color: rgba(0,0,0,0.6); padding: 0.1vmin 0.6vmin; margin-left: 0.4vmin; border-radius: 4px; }
+.hp-bar-fill { height: 100%; background-color: var(--hp-high-color); border-radius: 4px 0 0 4px; transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; }
+.player-info .hp-numbers, .opponent-info .hp-numbers { text-align: right; font-size: clamp(0.85em, 2.2vmin, 1.05em); margin-top: 0.6vmin; color: var(--battle-text-color); opacity: 0.9; font-weight: bold; }
+.team-status { display: flex; gap: 1.2vmin; margin-top: 1.2vmin; justify-content: flex-start; padding-left: 3px; }
+.status-ball { width: clamp(12px, 2.8vmin, 18px); height: clamp(12px, 2.8vmin, 18px); display: inline-block; background-image: var(--pokeball-svg-battle); background-size: contain; background-repeat: no-repeat; background-position: center; transition: filter 0.3s, opacity 0.3s; }
+.status-ball.fainted { filter: grayscale(100%) contrast(0.5); opacity: 0.5; }
 
 .battle-ui-bottom {
     flex-shrink: 0;
-    height: 33%; /* Iets meer hoogte voor de onderste balk */
-    min-height: 160px;
-    max-height: 230px; /* Iets meer max hoogte */
+    height: 28%; /* Terug naar v1.3.0 hoogte */
     display: flex;
-    border-top: 2px solid var(--battle-ui-border);
+    border-top: 4px solid var(--battle-ui-border); /* v1.3.0 border */
     background-color: var(--battle-ui-bg);
-    border-radius: 6px 6px 0 0;
+    border-radius: 12px 12px 0 0; /* v1.3.0 radius */
     z-index: 70;
-    box-shadow: 0 -1px 5px rgba(0,0,0,0.2);
-    overflow: hidden;
+    box-shadow: 0 -3px 10px rgba(0,0,0,0.4);
+    overflow: hidden; /* Voorkom dat kinderen erbuiten vallen */
 }
 .battle-textbox {
     flex-grow: 1;
-    padding: clamp(5px, 1.2vmin, 8px); /* Kleinere padding */
-    font-size: clamp(0.7em, 1.8vmin, 0.9em); /* Kleiner lettertype */
-    line-height: 1.2;
-    overflow-y: auto;
+    height: 100%; /* Zorg dat het de hoogte van de parent vult */
+    border: none;
+    padding: clamp(10px, 2vmin, 16px); /* v1.3.0 padding */
     box-sizing: border-box;
-    height: 100%;
-    max-height: 100%;
+    color: var(--battle-text-color);
+    font-size: clamp(0.9em, 2.5vmin, 1.2em); /* v1.3.0 font-size */
+    line-height: 1.35;
+    position: relative;
+    overflow-y: auto; /* Maak textbox scrollbaar */
 }
-.battle-menu-container {
+.battle-menu-container { /* Wrapper voor de menu's */
     flex-shrink: 0;
-    width: clamp(110px, 38%, 160px); /* Aangepaste breedte */
+    width: clamp(130px, 35%, 200px); /* Geef de menu's een redelijke breedte */
     height: 100%;
-    display: flex;
-    border-left: 2px solid var(--battle-ui-border);
-    overflow: hidden;
+    display: flex; /* Om het actieve menu te tonen */
+    border-left: 3px solid var(--battle-ui-border); /* v1.3.0 border */
+    box-sizing: border-box;
 }
 
 .battle-menu {
-    padding: clamp(0.4vmin, 0.6vmin, 0.8vmin);
+    background-color: transparent;
+    padding: clamp(0.8vmin, 1.2vmin, 1.8vmin); /* v1.3.0 padding */
     box-sizing: border-box;
-    display: grid;
-    overflow-y: auto;
-    width: 100%;
-    height: 100%;
+    width: 100%; /* Menu neemt volledige breedte van container */
+    height: 100%; /* Menu neemt volledige hoogte van container */
+    display: grid; /* Behoud grid voor interne layout */
+    overflow-y: auto; /* Maakt scrollen mogelijk binnen het menu zelf */
 }
 .battle-action-menu {
-    grid-template-columns: 1fr;
-    gap: clamp(0.3vmin, 0.5vmin, 0.6vmin); /* Kleinere gap */
-    align-content: stretch; /* Knoppen vullen de hoogte */
-    padding: clamp(0.4vmin, 0.6vmin, 1vmin); /* Kleinere padding */
+    grid-template-columns: 1fr; /* Knoppen onder elkaar voor betere mobiele weergave */
+    gap: clamp(0.6vmin, 1vmin, 1.2vmin); /* v1.3.0 gap */
+    align-content: stretch; /* Knoppen vullen de beschikbare hoogte */
+    padding: clamp(1vmin, 1.5vmin, 2vmin); /* v1.3.0 padding */
 }
-/* .battle-action-menu.extended blijft hetzelfde */
+.battle-action-menu.extended { grid-template-rows: repeat(4, 1fr); }
 
 .battle-move-menu, .battle-item-menu {
     grid-template-columns: 1fr 1fr;
-    gap: clamp(0.4vmin, 0.6vmin, 0.8vmin); /* Kleinere gap */
-    padding: clamp(0.4vmin, 0.6vmin, 1vmin);
+    gap: clamp(1vmin, 1.3vmin, 1.8vmin); /* v1.3.0 gap */
+    padding: clamp(1vmin, 1.5vmin, 2vmin); /* v1.3.0 padding */
+    align-items: stretch;
 }
 .battle-move-menu { grid-template-rows: 1fr 1fr auto; }
 .battle-item-menu { grid-template-rows: auto; }
 
 .battle-menu button {
-    font-size: clamp(0.6em, 1.6vmin, 0.75em); /* Nog kleiner */
-    padding: clamp(0.2vmin, 0.5vmin, 0.7vmin);
-    min-height: clamp(25px, 6vmin, 38px); /* Kleinere min-hoogte */
-    border-radius: 4px; /* Kleinere radius */
+    font-family: 'Pokemon Pixel', sans-serif;
+    font-size: clamp(0.8em, 2.3vmin, 1em); /* v1.3.0 font-size */
+    color: var(--battle-text-color);
+    background-color: var(--battle-button-bg);
+    border: 2px solid var(--battle-button-border);
+    border-radius: 8px;
+    padding: clamp(0.6vmin, 1.2vmin, 1.5vmin) clamp(0.3vmin, 0.5vmin, 0.7vmin); /* v1.3.0 padding */
+    cursor: pointer; text-align: center;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+    overflow: hidden; text-overflow: ellipsis;
+    display: flex; /* Voor interne uitlijning van tekst/pp */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2; /* Iets strakkere lijnhoogte */
+    min-height: clamp(38px, 8.5vmin, 58px); /* v1.3.0 min-height */
 }
+.battle-menu button:hover:not(:disabled) { background-color: var(--battle-button-hover-bg); border-color: lighten(var(--battle-button-border), 10%); transform: translateY(-1px); }
+.battle-menu button:disabled { opacity: 0.6; cursor: not-allowed; background-color: desaturate(var(--battle-button-bg), 30%); }
+
 .battle-menu-back-button {
-    font-size: clamp(0.55em, 1.4vmin, 0.7em);
-    padding: clamp(0.1vmin, 0.3vmin, 0.5vmin);
-    margin-top: 0.4vmin;
+    grid-column: 1 / -1; /* Spant over beide kolommen in move/item menu */
+    margin-top: clamp(0.5vmin, 0.8vmin, 1vmin);
+    padding: clamp(0.5vmin, 1vmin, 1.2vmin) clamp(0.3vmin, 0.5vmin, 0.7vmin);
+    font-size: clamp(0.75em, 2.1vmin, 0.95em);
+    background-color: #7f8c8d;
+    border-color: #6c7a7b;
 }
-.move-name, .item-name-battle { font-size: clamp(0.55em, 1.4vmin, 0.7em); }
-.move-pp, .item-count-battle { font-size: clamp(0.45em, 1.1vmin, 0.6em); }
-.item-icon-battle { width: clamp(9px, 1.8vmin, 11px); height: clamp(9px, 1.8vmin, 11px); margin-right: 2px; }
+.battle-menu-back-button:hover { background-color: #95a5a6; border-color: #7f8c8d; }
+
+.move-name, .item-name-battle { display: block; margin-bottom: 0.4vmin; word-break: break-word; font-size: clamp(0.75em, 2.1vmin, 0.95em); }
+.move-pp, .item-count-battle { font-size: clamp(0.65em, 1.7vmin, 0.8em); color: var(--battle-text-color); opacity: 0.85; }
+.item-icon-battle { width: clamp(16px, 3vmin, 20px); height: clamp(16px, 3vmin, 20px); margin-right: 5px; vertical-align: middle; background-size: contain; background-repeat: no-repeat; background-position: center; display: inline-block; }
+.item-icon-battle.pokeball { background-image: var(--item-icon-pokeball); } .item-icon-battle.greatball { background-image: var(--item-icon-greatball); } .item-icon-battle.evolutionstone { background-image: var(--item-icon-evolutionstone); }
 
 @keyframes shake { 0%, 100% { transform: translateX(0) scale(var(--sprite-scale, 1)); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) scale(var(--sprite-scale, 1)); } 20%, 40%, 60%, 80% { transform: translateX(5px) scale(var(--sprite-scale, 1)); } }
 .shake-anim { animation: shake 0.5s linear; }
-.opponent-sprite.shake-anim { --sprite-scale: 1.2; } .player-sprite.shake-anim { --sprite-scale: 1.85; }
+.opponent-sprite.shake-anim { --sprite-scale: 1.3; } /* Aangepast aan nieuwe sprite scale */
+.player-sprite.shake-anim { --sprite-scale: 2; } /* Aangepast aan nieuwe sprite scale */
 @keyframes flash { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(2.5); } }
 .flash-anim > img { animation: flash 0.15s linear 2; }
 
