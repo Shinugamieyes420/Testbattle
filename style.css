@@ -1,3 +1,4 @@
+
 @font-face {
     font-family: 'Pokemon Pixel';
     src: url('https://fonts.gstatic.com/s/pressstart2p/v15/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2') format('woff2');
@@ -54,14 +55,13 @@ body.dark-mode {
     --battle-button-border: #5a6578;
 }
 
-/* START --- AANGEPASTE SECTIE VOOR MOBIELE RESPONSIVITEIT --- */
 body, html {
-    height: 100%; /* Behoud, werkt goed met flexbox */
+    height: 100%;
     margin: 0;
     padding: 0;
     background-color: #000;
     font-family: 'Pokemon Pixel', sans-serif;
-    overflow: hidden; /* Voorkomt scrollbars als de game-container de viewport vult */
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -69,34 +69,22 @@ body, html {
 
 .game-container {
     aspect-ratio: 16 / 9;
-    width: 100vw; /* Standaard: breedte vult viewport breedte */
-    height: calc(100vw * 9 / 16); /* Hoogte wordt berekend o.b.v. breedte en aspect ratio */
-    
-    max-width: 100vw; /* Zorgt dat het nooit breder wordt dan de viewport */
-    max-height: 100svh; /* BELANGRIJK: maximale hoogte is de 'kleine viewport hoogte', rekening houdend met browser UI */
-
-    background-color: #000;
-    position: relative;
-    image-rendering: pixelated;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: crisp-edges;
-    overflow: hidden; /* Inhoud die buiten de container valt wordt afgesneden */
-    border: 2px solid #333;
-    box-sizing: border-box;
-    margin: auto; /* Helpt bij centreren binnen de flex container (body) */
+    width: 100vw;
+    height: calc(100vw * 9 / 16);
+    max-width: 100vw;
+    max-height: 100svh;
+    background-color: #000; position: relative;
+    image-rendering: pixelated; image-rendering: -moz-crisp-edges; image-rendering: crisp-edges;
+    overflow: hidden; border: 2px solid #333; box-sizing: border-box;
+    margin: auto;
     box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
-
-/* Media query voor schermen die smaller zijn dan 16:9 (bv. portretmodus op mobiel) */
-/* In dit scenario is de hoogte de beperkende factor. */
 @media (max-aspect-ratio: 16/9) {
     .game-container {
-        height: 100svh; /* Hoogte vult de 'kleine viewport hoogte' */
-        width: calc(100svh * 16 / 9); /* Breedte wordt berekend o.b.v. hoogte (svh) en aspect ratio */
+        height: 100svh;
+        width: calc(100svh * 16 / 9);
     }
 }
-/* END --- AANGEPASTE SECTIE VOOR MOBIELE RESPONSIVITEIT --- */
-
 body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(100,100,100,0.3); }
 
 .screen {
@@ -440,6 +428,45 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .pc-move-button:disabled { opacity: 0.5; cursor: not-allowed; }
 .no-pokemon-pc-team, .no-pokemon-pc-box { text-align: center; padding: 2vmin; font-style: italic; opacity: 0.7; }
 
+/* NIEUWE CSS VOOR PC PAGINERING */
+.pc-pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1vmin;
+    margin-top: 1.5vmin;
+    flex-shrink: 0;
+}
+
+.pc-page-btn {
+    font-family: 'Pokemon Pixel', sans-serif;
+    font-size: clamp(0.7em, 2.5vmin, 0.9em);
+    padding: 0.8vmin 1.5vmin;
+    background-color: var(--battle-button-bg);
+    color: var(--battle-text-color);
+    border: 1px solid var(--battle-button-border);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.pc-page-btn:hover:not(:disabled) {
+    background-color: var(--battle-button-hover-bg);
+    transform: translateY(-1px);
+}
+
+.pc-page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#pcPageIndicator {
+    font-size: clamp(0.8em, 2.8vmin, 1em);
+    color: var(--text-color-default);
+}
+/* EINDE NIEUWE CSS VOOR PC PAGINERING */
+
+
 #battleScreen { position: relative; background-image: url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg') !important; background-size: cover; background-position: center bottom; display: flex; flex-direction: column; }
 .battle-arena { flex-grow: 1; position: relative; min-height: 55%; }
 #attackAnimationLayer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
@@ -451,7 +478,11 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .opponent-sprite img, .player-sprite img { width: 100%; height: 100%; object-fit: contain; }
 .battle-info-box { position: absolute; background-color: var(--battle-info-box-bg); border: 3px solid var(--battle-info-box-border); border-radius: 10px; padding: clamp(8px, 1.5vmin, 12px) clamp(10px, 2vmin, 15px); width: clamp(170px, 42%, 280px); box-shadow: 0 3px 8px rgba(0,0,0,0.5); color: var(--battle-text-color); font-size: clamp(0.75em, 2.2vmin, 1em); z-index: 60; display: flex; flex-direction: column; }
 .opponent-info { top: 3%; left: 2%; }
-.player-info { bottom: calc(28% + 2vmin); right: 2%; }
+/* AANGEPASTE PLAYER-INFO POSITIE */
+.player-info {
+    bottom: calc(28% + 0.5vmin); /* Was 2vmin, verlaagd om lager te plaatsen */
+    right: 2%;
+}
 .info-line { display: flex; justify-content: space-between; margin-bottom: 0.6vmin; align-items: center;}
 .info-line .name { font-weight: bold; font-size: 1.15em; }
 .info-line .status-tag { font-size: 0.85em; padding: 0.2em 0.5em; border-radius: 4px; color: white; margin-left: 0.5em; font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); }
@@ -587,7 +618,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 }
 #revealedTcgCardImage {
     max-width: 80%;
-    max-height: 60vh; /* Adjusted to slightly smaller for better fit in 16:9 */
+    max-height: 60vh;
     object-fit: contain;
     border: 3px solid gold;
     border-radius: 10px;
