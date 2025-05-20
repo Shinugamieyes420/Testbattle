@@ -1,15 +1,15 @@
 // --- Globale Variabelen & Constanten ---
-let currentScreen = 'intro'; // EENMALIGE DECLARATIE
-let selectedTrainerData = null; // EENMALIGE DECLARATIE
-let tempSelectedStarter = null; // EENMALIGE DECLARATIE
-let isNewGameSetup = false; // EENMALIGE DECLARATIE
-let generatedPasswordCache = null; // EENMALIGE DECLARATIE
+let currentScreen = 'intro';
+let selectedTrainerData = null;
+let tempSelectedStarter = null;
+let isNewGameSetup = false;
+let generatedPasswordCache = null;
 
-const PC_ITEMS_PER_PAGE = 10; // EENMALIGE DECLARATIE
-let currentPcPage = 1; // EENMALIGE DECLARATIE
-const MAX_PC_BOX_SIZE_V1_3 = 400; // EENMALIGE DECLARATIE
+const PC_ITEMS_PER_PAGE = 10;
+let currentPcPage = 1;
+const MAX_PC_BOX_SIZE_V1_3 = 400;
 
-let battleState = { // EENMALIGE DECLARATIE
+let battleState = {
     playerTeam: [],
     opponentTeam: [],
     playerActiveIndex: 0, opponentActiveIndex: 0,
@@ -27,9 +27,8 @@ let battleState = { // EENMALIGE DECLARATIE
     selectedBattleTeamIndexes: []
 };
 
-const GAME_LEVEL = 50; // EENMALIGE DECLARATIE
-const SHINY_CHANCE = 0.1; // EENMALIGE DECLARATIE
-// ... (rest van de globale constanten, ZORG DAT ZE HIER MAAR EEN KEER STAAN) ...
+const GAME_LEVEL = 50;
+const SHINY_CHANCE = 0.1;
 const CRITICAL_HIT_CHANCE_BASE = 1 / 24;
 const CRITICAL_HIT_MULTIPLIER = 1.5;
 const PARALYSIS_CHANCE_NO_MOVE = 0.25;
@@ -38,8 +37,8 @@ const MAX_TEAM_SIZE = 6;
 const TCG_CARDS_PER_PACK = 3;
 
 
-const gameBody = document.getElementById('gameBody'); // EENMALIGE DECLARATIE
-const screens = { // EENMALIGE DECLARATIE
+const gameBody = document.getElementById('gameBody');
+const screens = {
     intro: document.getElementById('introScreen'),
     characterSelect: document.getElementById('characterSelectScreen'),
     starterSelect: document.getElementById('starterSelectScreen'),
@@ -65,7 +64,6 @@ const screens = { // EENMALIGE DECLARATIE
     battle: document.getElementById('battleScreen'),
     switchPokemon: document.getElementById('switchPokemonScreen')
 };
-// ... (rest van de DOM element constanten, ZORG DAT ZE HIER MAAR EEN KEER STAAN) ...
 const chosenTrainerNameSpan = document.getElementById('chosenTrainerName'); const confirmYesButton = document.getElementById('confirmYes'); const confirmNoButton = document.getElementById('confirmNo'); const trainerCards = document.querySelectorAll('.trainer-card'); const chosenTrainerImageMainMenu = document.getElementById('chosenTrainerImageMainMenu'); const playerCoinsDisplayMainMenuEl = document.getElementById('playerCoinsDisplayMainMenu');
 const btnPlay = document.getElementById('btnPlay');
 const btnQuickBattlePlay = document.getElementById('btnQuickBattlePlay');
@@ -138,7 +136,7 @@ const passwordStatusMessage = document.getElementById('passwordStatusMessage');
 
 // --- Data ---
 const trainersData = { "Bea": { name: "Bea", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Bea-TG25-Astral-Radiance.png" }, "Brock": { name: "Brock", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/brocks-scouting-179-sv9-eng.png" }, "Giovanni": { name: "Giovanni", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Giovannis-Charisma-204-151.jpg" } };
-const SAVE_KEY = 'blazingThunder_savedData_v1_3_1_layout';
+const SAVE_KEY = 'blazingThunder_savedData_v1_3_2_battleFix'; // Aangepast voor deze versie
 
 const typeChart = { "Normal": {"Rock": 0.5, "Ghost": 0, "Steel": 0.5}, "Fire": {"Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 2, "Bug": 2, "Rock": 0.5, "Dragon": 0.5, "Steel": 2}, "Water": {"Fire": 2, "Water": 0.5, "Grass": 0.5, "Ground": 2, "Rock": 2, "Dragon": 0.5}, "Electric": {"Water": 2, "Electric": 0.5, "Grass": 0.5, "Ground": 0, "Flying": 2, "Dragon": 0.5}, "Grass": {"Fire": 0.5, "Water": 2, "Grass": 0.5, "Poison": 0.5, "Ground": 2, "Flying": 0.5, "Bug": 0.5, "Rock": 2, "Dragon": 0.5, "Steel": 0.5}, "Ice": {"Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 0.5, "Ground": 2, "Flying": 2, "Dragon": 2, "Steel": 0.5}, "Fighting": {"Normal": 2, "Ice": 2, "Poison": 0.5, "Flying": 0.5, "Psychic": 0.5, "Bug": 0.5, "Rock": 2, "Ghost": 0, "Dark": 2, "Steel": 2, "Fairy": 0.5}, "Poison": {"Grass": 2, "Poison": 0.5, "Ground": 0.5, "Rock": 0.5, "Ghost": 0.5, "Steel": 0, "Fairy": 2}, "Ground": {"Fire": 2, "Electric": 2, "Grass": 0.5, "Poison": 2, "Flying": 0, "Bug": 0.5, "Rock": 2, "Steel": 2}, "Flying": {"Electric": 0.5, "Grass": 2, "Fighting": 2, "Bug": 2, "Rock": 0.5, "Steel": 0.5}, "Psychic": {"Fighting": 2, "Poison": 2, "Psychic": 0.5, "Dark": 0, "Steel": 0.5}, "Bug": {"Fire": 0.5, "Grass": 2, "Fighting": 0.5, "Poison": 0.5, "Flying": 0.5, "Psychic": 2, "Ghost": 0.5, "Dark": 2, "Steel": 0.5, "Fairy": 0.5}, "Rock": {"Fire": 2, "Ice": 2, "Fighting": 0.5, "Ground": 0.5, "Flying": 2, "Bug": 2, "Steel": 0.5}, "Ghost": {"Normal": 0, "Psychic": 2, "Ghost": 2, "Dark": 0.5}, "Dragon": {"Dragon": 2, "Steel": 0.5, "Fairy": 0}, "Steel": {"Fire": 0.5, "Water": 0.5, "Electric": 0.5, "Ice": 2, "Rock": 2, "Steel": 0.5, "Fairy": 2}, "Dark": {"Fighting": 0.5, "Psychic": 2, "Ghost": 2, "Dark": 0.5, "Fairy": 0.5}, "Fairy": {"Fire": 0.5, "Fighting": 2, "Poison": 0.5, "Dragon": 2, "Dark": 2, "Steel": 0.5} };
 const statStageMultipliers = [1/4, 2/7, 1/3, 2/5, 1/2, 2/3, 1, 1.5, 2, 2.5, 3, 3.5, 4];
@@ -196,8 +194,6 @@ const eliteFourData = {
 };
 
 // --- Helper Functions ---
-// (Hieronder staan alle functies die eerder correct waren, nu volledig ingevuld)
-
 function calculateChecksum(str) {
     let sum = 0;
     for (let i = 0; i < str.length; i++) {
@@ -2086,7 +2082,7 @@ function generatePasswordData() {
     if (!selectedTrainerData) return null;
     const sTdCopy = JSON.parse(JSON.stringify(selectedTrainerData));
     return {
-        version: "1.3.1_layout_pw1",
+        version: "1.3.1_layout_pw1", // Password version
         trainer: { name: sTdCopy.name, imageUrl: sTdCopy.imageUrl }, coins: sTdCopy.coins, inventory: sTdCopy.inventory,
         team: (sTdCopy.team || []).filter(p => p).map(p => ({ pokedexId: p.pokedexId, currentHP: p.currentHP, status: p.status, isShiny: p.isShiny, })),
         pcBox: (sTdCopy.pcBox || []).filter(p => p).map(p => ({ pokedexId: p.pokedexId, currentHP: p.currentHP, status: p.status, isShiny: p.isShiny, })),

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blazing Thunder - V1.3.1 (Layout & Scroll Fixes)</title> <!-- Versie update -->
+    <title>Blazing Thunder - V1.3.2 (New Battle Menu Layout)</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 </head>
@@ -16,7 +16,7 @@
         </div>
 
         <div id="characterSelectScreen" class="screen" style="display: none;">
-             <h2>Kies een trainer</h2><div class="trainers-grid">
+             <h2>Kies een trainer</h2><div class="trainers-grid scrollable-content">
                  <div class="trainer-card" data-trainer="Bea"><img src="https://www.pokemonkaart.nl/wp-content/uploads/Bea-TG25-Astral-Radiance.png" alt="Trainer Bea"><p>Bea</p></div>
                  <div class="trainer-card" data-trainer="Brock"><img src="https://www.pokemonkaart.nl/wp-content/uploads/brocks-scouting-179-sv9-eng.png" alt="Trainer Brock"><p>Brock</p></div>
                  <div class="trainer-card" data-trainer="Giovanni"><img src="https://www.pokemonkaart.nl/wp-content/uploads/Giovannis-Charisma-204-151.jpg" alt="Trainer Giovanni"><p>Giovanni</p></div>
@@ -25,7 +25,7 @@
 
         <div id="starterSelectScreen" class="screen" style="display: none;">
             <h2>Kies je Starter Pokémon</h2>
-            <div class="starters-grid">
+            <div class="starters-grid scrollable-content">
                 <!-- Starter Pokémon cards will be populated here -->
             </div>
         </div>
@@ -72,29 +72,29 @@
 
         <div id="playMenuScreen" class="screen" style="display: none;">
             <h2>PLAY MODES</h2>
-            <div class="play-menu-content"> <!-- Extra wrapper voor scroll -->
+            <div class="play-menu-content scrollable-content">
                 <button class="play-mode-button" id="btnQuickBattlePlay">QUICK BATTLE</button>
                 <button class="play-mode-button" id="btnGymBattlePlay">GYM BATTLE</button>
                 <button class="play-mode-button" id="btnEliteBattlesPlay">ELITE FOUR</button>
                 <button class="play-mode-button" id="btnWildModePlay">WILD MODE</button>
             </div>
-            <button class="play-mode-button screen-back-button" id="btnBackToMainFromPlay">BACK</button>
+            <button class="screen-back-button" id="btnBackToMainFromPlay">BACK</button>
         </div>
 
         <div id="optionsMenuScreen" class="screen" style="display: none;">
             <h2>OPTIONS</h2>
-            <div class="options-menu-content"> <!-- Extra wrapper voor scroll -->
+            <div class="options-menu-content scrollable-content">
                 <button class="options-button" id="btnSaveGameOpt">SAVE GAME</button>
                 <button class="options-button" id="btnPasswordOpt">PASSWORD</button>
                 <button class="options-button" id="btnResetGameOpt">RESET GAME</button>
                 <button class="options-button" id="btnDarkModeOpt">DARK MODE</button>
             </div>
-            <button class="options-button screen-back-button" id="btnBackToMainOpts">BACK</button>
+            <button class="screen-back-button" id="btnBackToMainOpts">BACK</button>
         </div>
 
         <div id="passwordScreen" class="screen" style="display: none;">
             <h2>PASSWORD</h2>
-            <div class="password-content-area"> <!-- Wrapper voor scroll -->
+            <div class="password-content-area scrollable-content">
                 <div class="password-section">
                     <h3>Generate & Copy Password</h3>
                     <textarea id="generatedPasswordArea" rows="3" readonly placeholder="Click 'Generate' to create your password."></textarea>
@@ -113,41 +113,15 @@
             <button id="btnBackToOptionsFromPassword" class="options-button screen-back-button">BACK TO OPTIONS</button>
         </div>
 
-
         <div id="marketScreen" class="screen" style="display: none;">
             <h2>MARKET</h2>
             <div id="marketCoinDisplay">Coins: 0</div>
             <div class="market-items-grid scrollable-content">
-                <div class="market-item" data-item-id="pokeball">
-                    <img class="item-icon pokeball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Poké Ball">
-                    <p class="item-name">Poké Ball</p>
-                    <p class="item-price">Price: 5 Coins</p>
-                    <button class="buy-button" data-item-name="Poke Ball" data-price="5">BUY</button>
-                </div>
-                <div class="market-item" data-item-id="greatball">
-                    <img class="item-icon greatball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Great Ball">
-                    <p class="item-name">Great Ball</p>
-                    <p class="item-price">Price: 10 Coins</p>
-                    <button class="buy-button" data-item-name="Great Ball" data-price="10">BUY</button>
-                </div>
-                <div class="market-item" data-item-id="evolutionstone">
-                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Evolution Stone">
-                    <p class="item-name">Evolution Stone</p>
-                    <p class="item-price">Price: 10 Coins</p>
-                    <button class="buy-button" data-item-name="Evolution Stone" data-price="10">BUY</button>
-                </div>
-                 <div class="market-item" data-item-id="permaevolutionstone">
-                    <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Perma Evolution Stone">
-                    <p class="item-name">Perma Evolution Stone</p>
-                    <p class="item-price">Price: 100 Coins</p>
-                    <button class="buy-button" data-item-name="Perma Evolution Stone" data-price="100">BUY</button>
-                </div>
-                <div class="market-item" data-item-id="tcgpack">
-                    <img class="item-icon tcgpack-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="TCG Pack">
-                    <p class="item-name">TCG Pack</p>
-                    <p class="item-price">Price: 8 Coins</p>
-                    <button class="buy-button" data-item-name="TCG Pack" data-price="8">BUY</button>
-                </div>
+                <div class="market-item" data-item-id="pokeball"><img class="item-icon pokeball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Poké Ball"><p class="item-name">Poké Ball</p><p class="item-price">Price: 5 Coins</p><button class="buy-button" data-item-name="Poke Ball" data-price="5">BUY</button></div>
+                <div class="market-item" data-item-id="greatball"><img class="item-icon greatball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Great Ball"><p class="item-name">Great Ball</p><p class="item-price">Price: 10 Coins</p><button class="buy-button" data-item-name="Great Ball" data-price="10">BUY</button></div>
+                <div class="market-item" data-item-id="evolutionstone"><img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Evolution Stone"><p class="item-name">Evolution Stone</p><p class="item-price">Price: 10 Coins</p><button class="buy-button" data-item-name="Evolution Stone" data-price="10">BUY</button></div>
+                <div class="market-item" data-item-id="permaevolutionstone"><img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Perma Evolution Stone"><p class="item-name">Perma Evolution Stone</p><p class="item-price">Price: 100 Coins</p><button class="buy-button" data-item-name="Perma Evolution Stone" data-price="100">BUY</button></div>
+                <div class="market-item" data-item-id="tcgpack"><img class="item-icon tcgpack-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="TCG Pack"><p class="item-name">TCG Pack</p><p class="item-price">Price: 8 Coins</p><button class="buy-button" data-item-name="TCG Pack" data-price="8">BUY</button></div>
             </div>
             <button id="btnBackToMainFromMarket" class="market-back-button screen-back-button">BACK TO MAIN MENU</button>
         </div>
@@ -173,13 +147,13 @@
             <div class="pc-interface">
                 <div class="pc-column">
                     <h3>YOUR TEAM (<span id="pcTeamCount">0</span>/6)</h3>
-                    <div id="pcTeamGrid" class="pc-grid scrollable-content"> <!-- Team kan ook scrollen -->
+                    <div id="pcTeamGrid" class="pc-grid scrollable-content">
                         <p class="no-pokemon-pc-team" style="display:none;">Team is empty.</p>
                     </div>
                 </div>
                 <div class="pc-column pc-box-column">
                     <h3>PC BOX (<span id="pcBoxCount">0</span>/<span id="pcBoxCapacity">400</span>)</h3>
-                    <div id="pcBoxGrid" class="pc-grid scrollable-content"> <!-- Box grid scrollbaar -->
+                    <div id="pcBoxGrid" class="pc-grid scrollable-content">
                         <p class="no-pokemon-pc-box" style="display:none;">PC Box is empty.</p>
                     </div>
                     <div class="pc-pagination-controls">
@@ -194,25 +168,25 @@
 
         <div id="teamSelectScreen" class="screen" style="display: none;">
             <h2 id="teamSelectTitle">SELECT YOUR BATTLE TEAM</h2>
-            <div id="teamSelectGrid" class="scrollable-content"> <!-- Scrollable team select -->
+            <div id="teamSelectGrid" class="scrollable-content">
             </div>
             <button id="teamSelectConfirmButton" class="team-select-button">CONFIRM TEAM</button>
         </div>
 
         <div id="gymLeaderSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE A GYM LEADER</h2>
-            <div id="gymLeaderGrid" class="trainers-grid scrollable-content"> <!-- Scrollable gym leaders -->
+            <div id="gymLeaderGrid" class="trainers-grid scrollable-content">
             </div>
             <button id="btnBackToPlayMenuFromGymSelect" class="gym-leader-button screen-back-button back">BACK TO PLAY MODES</button>
         </div>
 
         <div id="gymLeaderDetailScreen" class="screen" style="display: none;">
-            <div class="detail-content-area scrollable-content"> <!-- Scrollable content area -->
+            <div class="detail-content-area scrollable-content">
                 <h2 id="gymLeaderDetailName">Gym Leader</h2>
                 <img id="gymLeaderCardImage" src="" alt="Gym Leader Card">
                 <p id="gymLeaderDialog"></p>
             </div>
-            <div class="detail-button-area"> <!-- Knoppen buiten scrollgebied -->
+            <div class="detail-button-area">
                 <button id="btnStartGymBattle" class="gym-detail-button">START BATTLE</button>
                 <button id="btnBackToGymSelectFromDetail" class="gym-detail-button back">BACK TO GYM LEADERS</button>
             </div>
@@ -220,18 +194,18 @@
 
         <div id="eliteFourSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE AN ELITE FOUR MEMBER</h2>
-            <div id="eliteFourGrid" class="trainers-grid scrollable-content"> <!-- Scrollable E4 members -->
+            <div id="eliteFourGrid" class="trainers-grid scrollable-content">
             </div>
             <button id="btnBackToPlayMenuFromEliteFourSelect" class="elite-four-button screen-back-button back">BACK TO PLAY MODES</button>
         </div>
 
         <div id="eliteFourDetailScreen" class="screen" style="display: none;">
-             <div class="detail-content-area scrollable-content"> <!-- Scrollable content area -->
+             <div class="detail-content-area scrollable-content">
                 <h2 id="eliteFourDetailName">Elite Four Member</h2>
                 <img id="eliteFourCardImage" src="" alt="Elite Four Member Card">
                 <p id="eliteFourDialog"></p>
             </div>
-            <div class="detail-button-area"> <!-- Knoppen buiten scrollgebied -->
+            <div class="detail-button-area">
                 <button id="btnStartEliteFourBattle" class="elite-four-detail-button">START BATTLE</button>
                 <button id="btnBackToEliteFourSelectFromDetail" class="elite-four-detail-button back">BACK TO ELITE FOUR</button>
             </div>
@@ -239,7 +213,7 @@
 
         <div id="myCardsScreen" class="screen" style="display: none;">
             <h2>MY CARDS & BADGES</h2>
-            <div class="my-cards-content scrollable-content"> <!-- Scrollable content area -->
+            <div class="my-cards-content scrollable-content">
                 <h3>Collected Gym Leader Cards</h3>
                 <div id="collectedCardsGrid" class="cards-collection-grid">
                     <p class="no-collected-items" id="noCollectedCardsMsg" style="display:none;">No Gym Leader cards collected yet.</p>
@@ -258,7 +232,7 @@
 
         <div id="tcgCardsScreen" class="screen" style="display: none;">
             <h2>MY TCG CARDS</h2>
-            <div id="tcgCardsGrid" class="cards-collection-grid scrollable-content"> <!-- Scrollable TCG cards -->
+            <div id="tcgCardsGrid" class="cards-collection-grid scrollable-content">
                 <p class="no-collected-items" id="noTcgCardsMsg" style="display:none;">No TCG cards collected yet.</p>
             </div>
             <button id="btnBackToMainFromTcgCards" class="my-cards-back-button screen-back-button">BACK TO MAIN MENU</button>
@@ -275,15 +249,14 @@
             </div>
         </div>
 
-
-        <div id="battleScreen" class="screen" style="display: none;"> <!-- Battle screen zelf is nu flex column -->
+        <div id="battleScreen" class="screen" style="display: none;">
             <div class="battle-arena">
                  <div id="attackAnimationLayer"></div>
                  <div class="pokemon-sprite opponent-sprite"><img id="opponentPokemonSprite" src="" alt="Opponent"></div>
                  <div class="pokemon-sprite player-sprite"><img id="playerPokemonSprite" src="" alt="Player"></div>
-            </div>
-            <div class="battle-info-container"> <!-- Container voor beide info boxes -->
-                <div class="battle-info-box opponent-info">
+
+                 <!-- Info boxes direct in arena voor absolute positionering t.o.v. arena/scherm -->
+                 <div class="battle-info-box opponent-info">
                      <div class="info-line"><span class="name" id="opponentPokemonName"></span><span id="opponentStatusTag" class="status-tag" style="display:none;"></span></div>
                      <div class="hp-bar-container"><span>HP</span><div class="hp-bar-fill" id="opponentHpFill"></div></div>
                      <div class="hp-numbers" id="opponentHpNumbers"></div>
@@ -296,29 +269,34 @@
                      <div class="team-status" id="playerTeamStatus"></div>
                 </div>
             </div>
-            <div class="battle-ui-bottom"> <!-- Dit element blijft onderaan -->
+
+            <div class="battle-ui-bottom">
                 <div class="battle-textbox" id="battleTextbox"><p id="battleMessage"></p></div>
-                <div class="battle-menu battle-action-menu" id="actionMenu" style="display: none;">
-                    <button data-action="fight">FIGHT</button>
-                    <button data-action="item">ITEM</button>
-                    <button data-action="pokemon">POKéMON</button>
-                    <button data-action="run">RUN</button>
+                <div class="battle-menu-container"> <!-- Nieuwe container voor de menu's -->
+                    <div class="battle-menu battle-action-menu" id="actionMenu" style="display: none;">
+                        <button data-action="fight">FIGHT</button>
+                        <button data-action="item">ITEM</button>
+                        <button data-action="pokemon">POKéMON</button>
+                        <button data-action="run">RUN</button>
+                    </div>
+                    <div class="battle-menu battle-move-menu" id="moveMenu" style="display: none;">
+                        <button data-move-index="0"><span class="move-name"></span><span class="move-pp"></span></button>
+                        <button data-move-index="1"><span class="move-name"></span><span class="move-pp"></span></button>
+                        <button data-move-index="2"><span class="move-name"></span><span class="move-pp"></span></button>
+                        <button data-move-index="3"><span class="move-name"></span><span class="move-pp"></span></button>
+                        <button id="btnBackFromMoves" class="battle-menu-back-button">BACK</button>
+                    </div>
+                     <div class="battle-menu battle-item-menu" id="itemMenu" style="display: none;">
+                        <!-- Items worden hier dynamisch toegevoegd door JS -->
+                        <!-- De back knop wordt ook door JS toegevoegd als er items zijn -->
+                     </div>
                 </div>
-                <div class="battle-menu battle-move-menu" id="moveMenu" style="display: none;">
-                    <button data-move-index="0"><span class="move-name"></span><span class="move-pp"></span></button>
-                    <button data-move-index="1"><span class="move-name"></span><span class="move-pp"></span></button>
-                    <button data-move-index="2"><span class="move-name"></span><span class="move-pp"></span></button>
-                    <button data-move-index="3"><span class="move-name"></span><span class="move-pp"></span></button>
-                    <button id="btnBackFromMoves" class="battle-menu-back-button">BACK</button>
-                </div>
-                 <div class="battle-menu battle-item-menu" id="itemMenu" style="display: none;">
-                 </div>
             </div>
         </div>
 
         <div id="switchPokemonScreen" class="screen" style="display: none;">
             <h2>Choose a Pokémon</h2>
-            <div class="switch-grid scrollable-content" id="switchGrid"></div> <!-- Scrollable switch grid -->
+            <div class="switch-grid scrollable-content" id="switchGrid"></div>
             <button id="switchCancelButton" class="screen-back-button">CANCEL</button>
         </div>
 

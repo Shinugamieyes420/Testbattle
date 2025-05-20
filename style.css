@@ -14,9 +14,9 @@
     --bg-dialog: #2c3e50; --border-dialog: #34495e;
     --button-subtle-bg: #526476; --button-subtle-border: #3e4c5a; --button-subtle-shadow: #2a333c; --button-subtle-hover: #607488;
     --bg-options-menu: #2d3436;
-    --battle-ui-bg: rgba(25, 25, 30, 0.92);
+    --battle-ui-bg: rgba(25, 25, 30, 0.94); /* Iets minder transparant voor leesbaarheid */
     --battle-ui-border: #4a4a52;
-    --battle-info-box-bg: rgba(35, 35, 40, 0.9);
+    --battle-info-box-bg: rgba(35, 35, 40, 0.92); /* Iets minder transparant */
     --battle-info-box-border: #5c5c66;
     --battle-text-color: #f0f0f0;
     --battle-button-bg: #4a5568;
@@ -44,9 +44,9 @@ body.dark-mode {
     --bg-dialog: #1e2a38; --border-dialog: #2a3b4e;
     --button-subtle-bg: #485768; --button-subtle-border: #35414d; --button-subtle-shadow: #1e252c; --button-subtle-hover: #586a7e;
     --bg-options-menu: #1e272e;
-    --battle-ui-bg: rgba(10, 10, 15, 0.92);
+    --battle-ui-bg: rgba(10, 10, 15, 0.94);
     --battle-ui-border: #33333a;
-    --battle-info-box-bg: rgba(20, 20, 25, 0.9);
+    --battle-info-box-bg: rgba(20, 20, 25, 0.92);
     --battle-info-box-border: #42424b;
     --battle-text-color: #f5f5f5;
     --battle-button-bg: #3a4558;
@@ -413,15 +413,16 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    position: relative;
+    justify-content: space-between; /* Verdeelt arena en UI bottom */
+    position: relative; /* Nodig voor absolute positionering van info-boxen */
 }
 
 .battle-arena {
-    flex-grow: 1;
-    position: relative;
+    flex-grow: 1; /* Neemt de meeste beschikbare verticale ruimte */
+    position: relative; /* Belangrijk voor positionering van sprites en info-boxen */
     width: 100%;
-    min-height: 50%; /* Zorg voor voldoende ruimte voor sprites */
+    /* min-height is niet per se nodig als flex-grow wordt gebruikt, maar kan helpen */
+    min-height: 55%; /* Zorg voor voldoende ruimte voor sprites en info-boxen boven de UI */
 }
 
 #attackAnimationLayer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
@@ -430,21 +431,21 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .pokemon-sprite {
     position: absolute;
     image-rendering: pixelated;
-    width: clamp(90px, 28vmin, 180px);
-    height: clamp(90px, 28vmin, 180px);
+    width: clamp(80px, 25vmin, 160px); /* Iets kleiner voor mobiel */
+    height: clamp(80px, 25vmin, 160px);
     transition: transform 0.3s ease-in-out;
     transform-origin: bottom center;
     z-index: 10;
 }
 .opponent-sprite {
-    top: clamp(8%, 10vmin, 15%); /* Iets lager */
-    right: 5%;
-    transform: scale(1.25); /* Iets kleiner voor balans */
+    top: clamp(5%, 7vmin, 12%);
+    right: clamp(5%, 7vmin, 10%);
+    transform: scale(1.2);
 }
 .player-sprite {
-    bottom: clamp(2%, 3vmin, 8%); /* Iets hoger van de onderkant van arena */
-    left: 5%;
-    transform: scale(1.9); /* Iets kleiner */
+    bottom: clamp(1%, 2vmin, 5%);
+    left: clamp(5%, 7vmin, 10%);
+    transform: scale(1.8);
 }
 .opponent-sprite img, .player-sprite img { width: 100%; height: 100%; object-fit: contain; }
 
@@ -452,12 +453,12 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     position: absolute;
     background-color: var(--battle-info-box-bg);
     border: 2px solid var(--battle-info-box-border);
-    border-radius: 8px;
-    padding: clamp(5px, 1vmin, 8px) clamp(7px, 1.2vmin, 10px);
-    width: clamp(140px, 40%, 230px); /* Nog iets smaller voor mobiel */
-    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    border-radius: 6px; /* Kleinere radius */
+    padding: clamp(4px, 0.8vmin, 7px) clamp(6px, 1vmin, 9px); /* Kleinere padding */
+    width: clamp(130px, 40%, 220px); /* Iets smaller */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
     color: var(--battle-text-color);
-    font-size: clamp(0.6em, 1.7vmin, 0.8em); /* Nog kleiner lettertype */
+    font-size: clamp(0.6em, 1.6vmin, 0.75em); /* Nog kleiner lettertype */
     z-index: 60;
     display: flex;
     flex-direction: column;
@@ -469,90 +470,95 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 }
 
 .player-info {
-    /* Positionering relatief aan de .battle-ui-bottom */
-    /* Dit wordt lastig zonder JS, dus we positioneren het absoluut t.o.v. het scherm */
-    /* en hopen dat het met de .battle-ui-bottom hoogte goed uitkomt */
-    bottom: calc(32% + 1vmin); /* 32% is een gok voor de hoogte van de UI balk + marge */
+    /* Positionering relatief aan de onderkant van de .battle-arena, net boven .battle-ui-bottom */
+    bottom: 1vmin; /* Marge van de onderkant van de arena (die boven de UI balk zit) */
     right: 1vmin;
+    /* Belangrijk: zorg dat .battle-arena genoeg hoogte heeft zodat dit niet te hoog komt */
 }
 
-.info-line { display: flex; justify-content: space-between; margin-bottom: 0.4vmin; align-items: center;}
+.info-line { display: flex; justify-content: space-between; margin-bottom: 0.3vmin; align-items: center;}
 .info-line .name { font-weight: bold; font-size: 1.1em; }
-.info-line .status-tag { font-size: 0.8em; padding: 0.1em 0.35em; margin-left: 0.3em;}
-.status-tag.BRN { background-color: var(--status-brn-color); } .status-tag.PSN { background-color: var(--status-psn-color); } .status-tag.PAR { background-color: var(--status-par-color); color: #4a3b00; } .status-tag.SLP { background-color: var(--status-slp-color); } .status-tag.FRZ { background-color: var(--status-frz-color); color: #005566; }
-.hp-bar-container { width: 100%; height: clamp(8px, 1.5vmin, 14px); background-color: #555; border: 1px solid #333; border-radius: 5px; overflow: hidden; margin: 0.4vmin 0; display: flex; align-items: center; }
-.hp-bar-container span { font-size: clamp(0.6em, 1.4vmin, 0.75em); font-weight: bold; color: white; background-color: rgba(0,0,0,0.6); padding: 0.1vmin 0.4vmin; margin-left: 0.3vmin; border-radius: 3px; }
-.hp-bar-fill { height: 100%; background-color: var(--hp-high-color); border-radius: 3px 0 0 3px; transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out; }
-.player-info .hp-numbers, .opponent-info .hp-numbers { text-align: right; font-size: clamp(0.75em, 1.8vmin, 0.95em); margin-top: 0.4vmin; color: var(--battle-text-color); opacity: 0.9; font-weight: bold; }
-.team-status { display: flex; gap: 0.8vmin; margin-top: 0.8vmin; padding-left: 2px; }
-.status-ball { width: clamp(9px, 2.2vmin, 14px); height: clamp(9px, 2.2vmin, 14px); display: inline-block; background-image: var(--pokeball-svg-battle); background-size: contain; background-repeat: no-repeat; background-position: center; transition: filter 0.3s, opacity 0.3s; }
-.status-ball.fainted { filter: grayscale(100%) contrast(0.5); opacity: 0.5; }
+.info-line .status-tag { font-size: 0.8em; padding: 0.1em 0.3em; margin-left: 0.2em;}
+.hp-bar-container { width: 100%; height: clamp(7px, 1.3vmin, 12px); margin: 0.3vmin 0; }
+.hp-bar-container span { font-size: clamp(0.55em, 1.2vmin, 0.7em); padding: 0.05vmin 0.3vmin; margin-left: 0.2vmin; }
+.player-info .hp-numbers, .opponent-info .hp-numbers { font-size: clamp(0.7em, 1.6vmin, 0.9em); margin-top: 0.3vmin; }
+.team-status { gap: 0.6vmin; margin-top: 0.6vmin; padding-left: 1px; }
+.status-ball { width: clamp(8px, 2vmin, 12px); height: clamp(8px, 2vmin, 12px); }
 
 .battle-ui-bottom {
     flex-shrink: 0;
-    height: 32%; /* Vaste hoogte voor de onderste balk */
-    min-height: 160px; /* Zorg voor een minimale bruikbare hoogte */
+    height: 35%; /* Geef de onderste balk een vast percentage van de schermhoogte */
+    min-height: 170px; /* Zorg voor een absolute minimale hoogte voor leesbaarheid */
+    max-height: 220px; /* Voorkom dat het te groot wordt op grotere schermen */
     display: flex;
     border-top: 2px solid var(--battle-ui-border);
     background-color: var(--battle-ui-bg);
-    border-radius: 8px 8px 0 0;
+    border-radius: 6px 6px 0 0; /* Kleinere radius */
     z-index: 70;
-    box-shadow: 0 -1px 6px rgba(0,0,0,0.2);
-    overflow: hidden; /* Voorkom dat kinderen erbuiten vallen */
+    box-shadow: 0 -1px 5px rgba(0,0,0,0.2);
+    overflow: hidden;
 }
 .battle-textbox {
-    flex-grow: 1; /* Neemt de linkerkant in beslag */
-    padding: clamp(6px, 1.5vmin, 10px); /* Kleinere padding */
-    font-size: clamp(0.8em, 2vmin, 1em); /* Iets kleiner lettertype */
-    line-height: 1.25;
-    overflow-y: auto; /* Scrollbaar als tekst te lang is */
+    flex-grow: 1;
+    padding: clamp(5px, 1.2vmin, 10px);
+    font-size: clamp(0.75em, 1.9vmin, 0.9em);
+    line-height: 1.2;
+    overflow-y: auto;
     box-sizing: border-box;
     height: 100%; /* Vul de hoogte van .battle-ui-bottom */
-    max-height: 100%;
+    max-height: 100%; /* Voorkom dat het groter wordt dan parent */
 }
+.battle-menu-container { /* Nieuwe container voor de menu's */
+    flex-shrink: 0;
+    width: clamp(120px, 40%, 180px); /* Breedte van de menu kolom */
+    height: 100%;
+    display: flex; /* Om het actieve menu te tonen */
+    flex-direction: column; /* Als je menu's onder elkaar zou willen (nu niet gebruikt) */
+    border-left: 2px solid var(--battle-ui-border);
+    overflow: hidden; /* Voorkom dat menu's buiten de container vallen */
+}
+
 .battle-menu {
-    padding: clamp(0.5vmin, 0.8vmin, 1vmin); /* Kleinere padding */
+    padding: clamp(0.4vmin, 0.6vmin, 0.8vmin);
     box-sizing: border-box;
     display: grid;
-    overflow-y: auto;
-    height: 100%; /* Vul de hoogte van .battle-ui-bottom */
-    max-height: 100%;
+    overflow-y: auto; /* Maakt scrollen mogelijk binnen het menu zelf */
+    width: 100%; /* Neem volledige breedte van .battle-menu-container */
+    height: 100%; /* Neem volledige hoogte van .battle-menu-container */
 }
 .battle-action-menu {
-    flex-shrink: 0;
-    width: clamp(100px, 35%, 140px); /* Iets smaller, maar relatief groter deel */
-    grid-template-columns: 1fr;
-    gap: clamp(0.4vmin, 0.6vmin, 0.8vmin);
-    padding: clamp(0.5vmin, 0.8vmin, 1.2vmin); /* Kleinere padding */
-    border-left: 2px solid var(--battle-ui-border);
+    grid-template-columns: 1fr; /* Knoppen onder elkaar */
+    gap: clamp(0.3vmin, 0.5vmin, 0.7vmin);
+    align-content: stretch; /* Verdeel ruimte over de knoppen */
+    padding: clamp(0.5vmin, 0.8vmin, 1vmin);
 }
-.battle-action-menu.extended { grid-template-rows: repeat(4, 1fr); align-content: stretch; }
+.battle-action-menu.extended { grid-template-rows: repeat(4, 1fr); } /* Blijft voor 4 knoppen */
 
 .battle-move-menu, .battle-item-menu {
-    width: 100%; /* Neemt de breedte van de parent (battle-ui-bottom minus textbox) */
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(0.5vmin, 0.8vmin, 1vmin); /* Kleinere gap */
-    padding: clamp(0.5vmin, 0.8vmin, 1.2vmin);
+    grid-template-columns: 1fr 1fr; /* Twee kolommen voor moves/items */
+    gap: clamp(0.5vmin, 0.7vmin, 1vmin);
+    padding: clamp(0.5vmin, 0.8vmin, 1vmin);
 }
-.battle-move-menu { grid-template-rows: 1fr 1fr auto; }
-.battle-item-menu { grid-template-rows: auto; }
+.battle-move-menu { grid-template-rows: 1fr 1fr auto; } /* Back knop onderaan */
+.battle-item-menu { grid-template-rows: auto; } /* Items vullen van boven */
 
 .battle-menu button {
-    font-size: clamp(0.65em, 1.8vmin, 0.85em); /* Nog kleiner voor mobiel */
+    font-size: clamp(0.6em, 1.7vmin, 0.8em);
     padding: clamp(0.3vmin, 0.6vmin, 0.8vmin);
-    min-height: clamp(28px, 6.5vmin, 45px); /* Kleinere min-hoogte */
+    min-height: clamp(25px, 6vmin, 40px);
 }
 .battle-menu-back-button {
-    font-size: clamp(0.6em, 1.6vmin, 0.8em);
-    padding: clamp(0.2vmin, 0.5vmin, 0.7vmin);
+    font-size: clamp(0.55em, 1.5vmin, 0.75em);
+    padding: clamp(0.2vmin, 0.4vmin, 0.6vmin);
+    margin-top: 0.5vmin; /* Kleinere marge */
 }
-.move-name, .item-name-battle { font-size: clamp(0.6em, 1.6vmin, 0.8em); }
-.move-pp, .item-count-battle { font-size: clamp(0.5em, 1.2vmin, 0.65em); }
-.item-icon-battle { width: clamp(10px, 2.2vmin, 14px); height: clamp(10px, 2.2vmin, 14px); margin-right: 2px; }
+.move-name, .item-name-battle { font-size: clamp(0.55em, 1.5vmin, 0.75em); }
+.move-pp, .item-count-battle { font-size: clamp(0.5em, 1.1vmin, 0.6em); }
+.item-icon-battle { width: clamp(10px, 2vmin, 12px); height: clamp(10px, 2vmin, 12px); margin-right: 2px; }
 
 @keyframes shake { 0%, 100% { transform: translateX(0) scale(var(--sprite-scale, 1)); } 10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) scale(var(--sprite-scale, 1)); } 20%, 40%, 60%, 80% { transform: translateX(5px) scale(var(--sprite-scale, 1)); } }
 .shake-anim { animation: shake 0.5s linear; }
-.opponent-sprite.shake-anim { --sprite-scale: 1.25; } .player-sprite.shake-anim { --sprite-scale: 1.9; }
+.opponent-sprite.shake-anim { --sprite-scale: 1.2; } .player-sprite.shake-anim { --sprite-scale: 1.8; }
 @keyframes flash { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(2.5); } }
 .flash-anim > img { animation: flash 0.15s linear 2; }
 
