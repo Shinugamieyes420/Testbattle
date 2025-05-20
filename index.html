@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blazing Thunder - V1.2.0 (Layout Fixes & TCG Prep)</title>
+    <title>Blazing Thunder - V1.2.0 (Layout Fixes & TCG Prep)</title> <!-- Versie update -->
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script> <!-- Anime.js CDN -->
 </head>
 <body id="gameBody">
 
@@ -66,6 +66,7 @@
                      <button class="submenu-tab" id="tabMyCards">MY CARDS & BADGES</button>
                      <button class="submenu-tab" id="tabTcgCards">MY TCG CARDS</button>
                      <button class="submenu-tab" id="tabMyPc">MY PC</button>
+                     <button class="submenu-tab" id="tabPassword">PASSWORD</button> <!-- NIEUWE TAB -->
                  </div>
              </div>
         </div>
@@ -86,6 +87,26 @@
             <button class="options-button" id="btnDarkModeOpt">DARK MODE</button>
             <button class="options-button" id="btnBackToMainOpts">BACK</button>
         </div>
+
+        <!-- NIEUW SCHERM VOOR WACHTWOORD BEHEER -->
+        <div id="passwordScreen" class="screen" style="display: none;">
+            <h2>PASSWORD MANAGEMENT</h2>
+            <div class="password-section">
+                <h3>Generate Password</h3>
+                <p>Click the button below to generate a password for your current game data. Save this password carefully!</p>
+                <button id="btnGeneratePassword" class="password-button">Generate Password</button>
+                <textarea id="generatedPasswordArea" rows="4" readonly placeholder="Your generated password will appear here..."></textarea>
+            </div>
+            <div class="password-section">
+                <h3>Load Game from Password</h3>
+                <p>Enter a previously saved password to load your game data.</p>
+                <textarea id="inputPasswordArea" rows="4" placeholder="Enter your password here..."></textarea>
+                <button id="btnLoadFromPassword" class="password-button">Load from Password</button>
+            </div>
+            <button id="btnBackToMainFromPassword" class="password-back-button">BACK TO MAIN MENU</button>
+        </div>
+        <!-- EINDE NIEUW SCHERM VOOR WACHTWOORD BEHEER -->
+
 
         <div id="marketScreen" class="screen" style="display: none;">
             <h2>MARKET</h2>
@@ -151,12 +172,10 @@
                     </div>
                 </div>
                 <div class="pc-column">
-                    {/* Capaciteit aangepast naar 400 */}
                     <h3>PC BOX (<span id="pcBoxCount">0</span>/<span id="pcBoxCapacity">400</span>)</h3>
                     <div id="pcBoxGrid" class="pc-grid">
                         <p class="no-pokemon-pc-box" style="display:none;">PC Box is empty.</p>
                     </div>
-                    {/* NIEUWE PAGINERING CONTROLS */}
                     <div class="pc-pagination-controls">
                         <button id="pcPrevButton" class="pc-page-btn" disabled>< Prev</button>
                         <span id="pcPageIndicator">Page 1 / 1</span>
@@ -229,6 +248,7 @@
             <button id="btnBackToMainFromTcgCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
         </div>
 
+        <!-- TCG Pack Opening Animation Overlay (Hidden by default) -->
         <div id="tcgPackOpeningOverlay" class="dialog-overlay" style="display: none;">
             <div class="tcg-pack-animation-container">
                 <p>Opening Pack...</p>
