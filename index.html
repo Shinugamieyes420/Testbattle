@@ -66,7 +66,6 @@
                      <button class="submenu-tab" id="tabMyCards">MY CARDS & BADGES</button>
                      <button class="submenu-tab" id="tabTcgCards">MY TCG CARDS</button>
                      <button class="submenu-tab" id="tabMyPc">MY PC</button>
-                     <button class="submenu-tab" id="tabPassword">PASSWORD</button> <!-- NIEUWE TAB -->
                  </div>
              </div>
         </div>
@@ -87,26 +86,6 @@
             <button class="options-button" id="btnDarkModeOpt">DARK MODE</button>
             <button class="options-button" id="btnBackToMainOpts">BACK</button>
         </div>
-
-        <!-- NIEUW SCHERM VOOR WACHTWOORD BEHEER -->
-        <div id="passwordScreen" class="screen" style="display: none;">
-            <h2>PASSWORD MANAGEMENT</h2>
-            <div class="password-section">
-                <h3>Generate Password</h3>
-                <p>Click the button below to generate a password for your current game data. Save this password carefully!</p>
-                <button id="btnGeneratePassword" class="password-button">Generate Password</button>
-                <textarea id="generatedPasswordArea" rows="4" readonly placeholder="Your generated password will appear here..."></textarea>
-            </div>
-            <div class="password-section">
-                <h3>Load Game from Password</h3>
-                <p>Enter a previously saved password to load your game data.</p>
-                <textarea id="inputPasswordArea" rows="4" placeholder="Enter your password here..."></textarea>
-                <button id="btnLoadFromPassword" class="password-button">Load from Password</button>
-            </div>
-            <button id="btnBackToMainFromPassword" class="password-back-button">BACK TO MAIN MENU</button>
-        </div>
-        <!-- EINDE NIEUW SCHERM VOOR WACHTWOORD BEHEER -->
-
 
         <div id="marketScreen" class="screen" style="display: none;">
             <h2>MARKET</h2>
@@ -172,14 +151,9 @@
                     </div>
                 </div>
                 <div class="pc-column">
-                    <h3>PC BOX (<span id="pcBoxCount">0</span>/<span id="pcBoxCapacity">400</span>)</h3>
+                    <h3>PC BOX (<span id="pcBoxCount">0</span>/<span id="pcBoxCapacity">30</span>)</h3>
                     <div id="pcBoxGrid" class="pc-grid">
                         <p class="no-pokemon-pc-box" style="display:none;">PC Box is empty.</p>
-                    </div>
-                    <div class="pc-pagination-controls">
-                        <button id="pcPrevButton" class="pc-page-btn" disabled>< Prev</button>
-                        <span id="pcPageIndicator">Page 1 / 1</span>
-                        <button id="pcNextButton" class="pc-page-btn" disabled>Next ></button>
                     </div>
                 </div>
             </div>
@@ -251,6 +225,7 @@
         <!-- TCG Pack Opening Animation Overlay (Hidden by default) -->
         <div id="tcgPackOpeningOverlay" class="dialog-overlay" style="display: none;">
             <div class="tcg-pack-animation-container">
+                <!-- Animation will happen here via JS -->
                 <p>Opening Pack...</p>
             </div>
             <div id="revealedTcgCardContainer" class="revealed-tcg-card-container" style="display:none;">
