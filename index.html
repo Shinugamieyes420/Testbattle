@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blazing Thunder - Pokemon master (Pokémon League & TCG Updates)</title> <!-- Versie update -->
+    <title>Blazing Thunder - V3.1 (Shiny Fix & Delete Pokémon)</title> <!-- Versie update -->
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script> <!-- Anime.js CDN -->
 </head>
@@ -51,6 +51,18 @@
              </div>
         </div>
 
+        <!-- NIEUW: Confirmatie dialoog voor het weggooien van Pokémon -->
+        <div id="deletePokemonConfirmDialog" class="dialog-overlay" style="display: none;">
+            <div class="dialog-content">
+                <p>Weet je zeker dat je <span id="pokemonToDeleteName">deze Pokémon</span> wilt weggooien? Dit kan niet ongedaan worden gemaakt!</p>
+                <div class="dialog-buttons">
+                    <button id="deletePokemonConfirmYes" class="danger-button">Ja, Gooi weg</button>
+                    <button id="deletePokemonConfirmNo">Nee</button>
+                </div>
+            </div>
+        </div>
+        <!-- EINDE NIEUWE DIALOOG -->
+
         <div id="mainMenuScreen" class="screen" style="display: none;">
              <div class="menu-options">
                  <button id="btnPlay">PLAY</button>
@@ -63,7 +75,7 @@
                      <button class="submenu-tab" id="tabMarket">MARKET</button>
                      <button class="submenu-tab" id="tabInventory">INVENTORY</button>
                      <button class="submenu-tab" id="tabTeam">TEAM</button>
-                     <button class="submenu-tab" id="tabMyCards">MY CARDS</button> <!-- Badges verwijderd uit naam -->
+                     <button class="submenu-tab" id="tabMyCards">MY CARDS</button>
                      <button class="submenu-tab" id="tabTcgCards">MY TCG CARDS</button>
                      <button class="submenu-tab" id="tabMyPc">MY PC</button>
                      <button class="submenu-tab" id="tabPassword">PASSWORD</button>
@@ -76,7 +88,7 @@
             <button class="play-mode-button" id="btnQuickBattlePlay">QUICK BATTLE</button>
             <button class="play-mode-button" id="btnGymBattlePlay">GYM BATTLE</button>
             <button class="play-mode-button" id="btnEliteBattlesPlay">ELITE FOUR</button>
-            <button class="play-mode-button" id="btnPokemonLeaguePlay">POKéMON LEAGUE</button> <!-- NIEUWE SPELMODUS -->
+            <button class="play-mode-button" id="btnPokemonLeaguePlay">POKéMON LEAGUE</button>
             <button class="play-mode-button" id="btnWildModePlay">WILD MODE</button>
             <button class="play-mode-button" id="btnBackToMainFromPlay">BACK</button>
         </div>
@@ -123,7 +135,7 @@
                     <p class="item-price">Price: 10 Coins</p>
                     <button class="buy-button" data-item-name="Great Ball" data-price="10">BUY</button>
                 </div>
-                <div class="market-item" data-item-id="ultraball"> <!-- NIEUW: Ultra Ball -->
+                <div class="market-item" data-item-id="ultraball">
                     <img class="item-icon ultraball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Ultra Ball">
                     <p class="item-name">Ultra Ball</p>
                     <p class="item-price">Price: 15 Coins</p>
@@ -198,7 +210,6 @@
             <button id="teamSelectConfirmButton" class="team-select-button" disabled>CONFIRM TEAM</button>
         </div>
 
-        <!-- Gym Battle Schermen (onveranderd qua structuur) -->
         <div id="gymLeaderSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE A GYM LEADER</h2>
             <div id="gymLeaderGrid" class="trainers-grid">
@@ -214,7 +225,6 @@
             <button id="btnBackToGymSelectFromDetail" class="gym-detail-button back">BACK TO GYM LEADERS</button>
         </div>
 
-        <!-- Elite Four Schermen (onveranderd qua structuur) -->
         <div id="eliteFourSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE AN ELITE FOUR MEMBER</h2>
             <div id="eliteFourGrid" class="trainers-grid">
@@ -230,11 +240,9 @@
             <button id="btnBackToEliteFourSelectFromDetail" class="elite-four-detail-button back">BACK TO ELITE FOUR</button>
         </div>
 
-        <!-- Pokémon League Scherm (NIEUW) -->
         <div id="pokemonLeagueScreen" class="screen" style="display: none;">
             <h2>POKéMON LEAGUE CHALLENGE</h2>
             <div id="pokemonLeagueProgress" class="league-progress-bar">
-                <!-- Dynamisch gevuld met voortgang -->
             </div>
             <div id="currentLeagueOpponentDisplay" class="league-opponent-display">
                 <p>Your next opponent is: <span id="leagueOpponentName"></span></p>
@@ -246,30 +254,29 @@
 
 
         <div id="myCardsScreen" class="screen" style="display: none;">
-            <h2>MY CARDS</h2> <!-- Badges verwijderd -->
-            <h3>Collected Gym Leader & Elite Four Cards</h3>
-            <div class="card-viewer-controls"> <!-- NIEUW: Knoppen voor kaartnavigatie -->
+            <h2>MY CARDS</h2>
+            <h3>Collected Trainer Cards</h3>
+            <div class="card-viewer-controls">
                 <button id="prevCardButton" class="card-nav-btn" disabled><</button>
                 <img id="displayedCardImage" src="" alt="Displayed Card">
                 <button id="nextCardButton" class="card-nav-btn" disabled>></button>
             </div>
-            <p id="noCollectedCardsMsg" style="display:none;">No Trainer cards collected yet.</p> <!-- Gecombineerd bericht -->
+            <p id="noCollectedCardsMsg" style="display:none;">No Trainer cards collected yet.</p>
             <button id="btnBackToMainFromMyCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
         </div>
 
         <div id="tcgCardsScreen" class="screen" style="display: none;">
             <h2>MY TCG CARDS</h2>
-            <div class="tcg-filter-controls"> <!-- NIEUW: Filters voor TCG sets -->
+            <div class="tcg-filter-controls">
                 <label for="tcgSetFilter">Filter by Set:</label>
                 <select id="tcgSetFilter">
                     <option value="all">All Sets</option>
-                    <!-- Opties worden dynamisch gevuld -->
                 </select>
             </div>
-            <div id="tcgCardsGrid" class="cards-collection-grid tcg-grid-clickable"> <!-- Klasse toegevoegd voor klikbare kaarten -->
+            <div id="tcgCardsGrid" class="cards-collection-grid tcg-grid-clickable">
                 <p class="no-collected-items" id="noTcgCardsMsg" style="display:none;">No TCG cards collected yet.</p>
             </div>
-            <div class="tcg-pagination-controls"> <!-- NIEUW: Paginering voor TCG kaarten -->
+            <div class="tcg-pagination-controls">
                  <button id="tcgPrevPageButton" class="tcg-page-btn" disabled>< Prev</button>
                  <span id="tcgPageIndicator">Page 1 / 1</span>
                  <button id="tcgNextPageButton" class="tcg-page-btn" disabled>Next ></button>
@@ -277,7 +284,6 @@
             <button id="btnBackToMainFromTcgCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
         </div>
 
-        <!-- Overlay voor vergrote TCG kaart -->
         <div id="tcgCardModal" class="dialog-overlay card-modal" style="display: none;">
             <div class="dialog-content card-modal-content">
                 <img id="modalTcgCardImage" src="" alt="Enlarged TCG Card">
@@ -286,7 +292,6 @@
         </div>
 
 
-        <!-- TCG Pack Opening Animation Overlay (Hidden by default) -->
         <div id="tcgPackOpeningOverlay" class="dialog-overlay" style="display: none;">
             <div class="tcg-pack-animation-container">
                 <p>Opening Pack...</p>
