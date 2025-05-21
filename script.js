@@ -1195,6 +1195,967 @@ const pokemonPool = [
                 baseStats: { attack: 20, defense: 15, speed: 90 }, // Sp. Atk 105
                 moves: [
                     { name: "Teleport", type: "Psychic", accuracy: 100, maxPp: 20, power: 0 } // Flees (niet geïmplementeerd voor battle)
+                ],const pokemonPool = [ 
+    // First 3 Kanto Starters
+    {
+        pokedexId: 1, name: "BULBASAUR", types: ["Grass", "Poison"], hp: 120, baseStats: { attack: 49, defense: 49, speed: 45 },
+        moves: [ { name: "Tackle", type: "Normal", accuracy: 100, maxPp: 35, power: 40 }, { name: "Vine Whip", type: "Grass", accuracy: 100, maxPp: 25, power: 45 }, { name: "Poison Powder", type: "Poison", accuracy: 75, maxPp: 35, power: 0, effect: { type: "status", condition: "PSN", chance: 1 } }, { name: "Growth", type: "Normal", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: ["attack"], target: "self", stages: 1 }, alwaysHits: true } ],
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png", spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/1.png", evolvesToPokedexId: 2 
+    },
+    {
+        pokedexId: 2, name: "IVYSAUR", types: ["Grass", "Poison"], hp: 135, baseStats: { attack: 62, defense: 63, speed: 60 },
+        moves: [ { name: "Razor Leaf", type: "Grass", accuracy: 95, maxPp: 25, power: 55, highCritRatio: true }, { name: "Poison Powder", type: "Poison", accuracy: 75, maxPp: 35, power: 0, effect: { type: "status", condition: "PSN", chance: 1 } }, { name: "Sleep Powder", type: "Grass", accuracy: 75, maxPp: 15, power: 0, effect: { type: "status", condition: "SLP", chance: 1 } }, { name: "Take Down", type: "Normal", accuracy: 85, maxPp: 20, power: 90 } ],
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png", spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/2.png", evolvesToPokedexId: 3 
+    },
+    {
+        pokedexId: 3, name: "VENUSAUR", types: ["Grass", "Poison"], hp: 155, baseStats: { attack: 82, defense: 83, speed: 80 },
+        moves: [ { name: "Solar Beam", type: "Grass", accuracy: 100, maxPp: 10, power: 120 }, { name: "Sludge Bomb", type: "Poison", accuracy: 100, maxPp: 10, power: 90, effect: { type: "status", condition: "PSN", chance: 0.3 } }, { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 }, { name: "Growth", type: "Normal", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "attack", target: "self", stages: 1 }, alwaysHits: true } ],
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png", spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/3.png", evolvesToPokedexId: null 
+    },
+{
+        pokedexId: 4,
+        name: "CHARMANDER",
+        types: ["Fire"],
+        hp: 115,
+        baseStats: { attack: 52, defense: 43, speed: 65 },
+        moves: [
+            { name: "Scratch", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+            { name: "Ember", type: "Fire", accuracy: 100, maxPp: 25, power: 40, effect: { type: "status", condition: "BRN", chance: 0.1 } },
+            { name: "Growl", type: "Normal", accuracy: 100, maxPp: 40, power: 0, effect: { type: "stat", stat: "attack", target: "opponent", stages: -1 }, alwaysHits: true },
+            { name: "Smokescreen", type: "Normal", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "accuracy", target: "opponent", stages: -1 }, alwaysHits: true }
+        ],
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/4.png",
+        evolvesToPokedexId: 5
+    },
+    {
+        pokedexId: 5,
+        name: "CHARMELEON",
+        types: ["Fire"],
+        hp: 130,
+        baseStats: { attack: 64, defense: 58, speed: 80 },
+        moves: [
+            { name: "Slash", type: "Normal", accuracy: 100, maxPp: 20, power: 70, highCritRatio: true },
+            { name: "Flamethrower", type: "Fire", accuracy: 100, maxPp: 15, power: 90, effect: { type: "status", condition: "BRN", chance: 0.1 } },
+            { name: "Scary Face", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "stat", stat: "speed", target: "opponent", stages: -2 }, alwaysHits: true },
+            { name: "Fire Fang", type: "Fire", accuracy: 95, maxPp: 15, power: 65, effect: { type: "flinch_or_status", condition: "BRN", chance: 0.1, flinchChance: 0.1 } } // Aangepast effect
+        ],
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/5.png",
+        evolvesToPokedexId: 6
+    },
+    {
+        pokedexId: 6,
+        name: "CHARIZARD",
+        types: ["Fire", "Flying"],
+        hp: 150,
+        baseStats: { attack: 84, defense: 78, speed: 100 },
+        moves: [
+            { name: "Air Slash", type: "Flying", accuracy: 95, maxPp: 15, power: 75, effect: { type: "flinch", chance: 0.3 } },
+            { name: "Flamethrower", type: "Fire", accuracy: 100, maxPp: 15, power: 90, effect: { type: "status", condition: "BRN", chance: 0.1 } },
+            { name: "Dragon Claw", type: "Dragon", accuracy: 100, maxPp: 15, power: 80 },
+            { name: "Heat Wave", type: "Fire", accuracy: 90, maxPp: 10, power: 95, effect: { type: "status", condition: "BRN", chance: 0.1 } } // Target: all opponents (niet geïmplementeerd in huidige engine)
+        ],
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/6.png",
+        evolvesToPokedexId: null
+    },
+    {
+                pokedexId: 7,
+                name: "SQUIRTLE",
+                types: ["Water"],
+                hp: 120,
+                baseStats: { attack: 48, defense: 65, speed: 43 },
+                moves: [
+                    { name: "Tackle", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Water Gun", type: "Water", accuracy: 100, maxPp: 25, power: 40 },
+                    { name: "Tail Whip", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Withdraw", type: "Water", accuracy: 100, maxPp: 40, power: 0, effect: { type: "stat", stat: "defense", target: "self", stages: 1 }, alwaysHits: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/7.png",
+                evolvesToPokedexId: 8
+            },
+            {
+                pokedexId: 8,
+                name: "WARTORTLE",
+                types: ["Water"],
+                hp: 135,
+                baseStats: { attack: 63, defense: 80, speed: 58 },
+                moves: [
+                    { name: "Water Pulse", type: "Water", accuracy: 100, maxPp: 20, power: 60, effect: { type: "confusion", chance: 0.2 } }, // Confusion niet geïmplementeerd
+                    { name: "Bite", type: "Dark", accuracy: 100, maxPp: 25, power: 60, effect: { type: "flinch", chance: 0.3 } },
+                    { name: "Rapid Spin", type: "Normal", accuracy: 100, maxPp: 40, power: 50 }, // Effect: removes hazards (niet geïmplementeerd)
+                    { name: "Protect", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "protect" }, priority: 4, alwaysHits: true } // Protect niet geïmplementeerd
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/8.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/8.png",
+                evolvesToPokedexId: 9
+            },
+            {
+                pokedexId: 9,
+                name: "BLASTOISE",
+                types: ["Water"],
+                hp: 155,
+                baseStats: { attack: 83, defense: 100, speed: 78 },
+                moves: [
+                    { name: "Hydro Pump", type: "Water", accuracy: 80, maxPp: 5, power: 110 },
+                    { name: "Ice Beam", type: "Ice", accuracy: 100, maxPp: 10, power: 90, effect: { type: "status", condition: "FRZ", chance: 0.1 } },
+                    { name: "Flash Cannon", type: "Steel", accuracy: 100, maxPp: 10, power: 80, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.1 } }, // Special Defense
+                    { name: "Skull Bash", type: "Normal", accuracy: 100, maxPp: 10, power: 130 } // 2-turn move (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/9.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 10,
+                name: "CATERPIE",
+                types: ["Bug"],
+                hp: 100,
+                baseStats: { attack: 30, defense: 35, speed: 45 },
+                moves: [
+                    { name: "Tackle", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "String Shot", type: "Bug", accuracy: 95, maxPp: 40, power: 0, effect: { type: "stat", stat: "speed", target: "opponent", stages: -2 }, alwaysHits: true },
+                    { name: "Bug Bite", type: "Bug", accuracy: 100, maxPp: 20, power: 60 }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/10.png",
+                evolvesToPokedexId: 11
+            },
+            {
+                pokedexId: 11,
+                name: "METAPOD",
+                types: ["Bug"],
+                hp: 110,
+                baseStats: { attack: 20, defense: 55, speed: 30 },
+                moves: [
+                    { name: "Harden", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "self", stages: 1 }, alwaysHits: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/11.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/11.png",
+                evolvesToPokedexId: 12
+            },
+            {
+                pokedexId: 12,
+                name: "BUTTERFREE",
+                types: ["Bug", "Flying"],
+                hp: 130,
+                baseStats: { attack: 45, defense: 50, speed: 70 }, // Sp. Atk is 90, Sp. Def is 80
+                moves: [
+                    { name: "Gust", type: "Flying", accuracy: 100, maxPp: 35, power: 40 }, // Special
+                    { name: "Sleep Powder", type: "Grass", accuracy: 75, maxPp: 15, power: 0, effect: { type: "status", condition: "SLP", chance: 1 } },
+                    { name: "Psybeam", type: "Psychic", accuracy: 100, maxPp: 20, power: 65, effect: { type: "confusion", chance: 0.1 } }, // Special, Confusion niet geïmplementeerd
+                    { name: "Bug Buzz", type: "Bug", accuracy: 100, maxPp: 10, power: 90, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.1 } } // Special, Sp. Def
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/12.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/12.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 13,
+                name: "WEEDLE",
+                types: ["Bug", "Poison"],
+                hp: 100,
+                baseStats: { attack: 35, defense: 30, speed: 50 },
+                moves: [
+                    { name: "Poison Sting", type: "Poison", accuracy: 100, maxPp: 35, power: 15, effect: { type: "status", condition: "PSN", chance: 0.3 } },
+                    { name: "String Shot", type: "Bug", accuracy: 95, maxPp: 40, power: 0, effect: { type: "stat", stat: "speed", target: "opponent", stages: -2 }, alwaysHits: true },
+                    { name: "Bug Bite", type: "Bug", accuracy: 100, maxPp: 20, power: 60 }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/13.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/13.png",
+                evolvesToPokedexId: 14
+            },
+            {
+                pokedexId: 14,
+                name: "KAKUNA",
+                types: ["Bug", "Poison"],
+                hp: 110,
+                baseStats: { attack: 25, defense: 50, speed: 35 },
+                moves: [
+                    { name: "Harden", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "self", stages: 1 }, alwaysHits: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/14.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/14.png",
+                evolvesToPokedexId: 15
+            },
+            {
+                pokedexId: 15,
+                name: "BEEDRILL",
+                types: ["Bug", "Poison"],
+                hp: 135,
+                baseStats: { attack: 90, defense: 40, speed: 75 }, // Sp. Def is 80
+                moves: [
+                    { name: "Twineedle", type: "Bug", accuracy: 100, maxPp: 20, power: 25 }, // Hits twice, poison chance (niet geïmplementeerd)
+                    { name: "Poison Jab", type: "Poison", accuracy: 100, maxPp: 20, power: 80, effect: { type: "status", condition: "PSN", chance: 0.3 } },
+                    { name: "Agility", type: "Psychic", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "speed", target: "self", stages: 2 }, alwaysHits: true },
+                    { name: "Pin Missile", type: "Bug", accuracy: 95, maxPp: 20, power: 25 } // Hits 2-5 times (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/15.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/15.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 16,
+                name: "PIDGEY",
+                types: ["Normal", "Flying"],
+                hp: 110,
+                baseStats: { attack: 45, defense: 40, speed: 56 },
+                moves: [
+                    { name: "Tackle", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Gust", type: "Flying", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Sand Attack", type: "Ground", accuracy: 100, maxPp: 15, power: 0, effect: { type: "stat", stat: "accuracy", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Quick Attack", type: "Normal", accuracy: 100, maxPp: 30, power: 40, priority: 1 }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/16.png",
+                evolvesToPokedexId: 17
+            },
+            {
+                pokedexId: 17,
+                name: "PIDGEOTTO",
+                types: ["Normal", "Flying"],
+                hp: 130,
+                baseStats: { attack: 60, defense: 55, speed: 71 },
+                moves: [
+                    { name: "Wing Attack", type: "Flying", accuracy: 100, maxPp: 35, power: 60 },
+                    { name: "Twister", type: "Dragon", accuracy: 100, maxPp: 20, power: 40, effect: { type: "flinch", chance: 0.2 } }, // Special
+                    { name: "Feather Dance", type: "Flying", accuracy: 100, maxPp: 15, power: 0, effect: { type: "stat", stat: "attack", target: "opponent", stages: -2 }, alwaysHits: true },
+                    { name: "Agility", type: "Psychic", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "speed", target: "self", stages: 2 }, alwaysHits: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/17.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/17.png",
+                evolvesToPokedexId: 18
+            },
+            {
+                pokedexId: 18,
+                name: "PIDGEOT",
+                types: ["Normal", "Flying"],
+                hp: 150,
+                baseStats: { attack: 80, defense: 75, speed: 101 }, // Sp. Def is 70
+                moves: [
+                    { name: "Hurricane", type: "Flying", accuracy: 70, maxPp: 10, power: 110, effect: { type: "confusion", chance: 0.3 } }, // Special, Confusion niet geïmplementeerd
+                    { name: "Air Slash", type: "Flying", accuracy: 95, maxPp: 15, power: 75, effect: { type: "flinch", chance: 0.3 } }, // Special
+                    { name: "Heat Wave", type: "Fire", accuracy: 90, maxPp: 10, power: 95, effect: { type: "status", condition: "BRN", chance: 0.1 } }, // Special
+                    { name: "Roost", type: "Flying", accuracy: 100, maxPp: 10, power: 0, effect: { type: "heal", percentage: 0.5, target: "self" }, alwaysHits: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/18.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/18.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 19,
+                name: "RATTATA",
+                types: ["Normal"],
+                hp: 100,
+                baseStats: { attack: 56, defense: 35, speed: 72 },
+                moves: [
+                    { name: "Tackle", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Quick Attack", type: "Normal", accuracy: 100, maxPp: 30, power: 40, priority: 1 },
+                    { name: "Focus Energy", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "focus_energy" }, alwaysHits: true }, // Verhoogt crit kans (niet volledig geïmplementeerd)
+                    { name: "Bite", type: "Dark", accuracy: 100, maxPp: 25, power: 60, effect: { type: "flinch", chance: 0.3 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/19.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/19.png",
+                evolvesToPokedexId: 20
+            },
+            {
+                pokedexId: 20,
+                name: "RATICATE",
+                types: ["Normal"],
+                hp: 125,
+                baseStats: { attack: 81, defense: 60, speed: 97 },
+                moves: [
+                    { name: "Hyper Fang", type: "Normal", accuracy: 90, maxPp: 15, power: 80, effect: { type: "flinch", chance: 0.1 } },
+                    { name: "Sucker Punch", type: "Dark", accuracy: 100, maxPp: 5, power: 70, priority: 1 }, // Werkt alleen als target aanvalt (niet geïmplementeerd)
+                    { name: "Crunch", type: "Dark", accuracy: 100, maxPp: 15, power: 80, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.2 } },
+                    { name: "Scary Face", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "stat", stat: "speed", target: "opponent", stages: -2 }, alwaysHits: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/20.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/20.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 21,
+                name: "SPEAROW",
+                types: ["Normal", "Flying"],
+                hp: 110,
+                baseStats: { attack: 60, defense: 30, speed: 70 },
+                moves: [
+                    { name: "Peck", type: "Flying", accuracy: 100, maxPp: 35, power: 35 },
+                    { name: "Growl", type: "Normal", accuracy: 100, maxPp: 40, power: 0, effect: { type: "stat", stat: "attack", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Leer", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Fury Attack", type: "Normal", accuracy: 85, maxPp: 20, power: 15 } // Hits 2-5 times (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/21.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/21.png",
+                evolvesToPokedexId: 22
+            },
+            {
+                pokedexId: 22,
+                name: "FEAROW",
+                types: ["Normal", "Flying"],
+                hp: 135,
+                baseStats: { attack: 90, defense: 65, speed: 100 },
+                moves: [
+                    { name: "Drill Peck", type: "Flying", accuracy: 100, maxPp: 20, power: 80 },
+                    { name: "Aerial Ace", type: "Flying", accuracy: 100, maxPp: 20, power: 60, alwaysHits: true }, // Kan niet missen
+                    { name: "Roost", type: "Flying", accuracy: 100, maxPp: 10, power: 0, effect: { type: "heal", percentage: 0.5, target: "self" }, alwaysHits: true },
+                    { name: "Assurance", type: "Dark", accuracy: 100, maxPp: 10, power: 60 } // Power doubles if target took damage this turn (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/22.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/22.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 23,
+                name: "EKANS",
+                types: ["Poison"],
+                hp: 110,
+                baseStats: { attack: 60, defense: 44, speed: 55 },
+                moves: [
+                    { name: "Wrap", type: "Normal", accuracy: 90, maxPp: 20, power: 15 }, // Traps target (niet geïmplementeerd)
+                    { name: "Poison Sting", type: "Poison", accuracy: 100, maxPp: 35, power: 15, effect: { type: "status", condition: "PSN", chance: 0.3 } },
+                    { name: "Bite", type: "Dark", accuracy: 100, maxPp: 25, power: 60, effect: { type: "flinch", chance: 0.3 } },
+                    { name: "Glare", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "status", condition: "PAR", chance: 1 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/23.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/23.png",
+                evolvesToPokedexId: 24
+            },
+            {
+                pokedexId: 24,
+                name: "ARBOK",
+                types: ["Poison"],
+                hp: 130,
+                baseStats: { attack: 95, defense: 69, speed: 80 },
+                moves: [
+                    { name: "Poison Jab", type: "Poison", accuracy: 100, maxPp: 20, power: 80, effect: { type: "status", condition: "PSN", chance: 0.3 } },
+                    { name: "Crunch", type: "Dark", accuracy: 100, maxPp: 15, power: 80, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.2 } },
+                    { name: "Glare", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "status", condition: "PAR", chance: 1 } },
+                    { name: "Acid Spray", type: "Poison", accuracy: 100, maxPp: 20, power: 40, effect: {type: "stat", stat: "defense", target: "opponent", stages: -2 } } // Sp. Def
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/24.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/24.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 25,
+                name: "PIKACHU",
+                types: ["Electric"],
+                hp: 110,
+                baseStats: { attack: 55, defense: 40, speed: 90 },
+                moves: [
+                    { name: "Thunder Shock", type: "Electric", accuracy: 100, maxPp: 30, power: 40, effect: { type: "status", condition: "PAR", chance: 0.1 } },
+                    { name: "Quick Attack", type: "Normal", accuracy: 100, maxPp: 30, power: 40, priority: 1 },
+                    { name: "Tail Whip", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Nuzzle", type: "Electric", accuracy: 100, maxPp: 20, power: 20, effect: { type: "status", condition: "PAR", chance: 1 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/25.png",
+                evolvesToPokedexId: 26 // Evolueert met Thunder Stone (niet direct via level in dit spel)
+            },
+            {
+                pokedexId: 26,
+                name: "RAICHU",
+                types: ["Electric"],
+                hp: 130,
+                baseStats: { attack: 90, defense: 55, speed: 110 },
+                moves: [
+                    { name: "Thunderbolt", type: "Electric", accuracy: 100, maxPp: 15, power: 90, effect: { type: "status", condition: "PAR", chance: 0.1 } },
+                    { name: "Volt Switch", type: "Electric", accuracy: 100, maxPp: 20, power: 70 }, // Switches out (niet geïmplementeerd)
+                    { name: "Focus Blast", type: "Fighting", accuracy: 70, maxPp: 5, power: 120, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.1 } }, // Sp. Def
+                    { name: "Nasty Plot", type: "Dark", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "attack", target: "self", stages: 2 }, alwaysHits: true } // Sp. Atk
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/26.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 27,
+                name: "SANDSHREW",
+                types: ["Ground"],
+                hp: 120,
+                baseStats: { attack: 75, defense: 85, speed: 40 },
+                moves: [
+                    { name: "Scratch", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Sand Attack", type: "Ground", accuracy: 100, maxPp: 15, power: 0, effect: { type: "stat", stat: "accuracy", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Poison Sting", type: "Poison", accuracy: 100, maxPp: 35, power: 15, effect: { type: "status", condition: "PSN", chance: 0.3 } },
+                    { name: "Rollout", type: "Rock", accuracy: 90, maxPp: 20, power: 30 } // Power increases (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/27.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/27.png",
+                evolvesToPokedexId: 28
+            },
+            {
+                pokedexId: 28,
+                name: "SANDSLASH",
+                types: ["Ground"],
+                hp: 145,
+                baseStats: { attack: 100, defense: 110, speed: 65 },
+                moves: [
+                    { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
+                    { name: "Stone Edge", type: "Rock", accuracy: 80, maxPp: 5, power: 100, highCritRatio: true },
+                    { name: "Swords Dance", type: "Normal", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "attack", target: "self", stages: 2 }, alwaysHits: true },
+                    { name: "Crush Claw", type: "Normal", accuracy: 95, maxPp: 10, power: 75, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.5 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/28.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/28.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 29,
+                name: "NIDORAN♀",
+                types: ["Poison"],
+                hp: 125,
+                baseStats: { attack: 47, defense: 52, speed: 41 },
+                moves: [
+                    { name: "Scratch", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Growl", type: "Normal", accuracy: 100, maxPp: 40, power: 0, effect: { type: "stat", stat: "attack", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Poison Sting", type: "Poison", accuracy: 100, maxPp: 35, power: 15, effect: { type: "status", condition: "PSN", chance: 0.3 } },
+                    { name: "Tail Whip", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "opponent", stages: -1 }, alwaysHits: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/29.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/29.png",
+                evolvesToPokedexId: 30
+            },
+            {
+                pokedexId: 30,
+                name: "NIDORINA",
+                types: ["Poison"],
+                hp: 140,
+                baseStats: { attack: 62, defense: 67, speed: 56 },
+                moves: [
+                    { name: "Poison Fang", type: "Poison", accuracy: 100, maxPp: 15, power: 50, effect: { type: "status", condition: "PSN", chance: 0.5 } }, // Badly poisons
+                    { name: "Bite", type: "Dark", accuracy: 100, maxPp: 25, power: 60, effect: { type: "flinch", chance: 0.3 } },
+                    { name: "Toxic Spikes", type: "Poison", accuracy: 100, maxPp: 20, power: 0 }, // Entry hazard (niet geïmplementeerd)
+                    { name: "Crunch", type: "Dark", accuracy: 100, maxPp: 15, power: 80, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.2 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/30.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/30.png",
+                evolvesToPokedexId: 31 // Evolueert met Moon Stone
+            },
+            {
+                pokedexId: 31,
+                name: "NIDOQUEEN",
+                types: ["Poison", "Ground"],
+                hp: 160,
+                baseStats: { attack: 92, defense: 87, speed: 76 },
+                moves: [
+                    { name: "Earth Power", type: "Ground", accuracy: 100, maxPp: 10, power: 90, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.1 } }, // Sp. Def, Special
+                    { name: "Sludge Wave", type: "Poison", accuracy: 100, maxPp: 10, power: 95, effect: { type: "status", condition: "PSN", chance: 0.1 } }, // Special
+                    { name: "Superpower", type: "Fighting", accuracy: 100, maxPp: 5, power: 120, effect: { type: "stat", stat: ["attack", "defense"], target: "self", stages: -1 } },
+                    { name: "Ice Beam", type: "Ice", accuracy: 100, maxPp: 10, power: 90, effect: { type: "status", condition: "FRZ", chance: 0.1 } } // Special
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/31.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/31.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 32,
+                name: "NIDORAN♂",
+                types: ["Poison"],
+                hp: 115,
+                baseStats: { attack: 57, defense: 40, speed: 50 },
+                moves: [
+                    { name: "Peck", type: "Flying", accuracy: 100, maxPp: 35, power: 35 },
+                    { name: "Focus Energy", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "focus_energy" }, alwaysHits: true },
+                    { name: "Poison Sting", type: "Poison", accuracy: 100, maxPp: 35, power: 15, effect: { type: "status", condition: "PSN", chance: 0.3 } },
+                    { name: "Leer", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "opponent", stages: -1 }, alwaysHits: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/32.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/32.png",
+                evolvesToPokedexId: 33
+            },
+            {
+                pokedexId: 33,
+                name: "NIDORINO",
+                types: ["Poison"],
+                hp: 130,
+                baseStats: { attack: 72, defense: 57, speed: 65 },
+                moves: [
+                    { name: "Poison Jab", type: "Poison", accuracy: 100, maxPp: 20, power: 80, effect: { type: "status", condition: "PSN", chance: 0.3 } },
+                    { name: "Horn Attack", type: "Normal", accuracy: 100, maxPp: 25, power: 65 },
+                    { name: "Fury Attack", type: "Normal", accuracy: 85, maxPp: 20, power: 15 }, // Hits 2-5 times
+                    { name: "Toxic Spikes", type: "Poison", accuracy: 100, maxPp: 20, power: 0 } // Entry hazard
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/33.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/33.png",
+                evolvesToPokedexId: 34 // Evolueert met Moon Stone
+            },
+            {
+                pokedexId: 34,
+                name: "NIDOKING",
+                types: ["Poison", "Ground"],
+                hp: 150,
+                baseStats: { attack: 102, defense: 77, speed: 85 },
+                moves: [
+                    { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
+                    { name: "Poison Jab", type: "Poison", accuracy: 100, maxPp: 20, power: 80, effect: { type: "status", condition: "PSN", chance: 0.3 } },
+                    { name: "Megahorn", type: "Bug", accuracy: 85, maxPp: 10, power: 120 },
+                    { name: "Thrash", type: "Normal", accuracy: 100, maxPp: 10, power: 120 } // Locks user, confuses (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/34.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/34.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 35,
+                name: "CLEFAIRY",
+                types: ["Fairy"],
+                hp: 140,
+                baseStats: { attack: 45, defense: 48, speed: 35 },
+                moves: [
+                    { name: "Pound", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Growl", type: "Normal", accuracy: 100, maxPp: 40, power: 0, effect: { type: "stat", stat: "attack", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Sing", type: "Normal", accuracy: 55, maxPp: 15, power: 0, effect: { type: "status", condition: "SLP", chance: 1 } },
+                    { name: "Moonlight", type: "Fairy", accuracy: 100, maxPp: 5, power: 0, effect: { type: "heal", percentage: 0.5, target: "self" }, alwaysHits: true } // Heals more in sun (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/35.png",
+                evolvesToPokedexId: 36 // Evolueert met Moon Stone
+            },
+            {
+                pokedexId: 36,
+                name: "CLEFABLE",
+                types: ["Fairy"],
+                hp: 165,
+                baseStats: { attack: 70, defense: 73, speed: 60 },
+                moves: [
+                    { name: "Moonblast", type: "Fairy", accuracy: 100, maxPp: 15, power: 95, effect: {type: "stat", stat: "attack", target: "opponent", stages: -1, chance: 0.3 } }, // Sp. Atk
+                    { name: "Flamethrower", type: "Fire", accuracy: 100, maxPp: 15, power: 90, effect: { type: "status", condition: "BRN", chance: 0.1 } }, // Special
+                    { name: "Calm Mind", type: "Psychic", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: ["attack", "defense"], target: "self", stages: 1 }, alwaysHits: true }, // Sp. Atk & Sp. Def
+                    { name: "Soft-Boiled", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "heal", percentage: 0.5, target: "self" }, alwaysHits: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/36.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/36.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 37,
+                name: "VULPIX",
+                types: ["Fire"],
+                hp: 110,
+                baseStats: { attack: 41, defense: 40, speed: 65 },
+                moves: [
+                    { name: "Ember", type: "Fire", accuracy: 100, maxPp: 25, power: 40, effect: { type: "status", condition: "BRN", chance: 0.1 } },
+                    { name: "Tail Whip", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Quick Attack", type: "Normal", accuracy: 100, maxPp: 30, power: 40, priority: 1 },
+                    { name: "Will-O-Wisp", type: "Fire", accuracy: 85, maxPp: 15, power: 0, effect: { type: "status", condition: "BRN", chance: 1 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/37.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/37.png",
+                evolvesToPokedexId: 38 // Evolueert met Fire Stone
+            },
+            {
+                pokedexId: 38,
+                name: "NINETALES",
+                types: ["Fire"],
+                hp: 145,
+                baseStats: { attack: 76, defense: 75, speed: 100 },
+                moves: [
+                    { name: "Flamethrower", type: "Fire", accuracy: 100, maxPp: 15, power: 90, effect: { type: "status", condition: "BRN", chance: 0.1 } },
+                    { name: "Solar Beam", type: "Grass", accuracy: 100, maxPp: 10, power: 120 }, // Special
+                    { name: "Nasty Plot", type: "Dark", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "attack", target: "self", stages: 2 }, alwaysHits: true }, // Sp. Atk
+                    { name: "Extrasensory", type: "Psychic", accuracy: 100, maxPp: 20, power: 80, effect: { type: "flinch", chance: 0.1 } } // Special
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/38.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/38.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 39,
+                name: "JIGGLYPUFF",
+                types: ["Normal", "Fairy"],
+                hp: 185, // Hoogste HP van de basisvormen
+                baseStats: { attack: 45, defense: 20, speed: 20 },
+                moves: [
+                    { name: "Sing", type: "Normal", accuracy: 55, maxPp: 15, power: 0, effect: { type: "status", condition: "SLP", chance: 1 } },
+                    { name: "Pound", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Defense Curl", type: "Normal", accuracy: 100, maxPp: 40, power: 0, effect: { type: "stat", stat: "defense", target: "self", stages: 1 }, alwaysHits: true },
+                    { name: "Disarming Voice", type: "Fairy", accuracy: 100, maxPp: 15, power: 40, alwaysHits: true } // Special, kan niet missen
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/39.png",
+                evolvesToPokedexId: 40 // Evolueert met Moon Stone
+            },
+            {
+                pokedexId: 40,
+                name: "WIGGLYTUFF",
+                types: ["Normal", "Fairy"],
+                hp: 210, // Zeer hoge HP
+                baseStats: { attack: 70, defense: 45, speed: 45 },
+                moves: [
+                    { name: "Hyper Voice", type: "Normal", accuracy: 100, maxPp: 10, power: 90 }, // Special
+                    { name: "Dazzling Gleam", type: "Fairy", accuracy: 100, maxPp: 10, power: 80 }, // Special
+                    { name: "Body Slam", type: "Normal", accuracy: 100, maxPp: 15, power: 85, effect: { type: "status", condition: "PAR", chance: 0.3 } },
+                    { name: "Wish", type: "Normal", accuracy: 100, maxPp: 10, power: 0 } // Heals next turn (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/40.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/40.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 41,
+                name: "ZUBAT",
+                types: ["Poison", "Flying"],
+                hp: 110,
+                baseStats: { attack: 45, defense: 35, speed: 55 },
+                moves: [
+                    { name: "Leech Life", type: "Bug", accuracy: 100, maxPp: 10, power: 80, effect: { type: "heal", percentage: 0.5, target: "self"} }, // Was zwakker, nu sterk
+                    { name: "Astonish", type: "Ghost", accuracy: 100, maxPp: 15, power: 30, effect: { type: "flinch", chance: 0.3 } },
+                    { name: "Wing Attack", type: "Flying", accuracy: 100, maxPp: 35, power: 60 },
+                    { name: "Confuse Ray", type: "Ghost", accuracy: 100, maxPp: 10, power: 0 } // Confuses (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/41.png",
+                evolvesToPokedexId: 42
+            },
+            {
+                pokedexId: 42,
+                name: "GOLBAT",
+                types: ["Poison", "Flying"],
+                hp: 145,
+                baseStats: { attack: 80, defense: 70, speed: 90 },
+                moves: [
+                    { name: "Air Cutter", type: "Flying", accuracy: 95, maxPp: 25, power: 60, highCritRatio: true }, // Special
+                    { name: "Poison Fang", type: "Poison", accuracy: 100, maxPp: 15, power: 50, effect: { type: "status", condition: "PSN", chance: 0.5 } }, // Badly poisons
+                    { name: "Bite", type: "Dark", accuracy: 100, maxPp: 25, power: 60, effect: { type: "flinch", chance: 0.3 } },
+                    { name: "Haze", type: "Ice", accuracy: 100, maxPp: 30, power: 0 } // Resets stats (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/42.png",
+                evolvesToPokedexId: 169 // Crobat (Gen 2, evolueert via friendship) - voor nu null
+            },
+            {
+                pokedexId: 43,
+                name: "ODDISH",
+                types: ["Grass", "Poison"],
+                hp: 115,
+                baseStats: { attack: 50, defense: 55, speed: 30 },
+                moves: [
+                    { name: "Absorb", type: "Grass", accuracy: 100, maxPp: 25, power: 20, effect: { type: "heal", percentage: 0.5, target: "self"} }, // Special
+                    { name: "Poison Powder", type: "Poison", accuracy: 75, maxPp: 35, power: 0, effect: { type: "status", condition: "PSN", chance: 1 } },
+                    { name: "Sleep Powder", type: "Grass", accuracy: 75, maxPp: 15, power: 0, effect: { type: "status", condition: "SLP", chance: 1 } },
+                    { name: "Acid", type: "Poison", accuracy: 100, maxPp: 30, power: 40, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.1 } } // Special, Sp. Def
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/43.png",
+                evolvesToPokedexId: 44
+            },
+            {
+                pokedexId: 44,
+                name: "GLOOM",
+                types: ["Grass", "Poison"],
+                hp: 130,
+                baseStats: { attack: 65, defense: 70, speed: 40 },
+                moves: [
+                    { name: "Mega Drain", type: "Grass", accuracy: 100, maxPp: 15, power: 40, effect: { type: "heal", percentage: 0.5, target: "self"} }, // Special
+                    { name: "Stun Spore", type: "Grass", accuracy: 75, maxPp: 30, power: 0, effect: { type: "status", condition: "PAR", chance: 1 } },
+                    { name: "Sludge", type: "Poison", accuracy: 100, maxPp: 20, power: 65, effect: { type: "status", condition: "PSN", chance: 0.3 } }, // Special
+                    { name: "Petal Dance", type: "Grass", accuracy: 100, maxPp: 10, power: 120 } // Special, locks user, confuses (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/44.png",
+                evolvesToPokedexId: 45 // Kan ook naar Bellossom (182) met Sun Stone
+            },
+            {
+                pokedexId: 45,
+                name: "VILEPLUME",
+                types: ["Grass", "Poison"],
+                hp: 145,
+                baseStats: { attack: 80, defense: 85, speed: 50 }, // Sp. Atk 110
+                moves: [
+                    { name: "Petal Blizzard", type: "Grass", accuracy: 100, maxPp: 15, power: 90 },
+                    { name: "Sludge Bomb", type: "Poison", accuracy: 100, maxPp: 10, power: 90, effect: { type: "status", condition: "PSN", chance: 0.3 } }, // Special
+                    { name: "Aromatherapy", type: "Grass", accuracy: 100, maxPp: 5, power: 0 }, // Heals status (niet geïmplementeerd)
+                    { name: "Moonblast", type: "Fairy", accuracy: 100, maxPp: 15, power: 95, effect: {type: "stat", stat: "attack", target: "opponent", stages: -1, chance: 0.3 } } // Special, Sp. Atk
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/45.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 46,
+                name: "PARAS",
+                types: ["Bug", "Grass"],
+                hp: 110,
+                baseStats: { attack: 70, defense: 55, speed: 25 },
+                moves: [
+                    { name: "Scratch", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Stun Spore", type: "Grass", accuracy: 75, maxPp: 30, power: 0, effect: { type: "status", condition: "PAR", chance: 1 } },
+                    { name: "Leech Life", type: "Bug", accuracy: 100, maxPp: 10, power: 80, effect: { type: "heal", percentage: 0.5, target: "self"} },
+                    { name: "Spore", type: "Grass", accuracy: 100, maxPp: 15, power: 0, effect: { type: "status", condition: "SLP", chance: 1 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/46.png",
+                evolvesToPokedexId: 47
+            },
+            {
+                pokedexId: 47,
+                name: "PARASECT",
+                types: ["Bug", "Grass"],
+                hp: 130,
+                baseStats: { attack: 95, defense: 80, speed: 30 },
+                moves: [
+                    { name: "X-Scissor", type: "Bug", accuracy: 100, maxPp: 15, power: 80 },
+                    { name: "Seed Bomb", type: "Grass", accuracy: 100, maxPp: 15, power: 80 },
+                    { name: "Spore", type: "Grass", accuracy: 100, maxPp: 15, power: 0, effect: { type: "status", condition: "SLP", chance: 1 } },
+                    { name: "Slash", type: "Normal", accuracy: 100, maxPp: 20, power: 70, highCritRatio: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/47.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/47.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 48,
+                name: "VENONAT",
+                types: ["Bug", "Poison"],
+                hp: 130,
+                baseStats: { attack: 55, defense: 50, speed: 45 }, // Sp. Atk 40
+                moves: [
+                    { name: "Tackle", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Poison Powder", type: "Poison", accuracy: 75, maxPp: 35, power: 0, effect: { type: "status", condition: "PSN", chance: 1 } },
+                    { name: "Psybeam", type: "Psychic", accuracy: 100, maxPp: 20, power: 65, effect: { type: "confusion", chance: 0.1 } }, // Special
+                    { name: "Signal Beam", type: "Bug", accuracy: 100, maxPp: 15, power: 75, effect: { type: "confusion", chance: 0.1 } } // Special
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/48.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/48.png",
+                evolvesToPokedexId: 49
+            },
+            {
+                pokedexId: 49,
+                name: "VENOMOTH",
+                types: ["Bug", "Poison"],
+                hp: 140,
+                baseStats: { attack: 65, defense: 60, speed: 90 }, // Sp. Atk 90
+                moves: [
+                    { name: "Psychic", type: "Psychic", accuracy: 100, maxPp: 10, power: 90, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.1 } }, // Special, Sp. Def
+                    { name: "Bug Buzz", type: "Bug", accuracy: 100, maxPp: 10, power: 90, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.1 } }, // Special, Sp. Def
+                    { name: "Sleep Powder", type: "Grass", accuracy: 75, maxPp: 15, power: 0, effect: { type: "status", condition: "SLP", chance: 1 } },
+                    { name: "Quiver Dance", type: "Bug", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: ["attack", "defense", "speed"], target: "self", stages: 1 }, alwaysHits: true } // Sp.Atk, Sp.Def, Speed
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/49.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 50,
+                name: "DIGLETT",
+                types: ["Ground"],
+                hp: 80, // Erg lage HP
+                baseStats: { attack: 55, defense: 25, speed: 95 },
+                moves: [
+                    { name: "Scratch", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Sand Attack", type: "Ground", accuracy: 100, maxPp: 15, power: 0, effect: { type: "stat", stat: "accuracy", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Magnitude", type: "Ground", accuracy: 100, maxPp: 30, power: 70 }, // Power varieert (niet geïmplementeerd)
+                    { name: "Dig", type: "Ground", accuracy: 100, maxPp: 10, power: 80 } // 2-turn (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/50.png",
+                evolvesToPokedexId: 51
+            },
+    {
+                pokedexId: 51,
+                name: "DUGTRIO",
+                types: ["Ground"],
+                hp: 105, // Nog steeds vrij laag HP
+                baseStats: { attack: 100, defense: 50, speed: 120 },
+                moves: [
+                    { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
+                    { name: "Sucker Punch", type: "Dark", accuracy: 100, maxPp: 5, power: 70, priority: 1 },
+                    { name: "Slash", type: "Normal", accuracy: 100, maxPp: 20, power: 70, highCritRatio: true },
+                    { name: "Rock Slide", type: "Rock", accuracy: 90, maxPp: 10, power: 75, effect: { type: "flinch", chance: 0.3 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/51.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 52,
+                name: "MEOWTH",
+                types: ["Normal"],
+                hp: 110,
+                baseStats: { attack: 45, defense: 35, speed: 90 },
+                moves: [
+                    { name: "Scratch", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Growl", type: "Normal", accuracy: 100, maxPp: 40, power: 0, effect: { type: "stat", stat: "attack", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Bite", type: "Dark", accuracy: 100, maxPp: 25, power: 60, effect: { type: "flinch", chance: 0.3 } },
+                    { name: "Pay Day", type: "Normal", accuracy: 100, maxPp: 20, power: 40 } // Effect: scatters coins (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/52.png",
+                evolvesToPokedexId: 53
+            },
+            {
+                pokedexId: 53,
+                name: "PERSIAN",
+                types: ["Normal"],
+                hp: 135,
+                baseStats: { attack: 70, defense: 60, speed: 115 },
+                moves: [
+                    { name: "Slash", type: "Normal", accuracy: 100, maxPp: 20, power: 70, highCritRatio: true },
+                    { name: "Power Gem", type: "Rock", accuracy: 100, maxPp: 20, power: 80 }, // Special
+                    { name: "Nasty Plot", type: "Dark", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "attack", target: "self", stages: 2 }, alwaysHits: true }, // Sp. Atk
+                    { name: "Fake Out", type: "Normal", accuracy: 100, maxPp: 10, power: 40, priority: 3, effect: { type: "flinch", chance: 1 } } // Only on first turn (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/53.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/53.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 54,
+                name: "PSYDUCK",
+                types: ["Water"],
+                hp: 120,
+                baseStats: { attack: 52, defense: 48, speed: 55 }, // Sp. Atk 65
+                moves: [
+                    { name: "Scratch", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Water Gun", type: "Water", accuracy: 100, maxPp: 25, power: 40 }, // Special
+                    { name: "Confusion", type: "Psychic", accuracy: 100, maxPp: 25, power: 50, effect: { type: "confusion", chance: 0.1 } }, // Special
+                    { name: "Disable", type: "Normal", accuracy: 100, maxPp: 20, power: 0 } // Disables opponent's last move (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/54.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/54.png",
+                evolvesToPokedexId: 55
+            },
+            {
+                pokedexId: 55,
+                name: "GOLDUCK",
+                types: ["Water"],
+                hp: 150,
+                baseStats: { attack: 82, defense: 78, speed: 85 }, // Sp. Atk 95
+                moves: [
+                    { name: "Hydro Pump", type: "Water", accuracy: 80, maxPp: 5, power: 110 }, // Special
+                    { name: "Psychic", type: "Psychic", accuracy: 100, maxPp: 10, power: 90, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.1 } }, // Special, Sp. Def
+                    { name: "Ice Beam", type: "Ice", accuracy: 100, maxPp: 10, power: 90, effect: { type: "status", condition: "FRZ", chance: 0.1 } }, // Special
+                    { name: "Calm Mind", type: "Psychic", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: ["attack", "defense"], target: "self", stages: 1 }, alwaysHits: true } // Sp. Atk & Sp. Def
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/55.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/55.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 56,
+                name: "MANKEY",
+                types: ["Fighting"],
+                hp: 110,
+                baseStats: { attack: 80, defense: 35, speed: 70 },
+                moves: [
+                    { name: "Scratch", type: "Normal", accuracy: 100, maxPp: 35, power: 40 },
+                    { name: "Low Kick", type: "Fighting", accuracy: 100, maxPp: 20, power: 60 }, // Power varies by weight (niet geïmplementeerd)
+                    { name: "Leer", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "opponent", stages: -1 }, alwaysHits: true },
+                    { name: "Karate Chop", type: "Fighting", accuracy: 100, maxPp: 25, power: 50, highCritRatio: true }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/56.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/56.png",
+                evolvesToPokedexId: 57
+            },
+            {
+                pokedexId: 57,
+                name: "PRIMEAPE",
+                types: ["Fighting"],
+                hp: 135,
+                baseStats: { attack: 105, defense: 60, speed: 95 },
+                moves: [
+                    { name: "Cross Chop", type: "Fighting", accuracy: 80, maxPp: 5, power: 100, highCritRatio: true },
+                    { name: "Thrash", type: "Normal", accuracy: 100, maxPp: 10, power: 120 }, // Locks user, confuses
+                    { name: "Close Combat", type: "Fighting", accuracy: 100, maxPp: 5, power: 120, effect: { type: "stat", stat: ["defense", "defense"], target: "self", stages: -1 } }, // Sp. Def
+                    { name: "Rage", type: "Normal", accuracy: 100, maxPp: 20, power: 20 } // Attack raises if hit (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/57.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/57.png",
+                evolvesToPokedexId: null // Annihilape is Gen 9
+            },
+            {
+                pokedexId: 58,
+                name: "GROWLITHE",
+                types: ["Fire"],
+                hp: 125,
+                baseStats: { attack: 70, defense: 45, speed: 60 },
+                moves: [
+                    { name: "Bite", type: "Dark", accuracy: 100, maxPp: 25, power: 60, effect: { type: "flinch", chance: 0.3 } },
+                    { name: "Ember", type: "Fire", accuracy: 100, maxPp: 25, power: 40, effect: { type: "status", condition: "BRN", chance: 0.1 } },
+                    { name: "Roar", type: "Normal", accuracy: 100, maxPp: 20, power: 0 }, // Forces switch (niet geïmplementeerd)
+                    { name: "Flame Wheel", type: "Fire", accuracy: 100, maxPp: 25, power: 60, effect: { type: "status", condition: "BRN", chance: 0.1 } } // Thaw user
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/58.png",
+                evolvesToPokedexId: 59 // Evolueert met Fire Stone
+            },
+            {
+                pokedexId: 59,
+                name: "ARCANINE",
+                types: ["Fire"],
+                hp: 160,
+                baseStats: { attack: 110, defense: 80, speed: 95 },
+                moves: [
+                    { name: "Flare Blitz", type: "Fire", accuracy: 100, maxPp: 15, power: 120, effect: { type: "status", condition: "BRN", chance: 0.1 } }, // Recoil (niet geïmplementeerd)
+                    { name: "Extreme Speed", type: "Normal", accuracy: 100, maxPp: 5, power: 80, priority: 2 },
+                    { name: "Wild Charge", type: "Electric", accuracy: 100, maxPp: 15, power: 90 }, // Recoil
+                    { name: "Crunch", type: "Dark", accuracy: 100, maxPp: 15, power: 80, effect: {type: "stat", stat: "defense", target: "opponent", stages: -1, chance: 0.2 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/59.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 60,
+                name: "POLIWAG",
+                types: ["Water"],
+                hp: 110,
+                baseStats: { attack: 50, defense: 40, speed: 90 },
+                moves: [
+                    { name: "Bubble", type: "Water", accuracy: 100, maxPp: 30, power: 40, effect: { type: "stat", stat: "speed", target: "opponent", stages: -1, chance: 0.1 } }, // Special
+                    { name: "Hypnosis", type: "Psychic", accuracy: 60, maxPp: 20, power: 0, effect: { type: "status", condition: "SLP", chance: 1 } },
+                    { name: "Water Gun", type: "Water", accuracy: 100, maxPp: 25, power: 40 }, // Special
+                    { name: "Body Slam", type: "Normal", accuracy: 100, maxPp: 15, power: 85, effect: { type: "status", condition: "PAR", chance: 0.3 } }
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/60.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/60.png",
+                evolvesToPokedexId: 61
+            },
+            {
+                pokedexId: 61,
+                name: "POLIWHIRL",
+                types: ["Water"],
+                hp: 135,
+                baseStats: { attack: 65, defense: 65, speed: 90 },
+                moves: [
+                    { name: "Water Pulse", type: "Water", accuracy: 100, maxPp: 20, power: 60, effect: { type: "confusion", chance: 0.2 } }, // Special
+                    { name: "Mud Shot", type: "Ground", accuracy: 95, maxPp: 15, power: 55, effect: { type: "stat", stat: "speed", target: "opponent", stages: -1 } }, // Special
+                    { name: "Body Slam", type: "Normal", accuracy: 100, maxPp: 15, power: 85, effect: { type: "status", condition: "PAR", chance: 0.3 } },
+                    { name: "Bubble Beam", type: "Water", accuracy: 100, maxPp: 20, power: 65, effect: { type: "stat", stat: "speed", target: "opponent", stages: -1, chance: 0.1 } } // Special
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/61.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/61.png",
+                evolvesToPokedexId: 62 // Evolueert naar Poliwrath met Water Stone, of Politoed (186) met King's Rock + trade
+            },
+            {
+                pokedexId: 62,
+                name: "POLIWRATH",
+                types: ["Water", "Fighting"],
+                hp: 160,
+                baseStats: { attack: 95, defense: 95, speed: 70 },
+                moves: [
+                    { name: "Dynamic Punch", type: "Fighting", accuracy: 50, maxPp: 5, power: 100, effect: { type: "confusion", chance: 1 } },
+                    { name: "Waterfall", type: "Water", accuracy: 100, maxPp: 15, power: 80, effect: { type: "flinch", chance: 0.2 } },
+                    { name: "Bulk Up", type: "Fighting", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: ["attack", "defense"], target: "self", stages: 1 }, alwaysHits: true },
+                    { name: "Submission", type: "Fighting", accuracy: 80, maxPp: 20, power: 80 } // Recoil (niet geïmplementeerd)
+                ],
+                spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/62.png",
+                spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/62.png",
+                evolvesToPokedexId: null
+            },
+            {
+                pokedexId: 63,
+                name: "ABRA",
+                types: ["Psychic"],
+                hp: 95,
+                baseStats: { attack: 20, defense: 15, speed: 90 }, // Sp. Atk 105
+                moves: [
+                    { name: "Teleport", type: "Psychic", accuracy: 100, maxPp: 20, power: 0 } // Flees (niet geïmplementeerd voor battle)
                 ],
                 spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/63.png",
                 spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/63.png",
@@ -5383,8 +6344,8 @@ const pokemonPool = [
         spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/350.png",
         evolvesToPokedexId: null
     },
-    {
-        pokedexId: 351,
+   {
+        pokedexId: 352,
         name: "KECLEON",
         types: ["Normal"], // Type verandert met Color Change ability
         hp: 135, // Base HP 60 + 75
@@ -5395,13 +6356,12 @@ const pokemonPool = [
             { name: "Sucker Punch", type: "Dark", accuracy: 100, maxPp: 5, power: 70, priority: 1 }, // Werkt alleen als tegenstander aanvallende zet kiest (niet geïmplementeerd)
             { name: "Recover", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "heal_percentage", percentage: 0.5 } } // Heal niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/351.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/351.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/352.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/352.png",
         evolvesToPokedexId: null
     },
-
-   {
-        pokedexId: 352,
+    {
+        pokedexId: 353,
         name: "SHUPPET",
         types: ["Ghost"],
         hp: 119,
@@ -5412,12 +6372,12 @@ const pokemonPool = [
             { name: "Will-O-Wisp", type: "Fire", accuracy: 85, maxPp: 15, power: 0, effect: { type: "burn" } }, // Burn niet geïmplementeerd
             { name: "Screech", type: "Normal", accuracy: 85, maxPp: 40, power: 0, effect: { type: "stat", stat: "defense", target: "opponent", stages: -2 } }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/352.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/352.png",
-        evolvesToPokedexId: 353
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/353.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/353.png",
+        evolvesToPokedexId: 354
     },
     {
-        pokedexId: 353,
+        pokedexId: 354,
         name: "BANETTE",
         types: ["Ghost"],
         hp: 139,
@@ -5428,12 +6388,12 @@ const pokemonPool = [
             { name: "Phantom Force", type: "Ghost", accuracy: 100, maxPp: 10, power: 90, effect: { type: "two_turn_evade_first" } }, // Twee-beurt, ontwijkt (niet geïmplementeerd)
             { name: "Curse", type: "Ghost", accuracy: 100, maxPp: 10, power: 0, effect: { type: "curse" } } // Curse effect (Ghost/Non-Ghost) niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/353.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/353.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/354.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/354.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 354,
+        pokedexId: 355,
         name: "DUSKULL",
         types: ["Ghost"],
         hp: 95,
@@ -5444,12 +6404,12 @@ const pokemonPool = [
             { name: "Pursuit", type: "Dark", accuracy: 100, maxPp: 20, power: 40, effect: { type: "double_power_on_switch" } }, // Dubbele kracht bij wisselen (niet geïmplementeerd)
             { name: "Confuse Ray", type: "Ghost", accuracy: 100, maxPp: 10, power: 0, effect: { type: "confusion" } } // Confusion niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/354.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/354.png",
-        evolvesToPokedexId: 355
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/355.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/355.png",
+        evolvesToPokedexId: 356
     },
     {
-        pokedexId: 355,
+        pokedexId: 356,
         name: "DUSCLOPS",
         types: ["Ghost"],
         hp: 115,
@@ -5460,12 +6420,12 @@ const pokemonPool = [
             { name: "Fire Punch", type: "Fire", accuracy: 100, maxPp: 15, power: 75, effect: { type: "burn", chance: 0.1 } }, // Burn kans niet geïmplementeerd
             { name: "Pain Split", type: "Normal", accuracy: 100, maxPp: 20, power: 0, effect: { type: "pain_split" } } // Pain Split niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/355.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/355.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/356.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/356.png",
         evolvesToPokedexId: 477 // Dusknoir (Gen 4)
     },
     {
-        pokedexId: 356,
+        pokedexId: 357,
         name: "TROPIUS",
         types: ["Grass", "Flying"],
         hp: 174,
@@ -5476,12 +6436,12 @@ const pokemonPool = [
             { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
             { name: "Dragon Dance", type: "Dragon", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat_multi", stats: ["attack", "speed"], target: "self", stages: [1, 1] }, alwaysHits: true }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/356.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/356.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/357.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/357.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 357,
+        pokedexId: 358,
         name: "CHIMECHO",
         types: ["Psychic"],
         hp: 150,
@@ -5492,12 +6452,12 @@ const pokemonPool = [
             { name: "Yawn", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "yawn" } }, // Yawn niet geïmplementeerd
             { name: "Wrap", type: "Normal", accuracy: 90, maxPp: 20, power: 15, effect: { type: "trap_damage_over_time", turns: "4-5" } } // Trap & damage niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/357.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/357.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/358.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/358.png",
         evolvesToPokedexId: null // Evolueert van Chingling (Gen 4)
     },
     {
-        pokedexId: 358,
+        pokedexId: 359,
         name: "ABSOL",
         types: ["Dark"],
         hp: 140,
@@ -5508,12 +6468,12 @@ const pokemonPool = [
             { name: "Psycho Cut", type: "Psychic", accuracy: 100, maxPp: 20, power: 70, effect: { type: "crit", chance: 0.125 } }, // High crit niet geïmplementeerd
             { name: "Swords Dance", type: "Normal", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "attack", target: "self", stages: 2 }, alwaysHits: true }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/358.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/358.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/359.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/359.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 359,
+        pokedexId: 360,
         name: "WYNAUT",
         types: ["Psychic"],
         hp: 170,
@@ -5524,12 +6484,12 @@ const pokemonPool = [
             { name: "Safeguard", type: "Normal", accuracy: 100, maxPp: 25, power: 0, effect: { type: "safeguard" } }, // Safeguard niet geïmplementeerd
             { name: "Destiny Bond", type: "Ghost", accuracy: 100, maxPp: 5, power: 0, effect: { type: "destiny_bond" } } // Destiny Bond niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/359.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/359.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/360.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/360.png",
         evolvesToPokedexId: 202 // Wobbuffet
     },
     {
-        pokedexId: 360,
+        pokedexId: 361,
         name: "SNORUNT",
         types: ["Ice"],
         hp: 125,
@@ -5540,12 +6500,12 @@ const pokemonPool = [
             { name: "Headbutt", type: "Normal", accuracy: 100, maxPp: 15, power: 70, effect: { type: "flinch", chance: 0.3 } }, // Flinch niet geïmplementeerd
             { name: "Spikes", type: "Ground", accuracy: 100, maxPp: 20, power: 0, effect: { type: "entry_hazard", hazard_type: "spikes" } } // Entry hazard niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/360.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/360.png",
-        evolvesToPokedexId: 361 // Kan ook evolueren naar Froslass (478) in Gen 4+ (female + Dawn Stone)
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/361.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/361.png",
+        evolvesToPokedexId: 362 // Moet zijn 362 voor Glalie. De 361 was een typo. Kan ook evolueren naar Froslass (478) in Gen 4+ (female + Dawn Stone)
     },
     {
-        pokedexId: 361,
+        pokedexId: 362,
         name: "GLALIE",
         types: ["Ice"],
         hp: 155,
@@ -5556,12 +6516,12 @@ const pokemonPool = [
             { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
             { name: "Headbutt", type: "Normal", accuracy: 100, maxPp: 15, power: 70, effect: { type: "flinch", chance: 0.3 } } // Flinch niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/361.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/361.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/362.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/362.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 362,
+        pokedexId: 363,
         name: "SPHEAL",
         types: ["Ice", "Water"],
         hp: 145,
@@ -5572,12 +6532,12 @@ const pokemonPool = [
             { name: "Rollout", type: "Rock", accuracy: 90, maxPp: 20, power: 30, effect: { type: "rollout_consecutive_hits" } }, // Power verdubbelt per hit (niet geïmplementeerd)
             { name: "Defense Curl", type: "Normal", accuracy: 100, maxPp: 40, power: 0, effect: { type: "stat", stat: "defense", target: "self", stages: 1 }, alwaysHits: true }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/362.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/362.png",
-        evolvesToPokedexId: 363
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/363.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/363.png",
+        evolvesToPokedexId: 364
     },
     {
-        pokedexId: 363,
+        pokedexId: 364,
         name: "SEALEO",
         types: ["Ice", "Water"],
         hp: 165,
@@ -5588,12 +6548,12 @@ const pokemonPool = [
             { name: "Waterfall", type: "Water", accuracy: 100, maxPp: 15, power: 80, effect: { type: "flinch", chance: 0.2 } }, // Flinch niet geïmplementeerd
             { name: "Encore", type: "Normal", accuracy: 100, maxPp: 5, power: 0, effect: { type: "encore" } } // Encore niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/363.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/363.png",
-        evolvesToPokedexId: 364
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/364.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/364.png",
+        evolvesToPokedexId: 365
     },
     {
-        pokedexId: 364,
+        pokedexId: 365,
         name: "WALREIN",
         types: ["Ice", "Water"],
         hp: 185,
@@ -5604,12 +6564,12 @@ const pokemonPool = [
             { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
             { name: "Crunch", type: "Dark", accuracy: 100, maxPp: 15, power: 80, effect: { type: "stat_chance", stat: "defense", target: "opponent", stages: -1, chance: 0.2 } }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/364.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/364.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/365.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/365.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 365,
+        pokedexId: 366,
         name: "CLAMPERL",
         types: ["Water"],
         hp: 110,
@@ -5620,12 +6580,12 @@ const pokemonPool = [
             { name: "Iron Defense", type: "Steel", accuracy: 100, maxPp: 15, power: 0, effect: { type: "stat", stat: "defense", target: "self", stages: 2 }, alwaysHits: true },
             { name: "Whirlpool", type: "Water", accuracy: 85, maxPp: 15, power: 35, effect: { type: "trap_damage_over_time", turns: "4-5" } } // Trap & damage niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/365.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/365.png",
-        evolvesToPokedexId: 366 // Evolueert naar Huntail (366) met DeepSeaTooth, of Gorebyss (367) met DeepSeaScale
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/366.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/366.png",
+        evolvesToPokedexId: 367 // Evolueert naar Huntail (367) met DeepSeaTooth, of Gorebyss (368) met DeepSeaScale
     },
     {
-        pokedexId: 366,
+        pokedexId: 367,
         name: "HUNTAIL",
         types: ["Water"],
         hp: 130,
@@ -5636,12 +6596,12 @@ const pokemonPool = [
             { name: "Ice Fang", type: "Ice", accuracy: 95, maxPp: 15, power: 65, effect: { type: "flinch_freeze", flinchChance: 0.1, freezeChance: 0.1 } }, // Flinch/Freeze niet geïmplementeerd
             { name: "Screech", type: "Normal", accuracy: 85, maxPp: 40, power: 0, effect: { type: "stat", stat: "defense", target: "opponent", stages: -2 } }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/366.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/366.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/367.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/367.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 367,
+        pokedexId: 368,
         name: "GOREBYSS",
         types: ["Water"],
         hp: 130,
@@ -5652,12 +6612,12 @@ const pokemonPool = [
             { name: "Draining Kiss", type: "Fairy", accuracy: 100, maxPp: 10, power: 50, effect: { type: "drain", percentage: 0.75 } }, // Drain niet geïmplementeerd
             { name: "Amnesia", type: "Psychic", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "defense", target: "self", stages: 2 }, alwaysHits: true } // Normaal Sp.Def
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/367.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/367.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/368.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/368.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 368,
+        pokedexId: 369,
         name: "RELICANTH",
         types: ["Water", "Rock"],
         hp: 175,
@@ -5668,12 +6628,12 @@ const pokemonPool = [
             { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
             { name: "Yawn", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "yawn" } } // Yawn niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/368.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/368.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/369.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/369.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 369,
+        pokedexId: 370,
         name: "LUVDISC",
         types: ["Water"],
         hp: 118,
@@ -5684,12 +6644,12 @@ const pokemonPool = [
             { name: "Agility", type: "Psychic", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "speed", target: "self", stages: 2 }, alwaysHits: true },
             { name: "Sweet Kiss", type: "Fairy", accuracy: 75, maxPp: 10, power: 0, effect: { type: "confusion" } } // Was Normal, Confusion niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/369.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/369.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/370.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/370.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 370,
+        pokedexId: 371,
         name: "BAGON",
         types: ["Dragon"],
         hp: 120,
@@ -5700,12 +6660,12 @@ const pokemonPool = [
             { name: "Rock Slide", type: "Rock", accuracy: 90, maxPp: 10, power: 75, effect: { type: "flinch", chance: 0.3 } }, // Flinch niet geïmplementeerd
             { name: "Scary Face", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "stat", stat: "speed", target: "opponent", stages: -2 }, alwaysHits: true }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/370.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/370.png",
-        evolvesToPokedexId: 371
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/371.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/371.png",
+        evolvesToPokedexId: 372 // Gecorrigeerd van 371 naar 372
     },
     {
-        pokedexId: 371,
+        pokedexId: 372,
         name: "SHELGON",
         types: ["Dragon"],
         hp: 140,
@@ -5716,12 +6676,12 @@ const pokemonPool = [
             { name: "Protect", type: "Normal", accuracy: 100, maxPp: 10, power: 0, priority: 4, effect: { type: "protect" } }, // Protect niet geïmplementeerd
             { name: "Headbutt", type: "Normal", accuracy: 100, maxPp: 15, power: 70, effect: { type: "flinch", chance: 0.3 } } // Flinch niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/371.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/371.png",
-        evolvesToPokedexId: 372
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/372.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/372.png",
+        evolvesToPokedexId: 373 // Gecorrigeerd van 372 naar 373
     },
     {
-        pokedexId: 372,
+        pokedexId: 373,
         name: "SALAMENCE",
         types: ["Dragon", "Flying"],
         hp: 170,
@@ -5732,12 +6692,12 @@ const pokemonPool = [
             { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
             { name: "Dragon Dance", type: "Dragon", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat_multi", stats: ["attack", "speed"], target: "self", stages: [1, 1] }, alwaysHits: true }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/372.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/372.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/373.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/373.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 373,
+        pokedexId: 374,
         name: "BELDUM",
         types: ["Steel", "Psychic"],
         hp: 115,
@@ -5748,12 +6708,12 @@ const pokemonPool = [
             { name: "Zen Headbutt", type: "Psychic", accuracy: 90, maxPp: 15, power: 80, effect: { type: "flinch", chance: 0.2 } }, // Flinch niet geïmplementeerd (leert als Metang)
             { name: "Harden", type: "Normal", accuracy: 100, maxPp: 30, power: 0, effect: { type: "stat", stat: "defense", target: "self", stages: 1 }, alwaysHits: true } // Conceptueel
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/373.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/373.png",
-        evolvesToPokedexId: 374
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/374.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/374.png",
+        evolvesToPokedexId: 375
     },
     {
-        pokedexId: 374,
+        pokedexId: 375,
         name: "METANG",
         types: ["Steel", "Psychic"],
         hp: 135,
@@ -5764,12 +6724,12 @@ const pokemonPool = [
             { name: "Bullet Punch", type: "Steel", accuracy: 100, maxPp: 30, power: 40, priority: 1 },
             { name: "Rock Slide", type: "Rock", accuracy: 90, maxPp: 10, power: 75, effect: { type: "flinch", chance: 0.3 } } // Flinch niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/374.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/374.png",
-        evolvesToPokedexId: 375
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/375.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/375.png",
+        evolvesToPokedexId: 376
     },
     {
-        pokedexId: 375,
+        pokedexId: 376,
         name: "METAGROSS",
         types: ["Steel", "Psychic"],
         hp: 155,
@@ -5780,12 +6740,12 @@ const pokemonPool = [
             { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
             { name: "Hammer Arm", type: "Fighting", accuracy: 90, maxPp: 10, power: 100, effect: { type: "stat", stat: "speed", target: "self", stages: -1 } }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/375.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/375.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/376.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/376.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 376,
+        pokedexId: 377,
         name: "REGIROCK",
         types: ["Rock"],
         hp: 155,
@@ -5796,12 +6756,12 @@ const pokemonPool = [
             { name: "Hammer Arm", type: "Fighting", accuracy: 90, maxPp: 10, power: 100, effect: { type: "stat", stat: "speed", target: "self", stages: -1 } },
             { name: "Curse", type: "Ghost", accuracy: 100, maxPp: 10, power: 0, effect: { type: "stat_multi", stats: ["attack", "defense", "speed"], target: "self", stages: [1, 1, -1] } } // Aangepast Curse effect
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/376.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/376.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/377.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/377.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 377,
+        pokedexId: 378,
         name: "REGICE",
         types: ["Ice"],
         hp: 155,
@@ -5812,12 +6772,12 @@ const pokemonPool = [
             { name: "Hammer Arm", type: "Fighting", accuracy: 90, maxPp: 10, power: 100, effect: { type: "stat", stat: "speed", target: "self", stages: -1 } },
             { name: "Amnesia", type: "Psychic", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "defense", target: "self", stages: 2 }, alwaysHits: true } // Normaal Sp.Def
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/377.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/377.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/378.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/378.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 378,
+        pokedexId: 379,
         name: "REGISTEEL",
         types: ["Steel"],
         hp: 155,
@@ -5828,12 +6788,12 @@ const pokemonPool = [
             { name: "Rock Slide", type: "Rock", accuracy: 90, maxPp: 10, power: 75, effect: { type: "flinch", chance: 0.3 } }, // Flinch niet geïmplementeerd
             { name: "Curse", type: "Ghost", accuracy: 100, maxPp: 10, power: 0, effect: { type: "stat_multi", stats: ["attack", "defense", "speed"], target: "self", stages: [1, 1, -1] } } // Aangepast Curse effect
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/378.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/378.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/379.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/379.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 379,
+        pokedexId: 380,
         name: "LATIAS",
         types: ["Dragon", "Psychic"],
         hp: 155,
@@ -5844,12 +6804,12 @@ const pokemonPool = [
             { name: "Fly", type: "Flying", accuracy: 95, maxPp: 15, power: 90, effect: { type: "two_turn_evade_first" } }, // Twee-beurt, ontwijkt (niet geïmplementeerd)
             { name: "Recover", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "heal_percentage", percentage: 0.5 } } // Heal niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/379.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/379.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/380.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/380.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 380,
+        pokedexId: 381,
         name: "LATIOS",
         types: ["Dragon", "Psychic"],
         hp: 155,
@@ -5860,12 +6820,12 @@ const pokemonPool = [
             { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
             { name: "Dragon Dance", type: "Dragon", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat_multi", stats: ["attack", "speed"], target: "self", stages: [1, 1] }, alwaysHits: true }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/380.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/380.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/381.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/381.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 381,
+        pokedexId: 382,
         name: "KYOGRE",
         types: ["Water"],
         hp: 175,
@@ -5876,12 +6836,12 @@ const pokemonPool = [
             { name: "Body Slam", type: "Normal", accuracy: 100, maxPp: 15, power: 85, effect: { type: "paralysis", chance: 0.3 } }, // Paralysis niet geïmplementeerd
             { name: "Aqua Ring", type: "Water", accuracy: 100, maxPp: 20, power: 0, effect: { type: "aqua_ring_heal" } } // Aqua Ring heal niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/381.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/381.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/382.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/382.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 382,
+        pokedexId: 383,
         name: "GROUDON",
         types: ["Ground"],
         hp: 175,
@@ -5892,12 +6852,12 @@ const pokemonPool = [
             { name: "Fire Punch", type: "Fire", accuracy: 100, maxPp: 15, power: 75, effect: { type: "burn", chance: 0.1 } }, // Burn kans niet geïmplementeerd
             { name: "Swords Dance", type: "Normal", accuracy: 100, maxPp: 20, power: 0, effect: { type: "stat", stat: "attack", target: "self", stages: 2 }, alwaysHits: true }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/382.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/382.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/383.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/383.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 383,
+        pokedexId: 384,
         name: "RAYQUAZA",
         types: ["Dragon", "Flying"],
         hp: 180,
@@ -5908,12 +6868,12 @@ const pokemonPool = [
             { name: "Earthquake", type: "Ground", accuracy: 100, maxPp: 10, power: 100 },
             { name: "Extreme Speed", type: "Normal", accuracy: 100, maxPp: 5, power: 80, priority: 2 }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/383.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/383.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/384.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/384.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 384,
+        pokedexId: 385,
         name: "JIRACHI",
         types: ["Steel", "Psychic"],
         hp: 175,
@@ -5924,12 +6884,12 @@ const pokemonPool = [
             { name: "Fire Punch", type: "Fire", accuracy: 100, maxPp: 15, power: 75, effect: { type: "burn", chance: 0.1 } }, // Burn kans niet geïmplementeerd
             { name: "Wish", type: "Normal", accuracy: 100, maxPp: 10, power: 0, effect: { type: "wish" } } // Wish niet geïmplementeerd
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/384.png",
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/384.png",
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/385.png",
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/385.png",
         evolvesToPokedexId: null
     },
     {
-        pokedexId: 385,
+        pokedexId: 386,
         name: "DEOXYS", // Normal Forme
         types: ["Psychic"],
         hp: 125,
@@ -5940,8 +6900,8 @@ const pokemonPool = [
             { name: "Superpower", type: "Fighting", accuracy: 100, maxPp: 5, power: 120, effect: { type: "stat_self_multi", stats: ["attack", "defense"], target: "self", stages: [-1, -1] } },
             { name: "Extreme Speed", type: "Normal", accuracy: 100, maxPp: 5, power: 80, priority: 2 }
         ],
-        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/385.png", // Normal Forme
-        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/385.png", // Normal Forme
+        spriteFront: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/386.png", // Normal Forme
+        spriteBack: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/386.png", // Normal Forme
         evolvesToPokedexId: null
     }
 ];
