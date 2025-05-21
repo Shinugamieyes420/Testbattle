@@ -6053,11 +6053,42 @@ const eliteFourData = {
         pokemonTeam: ["MACHAMP", "HITMONLEE", "HITMONCHAN", "ONIX", "GOLEM", "HERACROSS"],
         dialog: "Hahaha! I am Bruno of the Elite Four! I've lived and trained with my Fighting Pokémon! And I'm ready to take you on! Bring it!"
     },
-	{
+    "Lance": {
         name: "Lance",
         cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Lance-Full-Art-silver-tempest-SWSH-192195.jpg",
         pokemonTeam: ["SEADRA", "DRAGONAIR", "CHARIZARD", "DRAGONITE", "LUGIA", "RAYQUAZA"],
-        dialog: "You dare challenge the might of Dragon-type Pokémon?"
+        dialog: "You dare challenge the master of Dragon Pokémon? Prepare to be overwhelmed by their might!"
+    },
+    "Karen": {
+        name: "Karen",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/XY-Promos_Karen-1.jpg",
+        pokemonTeam: ["EEVEE", "UMBREON", "HOUNDOOM", "MURKROW", "METAGROSS", "REGIROCK"],
+        dialog: "Strong Pokémon. Weak Pokémon. That is only the selfish perception of people. Truly skilled trainers should try to win with their favorites."
+    },
+    "Prof. Oak": {
+        name: "Prof. Oak",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Cosmic-Eclipse_Professor-Oak%E2%80%99s-Setup-1.jpg",
+        pokemonTeam: ["TAUROS", "PINSIR", "BLASTOISE", "TYRANITAR", "LATIAS", "LATIOS"],
+        dialog: "Welcome to the world of Pokémon! Let's see what you've learned on your journey!"
+    },
+    "Iono": {
+        name: "Iono",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Iono-269-paldea-evolved.jpg",
+        pokemonTeam: ["ELECTRODE", "RAICHU", "LANTURN", "STEELIX", "TROPIUS", "RAIKOU"],
+        dialog: "Whosawhatsit? It's Iono, the Supercharged Streamer! Get ready for a shocking battle, viewers!"
+    },
+    "Giovanni": {
+        name: "Giovanni",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Hidden-Fates_Giovanni%E2%80%99s-Exile.jpg",
+        pokemonTeam: ["PERSIAN", "KINGLER", "RHYDON", "MACHAMP", "CLOYSTER", "MEWTWO"],
+        dialog: "So, you've made it this far. Impressive. But Team Rocket will always triumph!"
+    },
+    "Koga": {
+        name: "Koga",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Unbroken-Bonds_Koga%E2%80%99s-Trap-1.jpg",
+        pokemonTeam: ["MUK", "TENTACRUEL", "GOLBAT", "WEEZING", "ARBOK", "ARTICUNO"],
+        dialog: "A ninja's duty is to misdirect and confuse. Prepare for a taste of poison and illusion!"
+    }
 };
 
 const pokemonLeagueTrainers = [
@@ -6078,13 +6109,48 @@ const pokemonLeagueTrainers = [
         cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Cosmic-Eclipse_Professor-Oak%E2%80%99s-Setup-1.jpg",
         pokemonTeam: ["TAUROS", "PINSIR", "BLASTOISE", "TYRANITAR", "LATIAS", "LATIOS"],
         dialog: "Your Pokémon journey has truly begun! Let's see what you've learned!"
-	},	
-	{
-    "Bruno": {
-        name: "Bruno",
-        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Battle-Styles_Bruno-1.jpg",
-        pokemonTeam: ["MACHAMP", "HITMONLEE", "HITMONCHAN", "ONIX", "GOLEM", "HERACROSS"],
-        dialog: "Hahaha! I am Bruno of the Elite Four! I've lived and trained with my Fighting Pokémon! And I'm ready to take you on! Bring it!"
+    },
+    {
+        name: "Iono",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Iono-269-paldea-evolved.jpg",
+        pokemonTeam: ["ELECTRODE", "RAICHU", "LANTURN", "STEELIX", "TROPIUS", "RAIKOU"],
+        dialog: "Whosawhatsit? It's Iono, the Supercharged Streamer! Get ready for a shocking battle, viewers!"
+    },
+    {
+        name: "Giovanni",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Hidden-Fates_Giovanni%E2%80%99s-Exile.jpg",
+        pokemonTeam: ["PERSIAN", "KINGLER", "RHYDON", "MACHAMP", "CLOYSTER", "MEWTWO"],
+        dialog: "So, you've made it this far. Impressive. But Team Rocket will always triumph!"
+    },
+    {
+        name: "Koga",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Unbroken-Bonds_Koga%E2%80%99s-Trap-1.jpg",
+        pokemonTeam: ["MUK", "TENTACRUEL", "GOLBAT", "WEEZING", "ARBOK", "ARTICUNO"],
+        dialog: "A ninja's duty is to misdirect and confuse. Prepare for a taste of poison and illusion!"
+    },
+    {
+        name: "Erika",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Erikas-Invitation-203-151.jpg",
+        badgeName: "Rainbow Badge",
+        badgeUrl: "https://archives.bulbagarden.net/media/upload/thumb/a/a6/Rainbow_Badge.png/50px-Rainbow_Badge.png",
+        pokemonTeam: ["VILEPLUME", "VICTREEBEL", "TANGELA", "EXEGGUTOR", "BELLOSSOM", "ROSELIA"],
+        dialog: "My grass Pokémon will mesmerize you."
+    },
+    {
+        name: "Blaine",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Dragon-Majesty_Blaine%E2%80%99s-Last-Stand.jpg",
+        badgeName: "Volcano Badge",
+        badgeUrl: "https://archives.bulbagarden.net/media/upload/thumb/1/12/Volcano_Badge.png/50px-Volcano_Badge.png",
+        pokemonTeam: ["ARCANINE", "RAPIDASH", "MAGMAR", "NINETALES", "TYPHLOSION", "TORKOAL"],
+        dialog: "My fiery Pokémon will turn you to ash!"
+    },
+    {
+        name: "Sabrina",
+        cardUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Team-Up_Sabrina%E2%80%99s-Suggestion.jpg",
+        badgeName: "Marsh Badge",
+        badgeUrl: "https://archives.bulbagarden.net/media/upload/thumb/6/6f/Marsh_Badge.png/50px-Marsh_Badge.png",
+        pokemonTeam: ["MR. MIME", "HYPNO", "ALAKAZAM", "ESPEON", "GARDEVOIR", "SLOWKING"],
+        dialog: "My psychic powers are unmatched!"
     }
 ];
 let currentLeagueOrder = [];
@@ -7890,7 +7956,7 @@ function showTcgCardModal(imageUrl, cardName) {
 
 function showStarterSelectScreen() {
     startersGridEl.innerHTML = '';
-    const starterPokedexIds = [1, 4, 7, 152, 155, 158];
+    const starterPokedexIds = [1, 4, 7, 152, 155, 158,252,255,258];
     starterPokedexIds.forEach(pokedexId => {
         const pokemonData = pokemonPool.find(p => p.pokedexId === pokedexId);
         if (pokemonData) {
