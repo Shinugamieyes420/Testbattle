@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blazing Thunder - Pokemon master (Admin & Music Update)</title> <!-- Versie update -->
+    <title>Blazing Thunder - Pokemon master (Pokedex & Admin Update)</title> <!-- Versie update -->
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script> <!-- Anime.js CDN -->
 </head>
@@ -70,7 +70,7 @@
                      <button class="submenu-tab" id="tabMyCards">MY CARDS</button>
                      <button class="submenu-tab" id="tabTcgCards">MY TCG CARDS</button>
                      <button class="submenu-tab" id="tabMyPc">MY PC</button>
-                     <button class="submenu-tab" id="tabPokedex">POKEDEX</button> <!-- NIEUW -->
+                     <button class="submenu-tab" id="tabPokedex">POKEDEX</button>
                      <button class="submenu-tab" id="tabPassword">PASSWORD</button>
                  </div>
              </div>
@@ -100,8 +100,8 @@
 
         <div id="adminModeScreen" class="screen" style="display: none;">
             <h2>ADMIN MODE</h2>
-            <p>Enter Admin Password:</p>
-            <input type="password" id="adminPasswordInput" class="admin-input">
+            <p>Enter Admin Password/Code:</p> <!-- Aangepast -->
+            <input type="text" id="adminPasswordInput" class="admin-input"> <!-- type="text" voor codes -->
             <button id="btnSubmitAdminPassword" class="admin-button">SUBMIT</button>
             <p id="adminMessage" class="admin-message"></p>
             <button id="btnBackToOptionsFromAdmin" class="admin-button back">BACK TO OPTIONS</button>
@@ -146,7 +146,7 @@
                     <p class="item-price">Price: 15 Coins</p>
                     <button class="buy-button" data-item-name="Ultra Ball" data-price="15">BUY</button>
                 </div>
-                <div class="market-item" data-item-id="masterball"> <!-- NIEUW -->
+                <div class="market-item" data-item-id="masterball">
                     <img class="item-icon masterball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Master Ball">
                     <p class="item-name">Master Ball</p>
                     <p class="item-price">Price: 200 Coins</p>
@@ -214,9 +214,11 @@
             <button id="btnBackToMainFromPcBox" class="pc-back-button">BACK TO MAIN MENU</button>
         </div>
 
-        <!-- Pokedex Screen (NIEUW) -->
         <div id="pokedexScreen" class="screen" style="display: none;">
             <h2>POKéDEX</h2>
+            <div class="pokedex-controls"> <!-- NIEUW -->
+                <input type="text" id="pokedexSearchInput" placeholder="Search by Name or ID...">
+            </div>
             <div id="pokedexGrid" class="pokedex-grid">
                 <!-- Pokédex entries will be populated here -->
             </div>
