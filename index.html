@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blazing Thunder - V3.1 (Shiny Fix & Delete Pokémon)</title> <!-- Versie update -->
+    <title>Blazing Thunder - Pokemon master (Admin & Music Update)</title> <!-- Versie update -->
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script> <!-- Anime.js CDN -->
 </head>
@@ -16,10 +16,14 @@
         </div>
 
         <div id="characterSelectScreen" class="screen" style="display: none;">
-             <h2>Kies een trainer</h2><div class="trainers-grid">
+             <h2>Kies een trainer</h2>
+             <div class="trainers-grid">
                  <div class="trainer-card" data-trainer="Bea"><img src="https://www.pokemonkaart.nl/wp-content/uploads/Bea-TG25-Astral-Radiance.png" alt="Trainer Bea"><p>Bea</p></div>
                  <div class="trainer-card" data-trainer="Brock"><img src="https://www.pokemonkaart.nl/wp-content/uploads/brocks-scouting-179-sv9-eng.png" alt="Trainer Brock"><p>Brock</p></div>
                  <div class="trainer-card" data-trainer="Giovanni"><img src="https://www.pokemonkaart.nl/wp-content/uploads/Giovannis-Charisma-204-151.jpg" alt="Trainer Giovanni"><p>Giovanni</p></div>
+                 <div class="trainer-card" data-trainer="Red"><img src="https://www.pokemonkaart.nl/wp-content/uploads/Unbroken-Bonds_Red%E2%80%99s-Challenge-1.jpg" alt="Trainer Red"><p>Red</p></div>
+                 <div class="trainer-card" data-trainer="Blue"><img src="https://www.pokemonkaart.nl/wp-content/uploads/Unified-Minds_Blue%E2%80%99s-Tactics-1.jpg" alt="Trainer Blue"><p>Blue</p></div>
+                 <div class="trainer-card" data-trainer="Hop"><img src="https://www.pokemonkaart.nl/wp-content/uploads/Champions-Path_Hop.jpg" alt="Trainer Hop"><p>Hop</p></div>
              </div>
         </div>
 
@@ -51,18 +55,6 @@
              </div>
         </div>
 
-        <!-- NIEUW: Confirmatie dialoog voor het weggooien van Pokémon -->
-        <div id="deletePokemonConfirmDialog" class="dialog-overlay" style="display: none;">
-            <div class="dialog-content">
-                <p>Weet je zeker dat je <span id="pokemonToDeleteName">deze Pokémon</span> wilt weggooien? Dit kan niet ongedaan worden gemaakt!</p>
-                <div class="dialog-buttons">
-                    <button id="deletePokemonConfirmYes" class="danger-button">Ja, Gooi weg</button>
-                    <button id="deletePokemonConfirmNo">Nee</button>
-                </div>
-            </div>
-        </div>
-        <!-- EINDE NIEUWE DIALOOG -->
-
         <div id="mainMenuScreen" class="screen" style="display: none;">
              <div class="menu-options">
                  <button id="btnPlay">PLAY</button>
@@ -78,6 +70,7 @@
                      <button class="submenu-tab" id="tabMyCards">MY CARDS</button>
                      <button class="submenu-tab" id="tabTcgCards">MY TCG CARDS</button>
                      <button class="submenu-tab" id="tabMyPc">MY PC</button>
+                     <button class="submenu-tab" id="tabPokedex">POKEDEX</button> <!-- NIEUW -->
                      <button class="submenu-tab" id="tabPassword">PASSWORD</button>
                  </div>
              </div>
@@ -89,6 +82,7 @@
             <button class="play-mode-button" id="btnGymBattlePlay">GYM BATTLE</button>
             <button class="play-mode-button" id="btnEliteBattlesPlay">ELITE FOUR</button>
             <button class="play-mode-button" id="btnPokemonLeaguePlay">POKéMON LEAGUE</button>
+            <button class="play-mode-button" id="btnTeamRocketPlay">TEAM ROCKET</button>
             <button class="play-mode-button" id="btnWildModePlay">WILD MODE</button>
             <button class="play-mode-button" id="btnBackToMainFromPlay">BACK</button>
         </div>
@@ -98,7 +92,19 @@
             <button class="options-button" id="btnSaveGameOpt">SAVE GAME</button>
             <button class="options-button" id="btnResetGameOpt">RESET GAME</button>
             <button class="options-button" id="btnDarkModeOpt">DARK MODE</button>
+            <button class="options-button" id="btnToggleMenuMusicOpt">TOGGLE MENU MUSIC</button>
+            <button class="options-button" id="btnToggleBattleMusicOpt">TOGGLE BATTLE MUSIC</button>
+            <button class="options-button" id="btnAdminModeOpt">ADMIN MODE</button>
             <button class="options-button" id="btnBackToMainOpts">BACK</button>
+        </div>
+
+        <div id="adminModeScreen" class="screen" style="display: none;">
+            <h2>ADMIN MODE</h2>
+            <p>Enter Admin Password:</p>
+            <input type="password" id="adminPasswordInput" class="admin-input">
+            <button id="btnSubmitAdminPassword" class="admin-button">SUBMIT</button>
+            <p id="adminMessage" class="admin-message"></p>
+            <button id="btnBackToOptionsFromAdmin" class="admin-button back">BACK TO OPTIONS</button>
         </div>
 
         <div id="passwordScreen" class="screen" style="display: none;">
@@ -117,7 +123,6 @@
             </div>
             <button id="btnBackToMainFromPassword" class="password-back-button">BACK TO MAIN MENU</button>
         </div>
-
 
         <div id="marketScreen" class="screen" style="display: none;">
             <h2>MARKET</h2>
@@ -140,6 +145,12 @@
                     <p class="item-name">Ultra Ball</p>
                     <p class="item-price">Price: 15 Coins</p>
                     <button class="buy-button" data-item-name="Ultra Ball" data-price="15">BUY</button>
+                </div>
+                <div class="market-item" data-item-id="masterball"> <!-- NIEUW -->
+                    <img class="item-icon masterball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Master Ball">
+                    <p class="item-name">Master Ball</p>
+                    <p class="item-price">Price: 200 Coins</p>
+                    <button class="buy-button" data-item-name="Master Ball" data-price="200">BUY</button>
                 </div>
                 <div class="market-item" data-item-id="evolutionstone">
                     <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Evolution Stone">
@@ -203,13 +214,24 @@
             <button id="btnBackToMainFromPcBox" class="pc-back-button">BACK TO MAIN MENU</button>
         </div>
 
+        <!-- Pokedex Screen (NIEUW) -->
+        <div id="pokedexScreen" class="screen" style="display: none;">
+            <h2>POKéDEX</h2>
+            <div id="pokedexGrid" class="pokedex-grid">
+                <!-- Pokédex entries will be populated here -->
+            </div>
+            <button id="btnBackToMainFromPokedex" class="pokedex-back-button">BACK TO MAIN MENU</button>
+        </div>
+
         <div id="teamSelectScreen" class="screen" style="display: none;">
             <h2 id="teamSelectTitle">SELECT YOUR BATTLE TEAM</h2>
             <div id="teamSelectGrid">
             </div>
             <button id="teamSelectConfirmButton" class="team-select-button" disabled>CONFIRM TEAM</button>
+            <button id="teamSelectCancelButton" class="team-select-button cancel">CANCEL</button>
         </div>
 
+        <!-- Gym Battle Schermen -->
         <div id="gymLeaderSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE A GYM LEADER</h2>
             <div id="gymLeaderGrid" class="trainers-grid">
@@ -225,6 +247,7 @@
             <button id="btnBackToGymSelectFromDetail" class="gym-detail-button back">BACK TO GYM LEADERS</button>
         </div>
 
+        <!-- Elite Four Schermen -->
         <div id="eliteFourSelectScreen" class="screen" style="display: none;">
             <h2>CHOOSE AN ELITE FOUR MEMBER</h2>
             <div id="eliteFourGrid" class="trainers-grid">
@@ -240,6 +263,7 @@
             <button id="btnBackToEliteFourSelectFromDetail" class="elite-four-detail-button back">BACK TO ELITE FOUR</button>
         </div>
 
+        <!-- Pokémon League Scherm -->
         <div id="pokemonLeagueScreen" class="screen" style="display: none;">
             <h2>POKéMON LEAGUE CHALLENGE</h2>
             <div id="pokemonLeagueProgress" class="league-progress-bar">
@@ -252,10 +276,23 @@
             <button id="btnBackToPlayMenuFromLeague" class="league-button back">BACK TO PLAY MODES</button>
         </div>
 
+        <!-- Team Rocket Screen -->
+        <div id="teamRocketScreen" class="screen" style="display: none;">
+            <h2>TEAM ROCKET ENCOUNTER</h2>
+            <div id="teamRocketProgress" class="league-progress-bar">
+            </div>
+            <div id="currentTeamRocketOpponentDisplay" class="league-opponent-display">
+                <p>Your next opponent is: <span id="teamRocketOpponentName"></span></p>
+                <img id="teamRocketOpponentCard" src="https://www.pokemonkaart.nl/wp-content/uploads/Fates-Collide_Team-Rocket%E2%80%99s-Handiwork.jpg" alt="Team Rocket Grunt Card">
+            </div>
+            <button id="btnStartTeamRocketBattle" class="league-button">START BATTLE</button>
+            <button id="btnBackToPlayMenuFromTeamRocket" class="league-button back">BACK TO PLAY MODES</button>
+        </div>
+
 
         <div id="myCardsScreen" class="screen" style="display: none;">
             <h2>MY CARDS</h2>
-            <h3>Collected Trainer Cards</h3>
+            <h3>Collected Trainer & Special Cards</h3>
             <div class="card-viewer-controls">
                 <button id="prevCardButton" class="card-nav-btn" disabled><</button>
                 <img id="displayedCardImage" src="" alt="Displayed Card">
@@ -284,6 +321,7 @@
             <button id="btnBackToMainFromTcgCards" class="my-cards-back-button">BACK TO MAIN MENU</button>
         </div>
 
+        <!-- Overlay voor vergrote TCG kaart -->
         <div id="tcgCardModal" class="dialog-overlay card-modal" style="display: none;">
             <div class="dialog-content card-modal-content">
                 <img id="modalTcgCardImage" src="" alt="Enlarged TCG Card">
@@ -292,13 +330,19 @@
         </div>
 
 
+        <!-- TCG Pack Opening Animation Overlay -->
         <div id="tcgPackOpeningOverlay" class="dialog-overlay" style="display: none;">
             <div class="tcg-pack-animation-container">
                 <p>Opening Pack...</p>
             </div>
             <div id="revealedTcgCardContainer" class="revealed-tcg-card-container" style="display:none;">
-                <img id="revealedTcgCardImage" src="" alt="Revealed TCG Card">
+                <div class="revealed-card-display">
+                    <button id="prevRevealedTcgCardButton" class="tcg-reveal-nav-btn" style="display: none;"><</button>
+                    <img id="revealedTcgCardImage" src="" alt="Revealed TCG Card">
+                    <button id="nextRevealedTcgCardButton" class="tcg-reveal-nav-btn" style="display: none;">></button>
+                </div>
                 <p id="revealedTcgCardName"></p>
+                <p id="revealedTcgCardIndexIndicator"></p>
                 <button id="closeTcgRevealButton">Close</button>
             </div>
         </div>
@@ -349,6 +393,11 @@
         </div>
 
     </div>
+
+    <!-- Audio Elements -->
+    <audio id="introMusic" src="music/Intro.mp3" loop></audio>
+    <audio id="battleMusic1" src="music/battlemusic1.mp3" loop></audio>
+    <audio id="battleMusic2" src="music/battlemusic2.mp3" loop></audio>
 
     <script src="script.js" defer></script>
 </body>

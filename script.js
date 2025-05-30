@@ -3,7 +3,8 @@ let currentScreen = 'intro';
 let selectedTrainerData = null;
 let tempSelectedStarter = null;
 let isNewGameSetup = false;
-let pokemonToDeleteInfo = null; // Voor het onthouden welk Pokémon te verwijderen
+let isMenuMusicEnabled = true;
+let isBattleMusicEnabled = true;
 
 let battleState = {
     playerTeam: [],
@@ -25,12 +26,14 @@ let battleState = {
     isPokemonLeagueBattle: false,
     currentLeagueOpponentIndex: 0,
     leagueBattlesWon: 0,
+    isTeamRocketBattle: false,
+    currentTeamRocketGruntIndex: 0,
     pendingBattleStartFunction: null,
     selectedBattleTeamIndexes: []
 };
 
 const GAME_LEVEL = 50;
-const SHINY_CHANCE = 0.1; // 10% kans op shiny voor wild/opponent
+const SHINY_CHANCE = 0.1; // 10%
 const CRITICAL_HIT_CHANCE_BASE = 1 / 24;
 const CRITICAL_HIT_MULTIPLIER = 1.5;
 const PARALYSIS_CHANCE_NO_MOVE = 0.25;
@@ -42,7 +45,9 @@ let currentPcPage = 1;
 const TCG_CARDS_PER_PAGE = 9;
 let currentTcgPage = 1;
 const TCG_CARDS_PER_PACK = 3;
-
+const TEAM_ROCKET_GRUNTS_TO_DEFEAT = 3;
+const TEAM_ROCKET_POKEMON_COUNT = 3;
+const ADMIN_PASSWORD = "Admin01!";
 
 const gameBody = document.getElementById('gameBody');
 const screens = {
@@ -52,20 +57,22 @@ const screens = {
     confirmStarterDialog: document.getElementById('confirmStarterDialog'),
     confirmDialog: document.getElementById('confirmDialog'),
     resetConfirmDialog: document.getElementById('resetConfirmDialog'),
-    deletePokemonConfirmDialog: document.getElementById('deletePokemonConfirmDialog'), // NIEUW
     mainMenu: document.getElementById('mainMenuScreen'),
     playMenu: document.getElementById('playMenuScreen'),
     optionsMenu: document.getElementById('optionsMenuScreen'),
+    adminMode: document.getElementById('adminModeScreen'),
     market: document.getElementById('marketScreen'),
     inventory: document.getElementById('inventoryScreen'),
     team: document.getElementById('teamScreen'),
     pcBox: document.getElementById('pcBoxScreen'),
+    pokedex: document.getElementById('pokedexScreen'), // NIEUW
     teamSelect: document.getElementById('teamSelectScreen'),
     gymLeaderSelect: document.getElementById('gymLeaderSelectScreen'),
     gymLeaderDetail: document.getElementById('gymLeaderDetailScreen'),
     eliteFourSelect: document.getElementById('eliteFourSelectScreen'),
     eliteFourDetail: document.getElementById('eliteFourDetailScreen'),
     pokemonLeague: document.getElementById('pokemonLeagueScreen'),
+    teamRocket: document.getElementById('teamRocketScreen'),
     myCards: document.getElementById('myCardsScreen'),
     tcgCards: document.getElementById('tcgCardsScreen'),
     tcgCardModal: document.getElementById('tcgCardModal'),
@@ -86,6 +93,7 @@ const btnQuickBattlePlay = document.getElementById('btnQuickBattlePlay');
 const btnGymBattlePlay = document.getElementById('btnGymBattlePlay');
 const btnEliteBattlesPlay = document.getElementById('btnEliteBattlesPlay');
 const btnPokemonLeaguePlay = document.getElementById('btnPokemonLeaguePlay');
+const btnTeamRocketPlay = document.getElementById('btnTeamRocketPlay');
 const btnWildModePlay = document.getElementById('btnWildModePlay');
 const btnBackToMainFromPlay = document.getElementById('btnBackToMainFromPlay');
 
@@ -93,14 +101,17 @@ const btnOptions = document.getElementById('btnOptions');
 const btnSaveGameOpt = document.getElementById('btnSaveGameOpt');
 const btnResetGameOpt = document.getElementById('btnResetGameOpt');
 const btnDarkModeOpt = document.getElementById('btnDarkModeOpt');
+const btnToggleMenuMusicOpt = document.getElementById('btnToggleMenuMusicOpt');
+const btnToggleBattleMusicOpt = document.getElementById('btnToggleBattleMusicOpt');
+const btnAdminModeOpt = document.getElementById('btnAdminModeOpt');
 const btnBackToMainOpts = document.getElementById('btnBackToMainOpts');
 const resetConfirmYesButton = document.getElementById('resetConfirmYes');
 const resetConfirmNoButton = document.getElementById('resetConfirmNo');
 
-// NIEUW: Knoppen voor Pokémon verwijderen dialoog
-const deletePokemonConfirmYesButton = document.getElementById('deletePokemonConfirmYes');
-const deletePokemonConfirmNoButton = document.getElementById('deletePokemonConfirmNo');
-const pokemonToDeleteNameSpan = document.getElementById('pokemonToDeleteName');
+const adminPasswordInput = document.getElementById('adminPasswordInput');
+const btnSubmitAdminPassword = document.getElementById('btnSubmitAdminPassword');
+const adminMessageEl = document.getElementById('adminMessage');
+const btnBackToOptionsFromAdmin = document.getElementById('btnBackToOptionsFromAdmin');
 
 
 const opponentPokemonNameEl = document.getElementById('opponentPokemonName');
@@ -130,6 +141,7 @@ const tabTeam = document.getElementById('tabTeam');
 const tabMyCards = document.getElementById('tabMyCards');
 const tabTcgCards = document.getElementById('tabTcgCards');
 const tabMyPc = document.getElementById('tabMyPc');
+const tabPokedex = document.getElementById('tabPokedex'); // NIEUW
 const tabPassword = document.getElementById('tabPassword');
 
 const marketCoinDisplayEl = document.getElementById('marketCoinDisplay');
@@ -142,8 +154,12 @@ const btnBackToMainFromTeam = document.getElementById('btnBackToMainFromTeam');
 const noInventoryItemsMsg = document.querySelector('#inventoryGrid .no-items');
 const noTeamPokemonMsg = document.querySelector('#teamGrid .no-pokemon');
 
+const pokedexGridEl = document.getElementById('pokedexGrid'); // NIEUW
+const btnBackToMainFromPokedex = document.getElementById('btnBackToMainFromPokedex'); // NIEUW
+
 const teamSelectGridEl = document.getElementById('teamSelectGrid');
 const teamSelectConfirmButton = document.getElementById('teamSelectConfirmButton');
+const teamSelectCancelButton = document.getElementById('teamSelectCancelButton');
 const teamSelectTitleEl = document.getElementById('teamSelectTitle');
 
 const gymLeaderGridEl = document.getElementById('gymLeaderGrid');
@@ -167,6 +183,12 @@ const leagueOpponentNameEl = document.getElementById('leagueOpponentName');
 const leagueOpponentCardEl = document.getElementById('leagueOpponentCard');
 const btnStartLeagueBattle = document.getElementById('btnStartLeagueBattle');
 const btnBackToPlayMenuFromLeague = document.getElementById('btnBackToPlayMenuFromLeague');
+
+const teamRocketProgressEl = document.getElementById('teamRocketProgress');
+const teamRocketOpponentNameEl = document.getElementById('teamRocketOpponentName');
+const teamRocketOpponentCardEl = document.getElementById('teamRocketOpponentCard');
+const btnStartTeamRocketBattle = document.getElementById('btnStartTeamRocketBattle');
+const btnBackToPlayMenuFromTeamRocket = document.getElementById('btnBackToPlayMenuFromTeamRocket');
 
 const displayedCardImageEl = document.getElementById('displayedCardImage');
 const prevCardButton = document.getElementById('prevCardButton');
@@ -206,6 +228,9 @@ const revealedTcgCardContainer = screens.tcgPackOpeningOverlay.querySelector('#r
 const revealedTcgCardImageEl = document.getElementById('revealedTcgCardImage');
 const revealedTcgCardNameEl = document.getElementById('revealedTcgCardName');
 const closeTcgRevealButton = document.getElementById('closeTcgRevealButton');
+const prevRevealedTcgCardButton = document.getElementById('prevRevealedTcgCardButton');
+const nextRevealedTcgCardButton = document.getElementById('nextRevealedTcgCardButton');
+const revealedTcgCardIndexIndicatorEl = document.getElementById('revealedTcgCardIndexIndicator');
 
 const btnBackFromMoves = document.getElementById('btnBackFromMoves');
 
@@ -215,28 +240,168 @@ const inputPasswordArea = document.getElementById('inputPasswordArea');
 const btnLoadFromPassword = document.getElementById('btnLoadFromPassword');
 const btnBackToMainFromPassword = document.getElementById('btnBackToMainFromPassword');
 
+// --- Audio Elementen & Controls ---
+const introMusicAudio = document.getElementById('introMusic');
+const battleMusicAudio1 = document.getElementById('battleMusic1');
+const battleMusicAudio2 = document.getElementById('battleMusic2');
+let currentBattleMusic = null;
+let battleMusicPlaylist = [battleMusicAudio1, battleMusicAudio2];
+let currentMusicIndex = 0;
+let battleInProgress = false;
+
+function startIntroMusic() {
+    if (!isMenuMusicEnabled || !introMusicAudio || battleInProgress) return;
+    stopBattleMusic(true);
+    if (introMusicAudio.paused) {
+        introMusicAudio.volume = 0.15;
+        introMusicAudio.currentTime = 0;
+        introMusicAudio.play().catch(e => console.warn("Intro music play failed:", e));
+    }
+}
+
+function stopIntroMusic() {
+    if (introMusicAudio) {
+        introMusicAudio.pause();
+        introMusicAudio.currentTime = 0;
+    }
+}
+
+function playNextBattleMusicTrack() {
+    if (!isBattleMusicEnabled || !battleInProgress) {
+        if (currentBattleMusic) {
+            currentBattleMusic.pause();
+            currentBattleMusic.currentTime = 0;
+            currentBattleMusic.onended = null;
+        }
+        currentBattleMusic = null;
+        return;
+    }
+
+    if (currentBattleMusic) {
+        currentBattleMusic.pause();
+        currentBattleMusic.currentTime = 0;
+        currentBattleMusic.onended = null;
+    }
+
+    currentMusicIndex = (currentMusicIndex + 1) % battleMusicPlaylist.length;
+    currentBattleMusic = battleMusicPlaylist[currentMusicIndex];
+
+    if (currentBattleMusic) {
+        currentBattleMusic.volume = 0.2;
+        currentBattleMusic.onended = playNextBattleMusicTrack;
+        currentBattleMusic.play().catch(e => console.error("Battle music play failed for next track:", e, currentBattleMusic.src));
+    } else {
+        console.error("currentBattleMusic became null in playNextBattleMusicTrack.");
+    }
+}
+
+function startBattleMusic() {
+    if (!isBattleMusicEnabled) return;
+    battleInProgress = true;
+    stopIntroMusic();
+
+    if (currentBattleMusic) {
+        currentBattleMusic.pause();
+        currentBattleMusic.currentTime = 0;
+        currentBattleMusic.onended = null;
+    }
+
+    currentMusicIndex = Math.floor(Math.random() * battleMusicPlaylist.length);
+    currentBattleMusic = battleMusicPlaylist[currentMusicIndex];
+
+    if (currentBattleMusic) {
+        currentBattleMusic.volume = 0.2;
+        currentBattleMusic.currentTime = 0;
+        currentBattleMusic.onended = playNextBattleMusicTrack;
+        currentBattleMusic.play().catch(e => console.warn("Battle music play failed:", e));
+    } else {
+        console.error("Failed to select initial battle music track.");
+    }
+}
+
+function stopBattleMusic(forceStop = false) {
+    const playerHasPokemon = battleState.playerTeam.some(p => p && p.currentHP > 0);
+    const opponentHasPokemon = battleState.opponentTeam.some(p => p && p.currentHP > 0);
+
+    if (!forceStop && battleInProgress && playerHasPokemon && opponentHasPokemon && (currentScreen === 'battle' || currentScreen === 'switchPokemon')) {
+        return;
+    }
+
+    battleInProgress = false;
+    if (currentBattleMusic) {
+        currentBattleMusic.pause();
+        currentBattleMusic.currentTime = 0;
+        currentBattleMusic.onended = null;
+    }
+    currentBattleMusic = null;
+
+    battleMusicPlaylist.forEach(audio => {
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.onended = null;
+        }
+    });
+}
+
+function toggleMenuMusic() {
+    isMenuMusicEnabled = !isMenuMusicEnabled;
+    if (isMenuMusicEnabled) {
+        if (currentScreen !== 'battle' && currentScreen !== 'switchPokemon' &&
+            currentScreen !== 'intro' && currentScreen !== 'characterSelect' && currentScreen !== 'starterSelect') {
+            startIntroMusic();
+        }
+        btnToggleMenuMusicOpt.textContent = "MENU MUSIC: ON";
+    } else {
+        stopIntroMusic();
+        btnToggleMenuMusicOpt.textContent = "MENU MUSIC: OFF";
+    }
+    localStorage.setItem('blazingThunder_menuMusicEnabled', isMenuMusicEnabled);
+    alert(`Menu Music is now ${isMenuMusicEnabled ? 'ON' : 'OFF'}`);
+}
+
+function toggleBattleMusic() {
+    isBattleMusicEnabled = !isBattleMusicEnabled;
+    if (isBattleMusicEnabled) {
+        if ((currentScreen === 'battle' || currentScreen === 'switchPokemon') && battleInProgress) {
+            startBattleMusic();
+        }
+        btnToggleBattleMusicOpt.textContent = "BATTLE MUSIC: ON";
+    } else {
+        stopBattleMusic(true);
+        btnToggleBattleMusicOpt.textContent = "BATTLE MUSIC: OFF";
+    }
+    localStorage.setItem('blazingThunder_battleMusicEnabled', isBattleMusicEnabled);
+    alert(`Battle Music is now ${isBattleMusicEnabled ? 'ON' : 'OFF'}`);
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const marketPokeballIcon = document.querySelector('.market-item[data-item-id="pokeball"] .item-icon');
     if (marketPokeballIcon) marketPokeballIcon.style.backgroundImage = 'var(--item-icon-pokeball)';
-
     const marketGreatballIcon = document.querySelector('.market-item[data-item-id="greatball"] .item-icon');
     if (marketGreatballIcon) marketGreatballIcon.style.backgroundImage = 'var(--item-icon-greatball)';
-
     const marketUltraballIcon = document.querySelector('.market-item[data-item-id="ultraball"] .item-icon');
     if (marketUltraballIcon) marketUltraballIcon.style.backgroundImage = 'var(--item-icon-ultraball)';
-
+    const marketMasterballIcon = document.querySelector('.market-item[data-item-id="masterball"] .item-icon'); // NIEUW
+    if (marketMasterballIcon) marketMasterballIcon.style.backgroundImage = 'var(--item-icon-masterball)'; // NIEUW
     const marketEvoStoneIcon = document.querySelector('.market-item[data-item-id="evolutionstone"] .item-icon');
     if (marketEvoStoneIcon) marketEvoStoneIcon.style.backgroundImage = 'var(--item-icon-evolutionstone)';
-
     const marketPermaEvoStoneIcon = document.querySelector('.market-item[data-item-id="permaevolutionstone"] .item-icon');
     if (marketPermaEvoStoneIcon) marketPermaEvoStoneIcon.style.backgroundImage = 'var(--item-icon-evolutionstone)';
-
     const marketTcgPackIcon = document.querySelector('.market-item[data-item-id="tcgpack"] .item-icon');
     if (marketTcgPackIcon) marketTcgPackIcon.style.backgroundImage = 'var(--item-icon-tcgpack)';
 });
 
-const trainersData = { "Bea": { name: "Bea", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Bea-TG25-Astral-Radiance.png" }, "Brock": { name: "Brock", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/brocks-scouting-179-sv9-eng.png" }, "Giovanni": { name: "Giovanni", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Giovannis-Charisma-204-151.jpg" } };
-const SAVE_KEY = 'blazingThunder_savedData_v3';
+const trainersData = {
+    "Bea": { name: "Bea", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Bea-TG25-Astral-Radiance.png" },
+    "Brock": { name: "Brock", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/brocks-scouting-179-sv9-eng.png" },
+    "Giovanni": { name: "Giovanni", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Giovannis-Charisma-204-151.jpg" },
+    "Red": { name: "Red", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Unbroken-Bonds_Red%E2%80%99s-Challenge-1.jpg" },
+    "Blue": { name: "Blue", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Unified-Minds_Blue%E2%80%99s-Tactics-1.jpg" },
+    "Hop": { name: "Hop", imageUrl: "https://www.pokemonkaart.nl/wp-content/uploads/Champions-Path_Hop.jpg" }
+};
+const SAVE_KEY = 'blazingThunder_savedData_v3.5'; // Updated version for Pokedex data
 
 const typeChart = { "Normal": {"Rock": 0.5, "Ghost": 0, "Steel": 0.5}, "Fire": {"Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 2, "Bug": 2, "Rock": 0.5, "Dragon": 0.5, "Steel": 2}, "Water": {"Fire": 2, "Water": 0.5, "Grass": 0.5, "Ground": 2, "Rock": 2, "Dragon": 0.5}, "Electric": {"Water": 2, "Electric": 0.5, "Grass": 0.5, "Ground": 0, "Flying": 2, "Dragon": 0.5}, "Grass": {"Fire": 0.5, "Water": 2, "Grass": 0.5, "Poison": 0.5, "Ground": 2, "Flying": 0.5, "Bug": 0.5, "Rock": 2, "Dragon": 0.5, "Steel": 0.5}, "Ice": {"Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 0.5, "Ground": 2, "Flying": 2, "Dragon": 2, "Steel": 0.5}, "Fighting": {"Normal": 2, "Ice": 2, "Poison": 0.5, "Flying": 0.5, "Psychic": 0.5, "Bug": 0.5, "Rock": 2, "Ghost": 0, "Dark": 2, "Steel": 2, "Fairy": 0.5}, "Poison": {"Grass": 2, "Poison": 0.5, "Ground": 0.5, "Rock": 0.5, "Ghost": 0.5, "Steel": 0, "Fairy": 2}, "Ground": {"Fire": 2, "Electric": 2, "Grass": 0.5, "Poison": 2, "Flying": 0, "Bug": 0.5, "Rock": 2, "Steel": 2}, "Flying": {"Electric": 0.5, "Grass": 2, "Fighting": 2, "Bug": 2, "Rock": 0.5, "Steel": 0.5}, "Psychic": {"Fighting": 2, "Poison": 2, "Psychic": 0.5, "Dark": 0, "Steel": 0.5}, "Bug": {"Fire": 0.5, "Grass": 2, "Fighting": 0.5, "Poison": 0.5, "Flying": 0.5, "Psychic": 2, "Ghost": 0.5, "Dark": 2, "Steel": 0.5, "Fairy": 0.5}, "Rock": {"Fire": 2, "Ice": 2, "Fighting": 0.5, "Ground": 0.5, "Flying": 2, "Bug": 2, "Steel": 0.5}, "Ghost": {"Normal": 0, "Psychic": 2, "Ghost": 2, "Dark": 0.5}, "Dragon": {"Dragon": 2, "Steel": 0.5, "Fairy": 0}, "Steel": {"Fire": 0.5, "Water": 0.5, "Electric": 0.5, "Ice": 2, "Rock": 2, "Steel": 0.5, "Fairy": 2}, "Dark": {"Fighting": 0.5, "Psychic": 2, "Ghost": 2, "Dark": 0.5, "Fairy": 0.5}, "Fairy": {"Fire": 0.5, "Fighting": 2, "Poison": 0.5, "Dragon": 2, "Dark": 2, "Steel": 0.5} };
 const statStageMultipliers = [1/4, 2/7, 1/3, 2/5, 1/2, 2/3, 1, 1.5, 2, 2.5, 3, 3.5, 4];
@@ -6160,59 +6325,265 @@ const pokemonLeagueTrainers = [
         dialog: "My psychic powers are unmatched!"
     }
 ];
-
+let currentLeagueOrder = [];
+const teamRocketCardData = {
+    name: "Team Rocket's Handiwork",
+    url: "https://www.pokemonkaart.nl/wp-content/uploads/Fates-Collide_Team-Rocket%E2%80%99s-Handiwork.jpg",
+    type: 'Special Trainer'
+};
 
 let displayedCardCollection = [];
 let currentCardIndex = 0;
 let currentFilteredTcgCards = [];
+let revealedTcgCards = [];
+let currentRevealedTcgCardIndex = 0;
+
+// --- Functies voor wachtwoordbeheer ---
+function generatePassword() {
+    if (!selectedTrainerData) {
+        alert("No game data to generate a password from.");
+        return;
+    }
+    try {
+        const exportData = {
+            name: selectedTrainerData.name,
+            imageUrl: selectedTrainerData.imageUrl,
+            coins: selectedTrainerData.coins,
+            inventory: selectedTrainerData.inventory,
+            team: selectedTrainerData.team.map(p => p ? { pokedexId: p.pokedexId, currentHP: p.currentHP, maxHP: p.maxHP, status: p.status, isShiny: p.isShiny, moves: p.moves.map(m => ({name: m.name, currentPp: m.currentPp})), id: p.id, originalEvolutionData: p.originalEvolutionData } : null).filter(p => p),
+            pcBox: selectedTrainerData.pcBox.map(p => p ? { pokedexId: p.pokedexId, currentHP: p.currentHP, maxHP: p.maxHP, status: p.status, isShiny: p.isShiny, moves: p.moves.map(m => ({name: m.name, currentPp: m.currentPp})), id: p.id, originalEvolutionData: p.originalEvolutionData } : null).filter(p => p),
+            defeatedGymLeaders: selectedTrainerData.defeatedGymLeaders,
+            defeatedEliteFourMembers: selectedTrainerData.defeatedEliteFourMembers,
+            collectedTcgCards: selectedTrainerData.collectedTcgCards.map(c => ({ id: c.id, pokemonGameName: c.pokemonGameName, pokedexId: c.pokedexId, spriteUrl: c.spriteUrl, tcgCardName: c.tcgCardName, tcgSet: c.tcgSet || null })),
+            collectedSpecialCards: selectedTrainerData.collectedSpecialCards || [],
+            pokedexSeen: selectedTrainerData.pokedexSeen || {}, // NIEUW
+            pokedexShinySeen: selectedTrainerData.pokedexShinySeen || {}, // NIEUW
+            hasChosenStarter: selectedTrainerData.hasChosenStarter,
+            currentLeagueOpponentIndex: selectedTrainerData.currentLeagueOpponentIndex || 0,
+            leagueBattlesWon: selectedTrainerData.leagueBattlesWon || 0,
+            defeatedPokemonLeague: selectedTrainerData.defeatedPokemonLeague || false,
+            teamRocketDefeatedCount: selectedTrainerData.teamRocketDefeatedCount || 0,
+            defeatedAllTeamRocket: selectedTrainerData.defeatedAllTeamRocket || false,
+            isMenuMusicEnabled: isMenuMusicEnabled,
+            isBattleMusicEnabled: isBattleMusicEnabled
+        };
+        const jsonString = JSON.stringify(exportData);
+        const base64String = btoa(jsonString);
+        generatedPasswordArea.value = base64String;
+        alert("Password generated and copied to the text area. Save it securely!");
+    } catch (error) {
+        console.error("Error generating password:", error);
+        alert("Could not generate password. See console for details.");
+        generatedPasswordArea.value = "Error generating password.";
+    }
+}
+
+function loadFromPassword() {
+    const base64String = inputPasswordArea.value.trim();
+    if (!base64String) {
+        alert("Please enter a password.");
+        return;
+    }
+    try {
+        const jsonString = atob(base64String);
+        const importedData = JSON.parse(jsonString);
+
+        if (!importedData || typeof importedData.name !== 'string' || !Array.isArray(importedData.team)) {
+            throw new Error("Invalid password format.");
+        }
+
+        const baseTrainer = trainersData[importedData.name] || Object.values(trainersData)[0];
+        selectedTrainerData = JSON.parse(JSON.stringify(baseTrainer));
+
+        selectedTrainerData.coins = parseInt(importedData.coins) || 0;
+        selectedTrainerData.inventory = importedData.inventory || { "Poke Ball": 5, "Great Ball": 0, "Ultra Ball": 0, "Master Ball": 0, "Evolution Stone": 1, "Perma Evolution Stone": 0, "TCG Pack": 0 };
+        // Ensure all default items exist, even if not in password
+        const defaultInv = { "Poke Ball": 5, "Great Ball": 0, "Ultra Ball": 0, "Master Ball": 0, "Evolution Stone": 1, "Perma Evolution Stone": 0, "TCG Pack": 0 };
+        for (const itemKey in defaultInv) {
+            if (typeof selectedTrainerData.inventory[itemKey] === 'undefined') {
+                selectedTrainerData.inventory[itemKey] = defaultInv[itemKey];
+            }
+        }
+
+
+        selectedTrainerData.defeatedGymLeaders = importedData.defeatedGymLeaders || [];
+        selectedTrainerData.defeatedEliteFourMembers = importedData.defeatedEliteFourMembers || [];
+        selectedTrainerData.collectedTcgCards = (importedData.collectedTcgCards || []).map(c => ({ ...c, tcgSet: c.tcgSet || "Unknown Set" }));
+        selectedTrainerData.collectedSpecialCards = importedData.collectedSpecialCards || [];
+        selectedTrainerData.pokedexSeen = importedData.pokedexSeen || {}; // NIEUW
+        selectedTrainerData.pokedexShinySeen = importedData.pokedexShinySeen || {}; // NIEUW
+        selectedTrainerData.hasChosenStarter = typeof importedData.hasChosenStarter === 'boolean' ? importedData.hasChosenStarter : true;
+
+        selectedTrainerData.currentLeagueOpponentIndex = importedData.currentLeagueOpponentIndex || 0;
+        selectedTrainerData.leagueBattlesWon = importedData.leagueBattlesWon || 0;
+        selectedTrainerData.defeatedPokemonLeague = importedData.defeatedPokemonLeague || false;
+
+        selectedTrainerData.teamRocketDefeatedCount = importedData.teamRocketDefeatedCount || 0;
+        selectedTrainerData.defeatedAllTeamRocket = importedData.defeatedAllTeamRocket || false;
+
+        isMenuMusicEnabled = typeof importedData.isMenuMusicEnabled === 'boolean' ? importedData.isMenuMusicEnabled : true;
+        isBattleMusicEnabled = typeof importedData.isBattleMusicEnabled === 'boolean' ? importedData.isBattleMusicEnabled : true;
+        btnToggleMenuMusicOpt.textContent = `MENU MUSIC: ${isMenuMusicEnabled ? 'ON' : 'OFF'}`;
+        btnToggleBattleMusicOpt.textContent = `BATTLE MUSIC: ${isBattleMusicEnabled ? 'ON' : 'OFF'}`;
+
+
+        selectedTrainerData.team = restoreFullPokemonList(importedData.team, false);
+        selectedTrainerData.pcBox = restoreFullPokemonList(importedData.pcBox, false);
+
+
+        if (chosenTrainerImageMainMenu && selectedTrainerData.imageUrl) {
+            chosenTrainerImageMainMenu.src = selectedTrainerData.imageUrl;
+            chosenTrainerImageMainMenu.alt = selectedTrainerData.name;
+        }
+        updateCoinDisplay();
+        saveGame();
+        alert("Game data loaded successfully from password!");
+        switchScreen('mainMenu');
+        inputPasswordArea.value = "";
+
+    } catch (error) {
+        console.error("Error loading from password:", error);
+        alert("Invalid or corrupted password. Could not load game data. Error: " + error.message);
+    }
+}
+
+function restoreFullPokemonList(listData, isOpponentTeam = false) {
+    return (listData || []).map(savedPok => {
+        if (!savedPok || typeof savedPok.pokedexId === 'undefined') return null;
+        const baseData = pokemonPool.find(p => p.pokedexId === savedPok.pokedexId);
+        if (!baseData) {
+            console.warn(`Pokémon with PokedexID ${savedPok.pokedexId} not found in current pool. Skipping.`);
+            return null;
+        }
+        let fullPokemon = createPokemonFromData({...baseData, isShiny: savedPok.isShiny}, isOpponentTeam, !isOpponentTeam);
+        fullPokemon.id = savedPok.id || fullPokemon.id;
+        fullPokemon.currentHP = Math.min(savedPok.currentHP, fullPokemon.maxHP);
+        fullPokemon.status = savedPok.status || null;
+        fullPokemon.originalEvolutionData = savedPok.originalEvolutionData || null;
+        if (fullPokemon.originalEvolutionData) {
+             const originalBase = pokemonPool.find(p => p.pokedexId === fullPokemon.originalEvolutionData.pokedexId);
+             if (originalBase) {
+                 fullPokemon.moves = originalBase.moves.map(baseMove => {
+                    const savedMoveData = savedPok.moves.find(sm => sm.name === baseMove.name);
+                    return {
+                        ...baseMove,
+                        currentPp: (savedMoveData && typeof savedMoveData.currentPp !== 'undefined') ? savedMoveData.currentPp : baseMove.maxPp
+                    };
+                });
+             }
+        } else if (savedPok.moves && Array.isArray(savedPok.moves)) {
+            fullPokemon.moves = baseData.moves.map(baseMove => {
+                const savedMoveData = savedPok.moves.find(sm => sm.name === baseMove.name);
+                return {
+                    ...baseMove,
+                    currentPp: (savedMoveData && typeof savedMoveData.currentPp !== 'undefined') ? savedMoveData.currentPp : baseMove.maxPp
+                };
+            });
+        } else {
+             fullPokemon.moves = baseData.moves.map(m => ({ ...m, currentPp: m.maxPp }));
+        }
+        const shinyBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
+        const currentPokedexIdForSprite = fullPokemon.pokedexId;
+        const currentBaseSpriteData = pokemonPool.find(p => p.pokedexId === currentPokedexIdForSprite) || {};
+        fullPokemon.spriteFrontUrl = fullPokemon.isShiny ? `${shinyBaseUrl}/shiny/${currentPokedexIdForSprite}.png` : (currentBaseSpriteData.spriteFront || `${shinyBaseUrl}/${currentPokedexIdForSprite}.png`);
+        fullPokemon.spriteBackUrl = fullPokemon.isShiny ? `${shinyBaseUrl}/back/shiny/${currentPokedexIdForSprite}.png` : (currentBaseSpriteData.spriteBack || `${shinyBaseUrl}/back/${currentPokedexIdForSprite}.png`);
+        return fullPokemon;
+    }).filter(p => p);
+}
+
 
 // --- Helper Functions ---
+function markAsSeen(pokedexId, isShiny) {
+    if (!selectedTrainerData) return;
+    if (!selectedTrainerData.pokedexSeen) selectedTrainerData.pokedexSeen = {};
+    if (!selectedTrainerData.pokedexShinySeen) selectedTrainerData.pokedexShinySeen = {};
+
+    if (isShiny) {
+        selectedTrainerData.pokedexShinySeen[pokedexId] = true;
+    }
+    selectedTrainerData.pokedexSeen[pokedexId] = true; // Seeing a shiny also means you've seen the normal form
+}
+
 function createPokemon(name, types, hp, baseStats, moves, spriteFront, spriteBack, isShiny = false, pokedexIdInput = null) {
     const shinyBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
-    const idFromSprite = spriteFront.split('/').pop().split('.')[0]; // Fallback if pokedexIdInput is null
+    const idFromSprite = spriteFront ? spriteFront.split('/').pop().split('.')[0] : (pokedexIdInput || 0).toString();
     const effectivePokedexId = pokedexIdInput !== null ? pokedexIdInput : parseInt(idFromSprite);
-
     const basePokemonData = pokemonPool.find(p => p.pokedexId === effectivePokedexId) || {};
+
+    // Mark as seen when Pokémon is created
+    markAsSeen(effectivePokedexId, isShiny);
 
     return {
         id: Date.now().toString(36) + Math.random().toString(36).substr(2),
         pokedexId: effectivePokedexId,
         name: name.toUpperCase(), types: types, maxHP: hp, currentHP: hp,
         baseStats: JSON.parse(JSON.stringify(baseStats)),
-        stats: { attack: 0, defense: 0, speed: 0, accuracy: 0, evasion: 0 }, // Stat stages
+        stats: { attack: 0, defense: 0, speed: 0, accuracy: 0, evasion: 0 },
         moves: moves.map(m => ({ ...m, currentPp: m.maxPp })),
-        spriteFrontUrl: isShiny ? `${shinyBaseUrl}/shiny/${effectivePokedexId}.png` : spriteFront,
-        spriteBackUrl: isShiny ? `${shinyBaseUrl}/back/shiny/${effectivePokedexId}.png` : spriteBack,
+        spriteFrontUrl: isShiny ? `${shinyBaseUrl}/shiny/${effectivePokedexId}.png` : (spriteFront || `${shinyBaseUrl}/${effectivePokedexId}.png`),
+        spriteBackUrl: isShiny ? `${shinyBaseUrl}/back/shiny/${effectivePokedexId}.png` : (spriteBack || `${shinyBaseUrl}/back/${effectivePokedexId}.png`),
         status: null, isShiny: isShiny,
         sleepTurns: 0,
         flinch: false,
-        originalEvolutionData: null, // For temporary evolutions
+        originalEvolutionData: null,
         evolvesToPokedexId: basePokemonData.evolvesToPokedexId || null
     };
 }
-
-function createPokemonFromData(data, isOpponent = false, forPlayerTeam = false, shinyOverride = undefined) {
-    let isShinyDetermined;
-
-    if (shinyOverride !== undefined) {
-        isShinyDetermined = shinyOverride;
-    } else if (data.isShinyFromEvent) { // For specific event Pokémon that are always shiny
-        isShinyDetermined = true;
+function createPokemonFromData(data, isOpponent = false, forPlayerTeam = false) {
+    let isShiny = false;
+    if (typeof data.isShiny === 'boolean') {
+        isShiny = data.isShiny;
     } else if ((isOpponent || (battleState.isWildBattle && !forPlayerTeam)) && Math.random() < SHINY_CHANCE) {
-        isShinyDetermined = true;
-    } else {
-        isShinyDetermined = false;
+        isShiny = true;
     }
 
-    const newPokemon = createPokemon(data.name, data.types, data.hp, data.baseStats, data.moves, data.spriteFront, data.spriteBack, isShinyDetermined, data.pokedexId);
+    // Mark as seen when data is processed for creation
+    markAsSeen(data.pokedexId, isShiny);
+
+    const newPokemon = createPokemon(data.name, data.types, data.hp, data.baseStats, data.moves, data.spriteFront, data.spriteBack, isShiny, data.pokedexId);
     return newPokemon;
 }
-
 
 function calculateStatWithStage(baseStat, stage, statType) { const stageArray = (statType === 'accuracy' || statType === 'evasion') ? accuracyStageMultipliers : statStageMultipliers; const modifier = stageArray[stage + 6]; let finalStat = Math.floor(baseStat * modifier); if (statType === 'speed') { const pokemonToCheck = battleState.playerTurn ? (battleState.opponentTeam[battleState.opponentActiveIndex] || {}) : (battleState.playerTeam[battleState.playerActiveIndex] || {}); if (pokemonToCheck && pokemonToCheck.status === 'PAR' && baseStat === pokemonToCheck.baseStats?.speed) { finalStat = Math.floor(finalStat / 2); } } return finalStat; }
 function calculateTypeEffectiveness(moveType, defenderTypes) { let totalEffectiveness = 1; if (!typeChart[moveType]) return 1; defenderTypes.forEach(defenderType => { if (typeChart[moveType][defenderType] !== undefined) { totalEffectiveness *= typeChart[moveType][defenderType]; }}); return totalEffectiveness; }
 function getEffectivenessText(multiplier, defenderName) { if (multiplier >= 2) return "It's super effective!"; if (multiplier > 0 && multiplier < 1) return "It's not very effective..."; if (multiplier === 0) return `It doesn't affect foe ${defenderName.toUpperCase()}...`; return ""; }
-function switchScreen(screenKey) { Object.keys(screens).forEach(key => { if (screens[key]) screens[key].style.display = 'none'; }); if (screens[screenKey]) { screens[screenKey].style.display = 'flex'; currentScreen = screenKey; } else { console.error(`Screen '${screenKey}' not found.`); } }
+
+function switchScreen(screenKey) {
+    const nonBattleMusicScreens = [
+        'mainMenu', 'market', 'inventory', 'team', 'pcBox', 'myCards',
+        'tcgCards', 'password', 'adminMode', 'optionsMenu', 'playMenu',
+        'gymLeaderSelect', 'gymLeaderDetail', 'eliteFourSelect',
+        'eliteFourDetail', 'pokemonLeague', 'teamRocket', 'pokedex' // pokedex toegevoegd
+    ];
+    const initialSetupScreens = ['intro', 'characterSelect', 'starterSelect'];
+    const battleRelatedScreens = ['battle', 'switchPokemon'];
+
+    if (battleRelatedScreens.includes(screenKey)) {
+        if (!battleInProgress && screenKey === 'battle') {
+            // startBattleMusic() will be called by the specific battle start function
+        } else if (battleInProgress && currentScreen !== 'battle' && currentScreen !== 'switchPokemon') {
+            stopIntroMusic();
+        }
+    } else if (nonBattleMusicScreens.includes(screenKey)) {
+        if (battleInProgress) {
+            stopBattleMusic(true);
+        }
+        startIntroMusic();
+    } else if (initialSetupScreens.includes(screenKey)) {
+        stopIntroMusic();
+        stopBattleMusic(true);
+    }
+
+    Object.keys(screens).forEach(key => {
+        if (screens[key]) screens[key].style.display = 'none';
+    });
+    if (screens[screenKey]) {
+        screens[screenKey].style.display = 'flex';
+        currentScreen = screenKey;
+    } else {
+        console.error(`Screen '${screenKey}' not found.`);
+    }
+}
 function typeMessage(message, callback) { if (battleState.isProcessingMessage && message) { battleState.messageQueue.push({ message, callback }); return; } battleState.isProcessingMessage = true; battleMessageEl.textContent = ''; actionMenuEl.style.display = 'none'; moveMenuEl.style.display = 'none'; itemMenuEl.style.display = 'none'; battleTextboxEl.style.display = 'block'; battleTextboxEl.style.visibility = 'visible'; let i = 0; const intervalId = setInterval(() => { if (i < message.length) { battleMessageEl.textContent += message.charAt(i); i++; } else { clearInterval(intervalId); battleState.isProcessingMessage = false; battleState.onMessageComplete = callback; processMessageQueue(); } }, 35); }
 function processMessageQueue() { if (!battleState.isProcessingMessage && battleState.messageQueue.length > 0) { const next = battleState.messageQueue.shift(); typeMessage(next.message, next.callback); } }
 if (battleTextboxEl && battleTextboxEl.parentElement) { battleTextboxEl.parentElement.addEventListener('click', (e) => { if (e.target.closest('.battle-menu') || e.target.closest('#switchPokemonScreen') || e.target.closest('#teamSelectScreen') || e.target.closest('.dialog-overlay')) return; if (!battleState.isProcessingMessage && battleState.onMessageComplete) { const callback = battleState.onMessageComplete; battleState.onMessageComplete = null; callback(); processMessageQueue(); } });}
@@ -6276,7 +6647,16 @@ function updateBattleUI() {
     playerPokemonSpriteEl.src = pPok.spriteBackUrl;
     updateHpBar(playerHpFillEl, playerHpNumbersEl, pPok.currentHP, pPok.maxHP);
     updateStatusTag(pPok, playerStatusTagEl);
-    updateTeamStatus(playerTeamStatusEl, battleState.playerTeam, battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle ? 6 : 3);
+    markAsSeen(pPok.pokedexId, pPok.isShiny); // Mark player's active Pokemon as seen
+
+    let playerTeamSizeForUI = 3;
+    if (battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle) {
+        playerTeamSizeForUI = MAX_TEAM_SIZE;
+    } else if (battleState.isTeamRocketBattle || battleState.isGymBattle) {
+        playerTeamSizeForUI = Math.min(battleState.playerTeam.length, 3);
+    }
+    updateTeamStatus(playerTeamStatusEl, battleState.playerTeam, playerTeamSizeForUI);
+
 
     if (battleState.opponentTeam.length > 0 && battleState.opponentTeam[battleState.opponentActiveIndex]) {
         const oPok = battleState.opponentTeam[battleState.opponentActiveIndex];
@@ -6284,7 +6664,15 @@ function updateBattleUI() {
         opponentPokemonSpriteEl.src = oPok.spriteFrontUrl;
         updateHpBar(opponentHpFillEl, opponentHpNumbersEl, oPok.currentHP, oPok.maxHP);
         updateStatusTag(oPok, opponentStatusTagEl);
-        updateTeamStatus(opponentTeamStatusEl, battleState.opponentTeam, battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle ? 6 : 3);
+        markAsSeen(oPok.pokedexId, oPok.isShiny); // Mark opponent's active Pokemon as seen
+
+        let opponentTeamSizeForUI = 3;
+        if (battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle) {
+            opponentTeamSizeForUI = MAX_TEAM_SIZE;
+        } else if (battleState.isTeamRocketBattle || battleState.isGymBattle) {
+            opponentTeamSizeForUI = battleState.opponentTeam.length > 3 ? 3 : battleState.opponentTeam.length;
+        }
+        updateTeamStatus(opponentTeamStatusEl, battleState.opponentTeam, opponentTeamSizeForUI);
     } else {
         opponentPokemonNameEl.textContent = "";
         opponentPokemonSpriteEl.src = "";
@@ -6338,11 +6726,12 @@ function showInventoryScreen() {
             const itemIcon = document.createElement('img');
             itemIcon.classList.add('item-icon');
             if (itemName.toLowerCase().includes("ultra ball")) { itemIcon.style.backgroundImage = 'var(--item-icon-ultraball)'; itemIcon.alt = "Ultra Ball"; }
+            else if (itemName.toLowerCase().includes("master ball")) { itemIcon.style.backgroundImage = 'var(--item-icon-masterball)'; itemIcon.alt = "Master Ball"; itemIcon.classList.add('masterball-icon');} // NIEUW
             else if (itemName.toLowerCase().includes("great ball")) { itemIcon.style.backgroundImage = 'var(--item-icon-greatball)'; itemIcon.alt = "Great Ball"; }
             else if (itemName.toLowerCase().includes("evolution stone")) { itemIcon.style.backgroundImage = 'var(--item-icon-evolutionstone)'; itemIcon.alt = "Evolution Stone"; }
             else if (itemName.toLowerCase().includes("tcg pack")) { itemIcon.style.backgroundImage = 'var(--item-icon-tcgpack)'; itemIcon.alt = "TCG Pack"; itemIcon.classList.add('tcgpack-icon'); }
             else { itemIcon.style.backgroundImage = 'var(--item-icon-pokeball)'; itemIcon.alt = "Poké Ball"; }
-            itemIcon.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+            itemIcon.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"; // Transparante pixel
             const itemDetails = document.createElement('div');
             itemDetails.classList.add('item-details');
             itemDetails.innerHTML = `<span class="item-name">${itemName}</span>: ${inventory[itemName]}`;
@@ -6396,9 +6785,10 @@ function showTeamScreen() {
             pSprite.classList.add('pokemon-list-sprite');
             pSprite.src = pokemon.spriteFrontUrl;
             pSprite.alt = pokemon.name.toUpperCase();
+            if (pokemon.isShiny) pSprite.classList.add('shiny-sprite-indicator');
             const pDetails = document.createElement('div');
             pDetails.classList.add('pokemon-details');
-            pDetails.innerHTML = `<span class="pokemon-name">${pokemon.name.toUpperCase()}</span> <br>HP: ${Math.floor(pokemon.currentHP)}/${pokemon.maxHP} ${pokemon.status ? '('+pokemon.status.toUpperCase()+')' : ''}`;
+            pDetails.innerHTML = `<span class="pokemon-name">${pokemon.name.toUpperCase()}${pokemon.isShiny ? ' (Shiny)' : ''}</span> <br>HP: ${Math.floor(pokemon.currentHP)}/${pokemon.maxHP} ${pokemon.status ? '('+pokemon.status.toUpperCase()+')' : ''}`;
             pCard.appendChild(pSprite);
             pCard.appendChild(pDetails);
             teamGridEl.appendChild(pCard);
@@ -6442,7 +6832,7 @@ function showPcBoxScreen() {
         pcTeamGridEl.appendChild(pCard);
     });
 
-    currentPcPage = 1; // Reset to page 1 every time PC is opened for simplicity
+    currentPcPage = 1;
     renderCurrentPcPage();
     updatePcPaginationButtons();
 
@@ -6460,15 +6850,13 @@ function createPcPokemonCard(pokemon, location, index) {
     pSprite.classList.add('pokemon-list-sprite');
     pSprite.src = pokemon.spriteFrontUrl;
     pSprite.alt = pokemon.name.toUpperCase();
+    if (pokemon.isShiny) pSprite.classList.add('shiny-sprite-indicator');
     pCard.appendChild(pSprite);
 
     const pDetails = document.createElement('div');
     pDetails.classList.add('pokemon-details');
-    pDetails.innerHTML = `<span class="pokemon-name">${pokemon.name.toUpperCase()}</span> <br>HP: ${Math.floor(pokemon.currentHP)}/${pokemon.maxHP} ${pokemon.status ? '('+pokemon.status.toUpperCase()+')' : ''}`;
+    pDetails.innerHTML = `<span class="pokemon-name">${pokemon.name.toUpperCase()}${pokemon.isShiny ? ' (Shiny)' : ''}</span> <br>HP: ${Math.floor(pokemon.currentHP)}/${pokemon.maxHP} ${pokemon.status ? '('+pokemon.status.toUpperCase()+')' : ''}`;
     pCard.appendChild(pDetails);
-
-    const buttonsContainer = document.createElement('div');
-    buttonsContainer.classList.add('pc-card-buttons');
 
     const moveButton = document.createElement('button');
     moveButton.classList.add('pc-move-button');
@@ -6476,24 +6864,12 @@ function createPcPokemonCard(pokemon, location, index) {
         moveButton.textContent = 'To PC';
         moveButton.disabled = selectedTrainerData.pcBox.length >= MAX_PC_BOX_SIZE;
         moveButton.addEventListener('click', (e) => { e.stopPropagation(); movePokemonToPc(index); });
-    } else { // location === 'pc'
+    } else {
         moveButton.textContent = 'To Team';
         moveButton.disabled = selectedTrainerData.team.length >= MAX_TEAM_SIZE;
         moveButton.addEventListener('click', (e) => { e.stopPropagation(); movePokemonToTeam(index); });
     }
-    buttonsContainer.appendChild(moveButton);
-
-    if (location === 'pc') { // Only add delete button for Pokémon in the PC box
-        const deleteButton = document.createElement('button');
-        deleteButton.classList.add('pc-delete-button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            confirmDeletePokemon(pokemon, location, index);
-        });
-        buttonsContainer.appendChild(deleteButton);
-    }
-    pCard.appendChild(buttonsContainer);
+    pCard.appendChild(moveButton);
 
     return pCard;
 }
@@ -6509,7 +6885,7 @@ function renderCurrentPcPage() {
         noPokemonPcBoxMsg.textContent = "PC Box is empty.";
         noPokemonPcBoxMsg.style.display = 'block';
     } else if (pagePokemon.length === 0 && noPokemonPcBoxMsg) {
-        noPokemonPcBoxMsg.textContent = "This page is empty."; // Should not happen if currentPcPage is managed well
+        noPokemonPcBoxMsg.textContent = "This page is empty.";
         noPokemonPcBoxMsg.style.display = 'block';
     } else if (noPokemonPcBoxMsg) {
         noPokemonPcBoxMsg.style.display = 'none';
@@ -6547,17 +6923,9 @@ function movePokemonToPc(teamIndex) {
     selectedTrainerData.pcBox.push(pokemonToMove);
     saveGame();
 
-    // Refresh PC Box display (current page might change if it was the last item on a page)
-    const totalPcPages = Math.max(1, Math.ceil(selectedTrainerData.pcBox.length / POKEMON_PER_PC_PAGE));
-    if (currentPcPage > totalPcPages && totalPcPages > 0) { // If current page no longer exists
-        currentPcPage = totalPcPages;
-    } else if (selectedTrainerData.pcBox.length === 0) {
-        currentPcPage = 1;
-    }
     renderCurrentPcPage();
     updatePcPaginationButtons();
 
-    // Refresh Team display
     pcTeamGridEl.innerHTML = '';
     selectedTrainerData.team.filter(p => p).forEach((pokemon, index) => {
         const pCard = createPcPokemonCard(pokemon, 'team', index);
@@ -6578,17 +6946,13 @@ function movePokemonToTeam(globalPcIndex) {
     selectedTrainerData.team.push(pokemonToMove);
     saveGame();
 
-    // Refresh PC Box display
-    const totalPcPages = Math.max(1, Math.ceil(selectedTrainerData.pcBox.length / POKEMON_PER_PC_PAGE));
-    if (currentPcPage > totalPcPages && totalPcPages > 0) {
-        currentPcPage = totalPcPages;
-    } else if (selectedTrainerData.pcBox.length === 0) { // If PC box became empty
-        currentPcPage = 1;
+    const totalPages = Math.max(1, Math.ceil(selectedTrainerData.pcBox.length / POKEMON_PER_PC_PAGE));
+    if (currentPcPage > totalPages && totalPages > 0) {
+        currentPcPage = totalPages;
     }
-    renderCurrentPcPage(); // This will also handle if the page is now empty
+    renderCurrentPcPage();
     updatePcPaginationButtons();
 
-    // Refresh Team display
     pcTeamGridEl.innerHTML = '';
     selectedTrainerData.team.filter(p => p).forEach((pokemon, index) => {
         const pCard = createPcPokemonCard(pokemon, 'team', index);
@@ -6600,51 +6964,78 @@ function movePokemonToTeam(globalPcIndex) {
     else if (noPokemonPcTeamMsg) noPokemonPcTeamMsg.style.display = 'none';
 }
 
-// --- Pokémon Verwijder Functies ---
-function confirmDeletePokemon(pokemon, location, index) {
-    if (location !== 'pc') { // Safety check, should only be called for PC Pokémon
-        alert("Error: Can only delete Pokémon from the PC Box via this interface.");
+// --- Pokedex Functies ---
+function showPokedexScreen() {
+    if (!selectedTrainerData) {
+        alert("No trainer data loaded.");
+        switchScreen('mainMenu');
         return;
     }
-    pokemonToDeleteInfo = { pokemon, location, index }; // index is globalPcIndex
-    pokemonToDeleteNameSpan.textContent = pokemon.name.toUpperCase();
-    screens.deletePokemonConfirmDialog.style.display = 'flex';
-}
+    pokedexGridEl.innerHTML = '';
+    const shinyBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/";
 
-function executeDeletePokemon() {
-    if (!pokemonToDeleteInfo || pokemonToDeleteInfo.location !== 'pc') {
-        screens.deletePokemonConfirmDialog.style.display = 'none';
-        pokemonToDeleteInfo = null;
-        return;
-    }
+    pokemonPool.forEach(pokemonData => {
+        const entryDiv = document.createElement('div');
+        entryDiv.classList.add('pokedex-entry');
 
-    const { pokemon, index } = pokemonToDeleteInfo; // index is globalPcIndex
+        const nameP = document.createElement('p');
+        nameP.classList.add('pokemon-name');
+        nameP.textContent = `#${String(pokemonData.pokedexId).padStart(3, '0')} ${pokemonData.name.toUpperCase()}`;
+        entryDiv.appendChild(nameP);
 
-    selectedTrainerData.pcBox.splice(index, 1);
-    saveGame();
+        const spritesDiv = document.createElement('div');
+        spritesDiv.classList.add('pokedex-sprites');
 
-    screens.deletePokemonConfirmDialog.style.display = 'none';
-    pokemonToDeleteInfo = null;
+        const normalSprite = document.createElement('img');
+        normalSprite.src = pokemonData.spriteFront;
+        normalSprite.alt = pokemonData.name + " (Normal)";
+        if (!selectedTrainerData.pokedexSeen || !selectedTrainerData.pokedexSeen[pokemonData.pokedexId]) {
+            normalSprite.classList.add('not-seen');
+        }
+        spritesDiv.appendChild(normalSprite);
 
-    // Refresh PC screen
-    const totalPages = Math.max(1, Math.ceil(selectedTrainerData.pcBox.length / POKEMON_PER_PC_PAGE));
-    if (currentPcPage > totalPages && totalPages > 0) {
-        currentPcPage = totalPages;
-    } else if (selectedTrainerData.pcBox.length === 0) {
-        currentPcPage = 1;
-    }
-    // showPcBoxScreen(); // This resets currentPcPage to 1, might not be desired.
-    // Instead, directly re-render and update counts.
-    renderCurrentPcPage();
-    updatePcPaginationButtons();
-    pcBoxCountEl.textContent = selectedTrainerData.pcBox.length;
+        const shinySprite = document.createElement('img');
+        shinySprite.src = `${shinyBaseUrl}${pokemonData.pokedexId}.png`;
+        shinySprite.alt = pokemonData.name + " (Shiny)";
+         if (!selectedTrainerData.pokedexShinySeen || !selectedTrainerData.pokedexShinySeen[pokemonData.pokedexId]) {
+            shinySprite.classList.add('not-seen');
+        }
+        spritesDiv.appendChild(shinySprite);
+        entryDiv.appendChild(spritesDiv);
 
-    alert(`${pokemon.name.toUpperCase()} has been released.`);
+        const statusDiv = document.createElement('div');
+        statusDiv.classList.add('pokedex-seen-status');
+
+        const seenNormalLabel = document.createElement('label');
+        const seenNormalCheckbox = document.createElement('input');
+        seenNormalCheckbox.type = 'checkbox';
+        seenNormalCheckbox.checked = selectedTrainerData.pokedexSeen && selectedTrainerData.pokedexSeen[pokemonData.pokedexId];
+        seenNormalCheckbox.disabled = true;
+        seenNormalLabel.appendChild(seenNormalCheckbox);
+        seenNormalLabel.appendChild(document.createTextNode(" Seen"));
+        statusDiv.appendChild(seenNormalLabel);
+
+        const seenShinyLabel = document.createElement('label');
+        const seenShinyCheckbox = document.createElement('input');
+        seenShinyCheckbox.type = 'checkbox';
+        seenShinyCheckbox.checked = selectedTrainerData.pokedexShinySeen && selectedTrainerData.pokedexShinySeen[pokemonData.pokedexId];
+        seenShinyCheckbox.disabled = true;
+        seenShinyLabel.appendChild(seenShinyCheckbox);
+        seenShinyLabel.appendChild(document.createTextNode(" Shiny Seen"));
+        statusDiv.appendChild(seenShinyLabel);
+
+        entryDiv.appendChild(statusDiv);
+        pokedexGridEl.appendChild(entryDiv);
+    });
+    switchScreen('pokedex');
 }
 
 
 // --- TCG Functies ---
 function openTcgPackAnimation(cards) {
+    revealedTcgCards = cards || [];
+    currentRevealedTcgCardIndex = 0;
+
     screens.tcgPackOpeningOverlay.style.display = 'flex';
     tcgPackAnimationContainer.style.display = 'block';
     revealedTcgCardContainer.style.display = 'none';
@@ -6653,18 +7044,39 @@ function openTcgPackAnimation(cards) {
     setTimeout(() => {
         tcgPackAnimationContainer.style.display = 'none';
         revealedTcgCardContainer.style.display = 'flex';
-
-        if (cards && cards.length > 0) {
-            const cardToShow = cards[0]; // Toon de eerste kaart (aanname 1 kaart per pack voor nu)
-            revealedTcgCardImageEl.src = cardToShow.spriteUrl;
-            revealedTcgCardImageEl.alt = cardToShow.tcgCardName + " TCG Card";
-            revealedTcgCardNameEl.textContent = cardToShow.tcgCardName.toUpperCase();
-        } else {
-            revealedTcgCardImageEl.src = "";
-            revealedTcgCardImageEl.alt = "No Card";
-            revealedTcgCardNameEl.textContent = "NO CARD PULLED";
-        }
+        displayRevealedTcgCard();
     }, 2000);
+}
+
+function displayRevealedTcgCard() {
+    if (revealedTcgCards.length === 0) {
+        revealedTcgCardImageEl.src = "";
+        revealedTcgCardImageEl.alt = "No Card";
+        revealedTcgCardNameEl.textContent = "NO CARD PULLED";
+        if(revealedTcgCardIndexIndicatorEl) revealedTcgCardIndexIndicatorEl.textContent = "";
+        if(prevRevealedTcgCardButton) prevRevealedTcgCardButton.style.display = 'none';
+        if(nextRevealedTcgCardButton) nextRevealedTcgCardButton.style.display = 'none';
+        return;
+    }
+
+    const cardToShow = revealedTcgCards[currentRevealedTcgCardIndex];
+    revealedTcgCardImageEl.src = cardToShow.spriteUrl;
+    revealedTcgCardImageEl.alt = cardToShow.tcgCardName + " TCG Card";
+    revealedTcgCardNameEl.textContent = cardToShow.tcgCardName.toUpperCase();
+
+    if(revealedTcgCardIndexIndicatorEl) {
+        revealedTcgCardIndexIndicatorEl.textContent = `Card ${currentRevealedTcgCardIndex + 1} of ${revealedTcgCards.length}`;
+        revealedTcgCardIndexIndicatorEl.style.display = revealedTcgCards.length > 1 ? 'block' : 'none';
+    }
+
+    if(prevRevealedTcgCardButton) {
+        prevRevealedTcgCardButton.style.display = revealedTcgCards.length > 1 ? 'inline-block' : 'none';
+        prevRevealedTcgCardButton.disabled = currentRevealedTcgCardIndex === 0;
+    }
+    if(nextRevealedTcgCardButton) {
+        nextRevealedTcgCardButton.style.display = revealedTcgCards.length > 1 ? 'inline-block' : 'none';
+        nextRevealedTcgCardButton.disabled = currentRevealedTcgCardIndex === revealedTcgCards.length - 1;
+    }
 }
 
 
@@ -6714,7 +7126,6 @@ function buyItem(itemName, price) {
                                 tcgSet: randomCardFromApi.set ? randomCardFromApi.set.name : "Unknown Set"
                             };
                         } else {
-                            console.warn(`No TCG card found for ${randomPokemonForTcg.name} (ID: ${randomPokemonForTcg.pokedexId}) via API. Using fallback sprite.`);
                             return {
                                 id: `tcg-fallback-${Date.now()}-${Math.random().toString(36).substr(2)}-${i}`,
                                 pokemonGameName: randomPokemonForTcg.name,
@@ -6727,12 +7138,12 @@ function buyItem(itemName, price) {
                     })
                     .catch(error => {
                         console.error("Error fetching TCG card:", error);
-                        const fallbackPokemon = pokemonPool.length > 0 ? pokemonPool[Math.floor(Math.random() * pokemonPool.length)] : {name: "ErrorMon", pokedexId: 0};
+                        const fallbackPokemon = pokemonPool.length > 0 ? pokemonPool[Math.floor(Math.random() * pokemonPool.length)] : {name: "ErrorMon", pokedexId: 0, spriteFront: ""};
                         return {
                             id: `tcg-error-${Date.now()}-${Math.random().toString(36).substr(2)}-${i}`,
                             pokemonGameName: fallbackPokemon.name,
                             pokedexId: fallbackPokemon.pokedexId,
-                            spriteUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${fallbackPokemon.pokedexId}.png`,
+                            spriteUrl: fallbackPokemon.spriteFront || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${fallbackPokemon.pokedexId || 0}.png`,
                             tcgCardName: fallbackPokemon.name.toUpperCase() + " (API Error)",
                             tcgSet: "Error Set"
                         };
@@ -6752,12 +7163,8 @@ function buyItem(itemName, price) {
                     validPulledCards.forEach(card => selectedTrainerData.collectedTcgCards.push(card));
                     openTcgPackAnimation(validPulledCards);
                 } else {
-                    alert(`Successfully bought 1 TCG Pack! However, no specific TCG cards could be found (using fallback art if available).`);
-                    if (pulledCardsData.some(c => c && (c.tcgCardName.includes("Fallback") || c.tcgCardName.includes("API Error")))) {
-                         openTcgPackAnimation(pulledCardsData.filter(c => c));
-                    } else {
-                        screens.tcgPackOpeningOverlay.style.display = 'none';
-                    }
+                    alert(`Successfully bought 1 TCG Pack! However, no TCG cards could be found.`);
+                    screens.tcgPackOpeningOverlay.style.display = 'none';
                 }
                 saveGame();
             })
@@ -6778,10 +7185,29 @@ function buyItem(itemName, price) {
 }
 
 // --- Battle Setup Functies ---
-function getUniqueRandomPokemon(existingPokedexIds, fromPool) {
+function getUniqueRandomPokemon(existingPokedexIds, fromPool, count) {
     const available = fromPool.filter(p => !existingPokedexIds.includes(p.pokedexId));
-    if (available.length === 0) return null;
-    return available[Math.floor(Math.random() * available.length)];
+    const chosen = [];
+    let tempAvailable = [...available];
+
+    for (let i = 0; i < count; i++) {
+        if (tempAvailable.length === 0) {
+            const fullPoolMinusAlreadyChosenInThisSelection = fromPool.filter(p => !chosen.some(c => c.pokedexId === p.pokedexId));
+            if (fullPoolMinusAlreadyChosenInThisSelection.length === 0 && fromPool.length > 0) {
+                 chosen.push(fromPool[Math.floor(Math.random() * fromPool.length)]);
+                 continue;
+            }
+            if(fullPoolMinusAlreadyChosenInThisSelection.length === 0) break;
+            tempAvailable = [...fullPoolMinusAlreadyChosenInThisSelection];
+        }
+        const randomIndex = Math.floor(Math.random() * tempAvailable.length);
+        if (tempAvailable[randomIndex]) {
+            chosen.push(tempAvailable.splice(randomIndex, 1)[0]);
+        } else if (fromPool.length > 0) {
+            chosen.push(fromPool[Math.floor(Math.random() * fromPool.length)]);
+        }
+    }
+    return chosen.filter(p => p);
 }
 
 function startQuickBattle() {
@@ -6789,46 +7215,24 @@ function startQuickBattle() {
     battleState.isGymBattle = false;
     battleState.isEliteFourBattle = false;
     battleState.isPokemonLeagueBattle = false;
-    screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')"; // Standaard
-
-    battleState.playerTeam = [];
-    battleState.opponentTeam = [];
+    battleState.isTeamRocketBattle = false;
+    screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')";
 
     if (pokemonPool.length < 3) {
-        alert("Error: Not enough unique Pokémon in the pool for a Quick Battle.");
+        alert("Error: Not enough Pokémon in the pool for a Quick Battle.");
         switchScreen('mainMenu');
         return;
     }
 
-    let availableForPlayer = [...pokemonPool];
-    let playerPokedexIds = [];
-    for (let i = 0; i < 3; i++) {
-        if (availableForPlayer.length === 0) break;
-        let poolIdx = Math.floor(Math.random() * availableForPlayer.length);
-        let chosenData = availableForPlayer.splice(poolIdx, 1)[0];
-        battleState.playerTeam.push(createPokemonFromData(chosenData, false, true));
-        playerPokedexIds.push(chosenData.pokedexId);
-    }
+    battleState.playerTeam = getUniqueRandomPokemon([], pokemonPool, 3)
+        .map(data => createPokemonFromData(data, false, true));
 
-    let availableForOpponent = pokemonPool.filter(p => !playerPokedexIds.includes(p.pokedexId));
-    if (availableForOpponent.length < 3) {
-        availableForOpponent = [...pokemonPool]; // Fallback if not enough unique opponents
-    }
+    const playerPokedexIds = battleState.playerTeam.map(p => p.pokedexId);
+    battleState.opponentTeam = getUniqueRandomPokemon(playerPokedexIds, pokemonPool, 3)
+        .map(data => createPokemonFromData(data, true, false));
 
-
-    for (let i = 0; i < 3; i++) {
-        if (availableForOpponent.length === 0) {
-             if (pokemonPool.length > 0) battleState.opponentTeam.push(createPokemonFromData(pokemonPool[Math.floor(Math.random()*pokemonPool.length)], true, false));
-             else break;
-        } else {
-            let poolIdx = Math.floor(Math.random() * availableForOpponent.length);
-            let chosenData = availableForOpponent.splice(poolIdx, 1)[0];
-            battleState.opponentTeam.push(createPokemonFromData(chosenData, true, false));
-        }
-    }
-
-    if (battleState.playerTeam.length === 0 || battleState.opponentTeam.length === 0) {
-        alert("Error: Could not set up teams for Quick Battle. Pokemon pool might be too small or empty.");
+    if (battleState.playerTeam.length < 3 || battleState.opponentTeam.length < 3) {
+        alert("Error: Could not set up teams for Quick Battle. Pokemon pool might be too small.");
         switchScreen('mainMenu');
         return;
     }
@@ -6838,16 +7242,18 @@ function startQuickBattle() {
 
     updateBattleUI();
     switchScreen('battle');
+    startBattleMusic();
     const opponent = battleState.opponentTeam[0];
     const introMsg = opponent.isShiny ? `Opponent sent out SHINY ${opponent.name.toUpperCase()}!` : `Opponent sent out ${opponent.name.toUpperCase()}!`;
     typeMessage(introMsg, () => {
         battleState.onMessageComplete = () => {
             typeMessage(`Go ${battleState.playerTeam[0].name.toUpperCase()}!`, startTurnPhase);
-        }
+        };
     });
 }
 
-function prepareBattle(battleFunction, isEliteFour = false, isLeague = false) {
+
+function prepareBattle(battleFunction, isEliteFour = false, isLeague = false, isTeamRocket = false) {
     if (!selectedTrainerData || !selectedTrainerData.team || selectedTrainerData.team.length === 0) {
         alert("You have no Pokémon! Please choose a starter or catch one in Wild Mode.");
         switchScreen('mainMenu');
@@ -6860,74 +7266,96 @@ function prepareBattle(battleFunction, isEliteFour = false, isLeague = false) {
             p.sleepTurns = 0;
             p.flinch = false;
             p.stats = { attack: 0, defense: 0, speed: 0, accuracy: 0, evasion: 0 };
-            p.moves.forEach(m => m.currentPp = m.maxPp);
+            p.moves.forEach(m => {
+                const baseMove = pokemonPool.find(baseP => baseP.pokedexId === p.pokedexId)?.moves.find(bm => bm.name === m.name);
+                m.currentPp = baseMove ? baseMove.maxPp : m.maxPp;
+            });
             if (p.originalEvolutionData) {
-                const oldMaxHPBeforeRevert = p.maxHP;
-                const currentHPRatio = (oldMaxHPBeforeRevert > 0) ? (p.currentHP / oldMaxHPBeforeRevert) : 1;
-
                 p.pokedexId = p.originalEvolutionData.pokedexId;
                 p.name = p.originalEvolutionData.name;
                 p.types = [...p.originalEvolutionData.types];
                 p.maxHP = p.originalEvolutionData.maxHP;
-                p.currentHP = Math.max(0, Math.floor(currentHPRatio * p.maxHP));
+                p.currentHP = p.maxHP;
                 p.baseStats = JSON.parse(JSON.stringify(p.originalEvolutionData.baseStats));
                 p.moves = p.originalEvolutionData.moves.map(m => ({ ...m, currentPp: m.maxPp }));
-                p.isShiny = p.originalEvolutionData.isShiny; // Ensure shiny status is reverted
-
+                p.isShiny = p.originalEvolutionData.isShiny;
                 const shinyBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
                 const basePokemonForSprite = pokemonPool.find(baseP => baseP.pokedexId === p.pokedexId) || {};
                 p.spriteFrontUrl = p.isShiny ? `${shinyBaseUrl}/shiny/${p.pokedexId}.png` : (basePokemonForSprite.spriteFront || `${shinyBaseUrl}/${p.pokedexId}.png`);
                 p.spriteBackUrl = p.isShiny ? `${shinyBaseUrl}/back/shiny/${p.pokedexId}.png` : (basePokemonForSprite.spriteBack || `${shinyBaseUrl}/back/${p.pokedexId}.png`);
-
                 p.originalEvolutionData = null;
             }
         }
     });
 
-    let requiredTeamSize = 3;
+    let requiredTeamSize = 1;
+    let maxSelectable = 3;
+
     if (isEliteFour || isLeague) {
-        requiredTeamSize = 6;
+        requiredTeamSize = MAX_TEAM_SIZE;
+        maxSelectable = MAX_TEAM_SIZE;
+    } else if (isTeamRocket) {
+        requiredTeamSize = 1;
+        maxSelectable = TEAM_ROCKET_POKEMON_COUNT;
     } else if (battleFunction === startGymBattleActual) {
-        requiredTeamSize = 1; // Gym leaders might use fewer than 3, player needs at least 1.
-                               // Or match gym leader's team size if specified. For now, 1 is minimum.
+        requiredTeamSize = 1;
+        maxSelectable = 3;
+    } else if (battleFunction === startWildBattleActual) {
+         requiredTeamSize = 1;
+         maxSelectable = 3;
     }
 
-
-    if (selectedTrainerData.team.length < requiredTeamSize && (battleFunction === startGymBattleActual || isEliteFour || isLeague)) {
-        alert(`You need at least ${requiredTeamSize} Pokémon for this battle!`);
+    const healthyPokemonCount = selectedTrainerData.team.filter(pk => pk && pk.currentHP > 0).length;
+    if (healthyPokemonCount < requiredTeamSize ) {
+        alert(`You need at least ${requiredTeamSize} healthy Pokémon for this battle! You have ${healthyPokemonCount}.`);
         switchScreen('playMenu');
         return;
     }
 
-    if ( (isEliteFour || isLeague) && selectedTrainerData.team.length > 0 ) {
-        battleState.pendingBattleStartFunction = battleFunction;
-        battleState.isEliteFourBattle = isEliteFour;
-        battleState.isPokemonLeagueBattle = isLeague;
-        showTeamSelectScreen(isEliteFour || isLeague);
-    } else if (battleFunction !== startGymBattleActual && selectedTrainerData.team.length > 3) { // For Quick Battle or Wild Mode if team > 3
-        battleState.pendingBattleStartFunction = battleFunction;
-        battleState.isEliteFourBattle = false;
-        battleState.isPokemonLeagueBattle = false;
-        showTeamSelectScreen(false);
+    let shouldShowTeamSelect = false;
+    if (isEliteFour || isLeague) {
+        shouldShowTeamSelect = true;
+    } else if (isTeamRocket) {
+        shouldShowTeamSelect = healthyPokemonCount > maxSelectable;
+    } else if (battleFunction === startGymBattleActual) {
+        shouldShowTeamSelect = healthyPokemonCount > maxSelectable;
+    } else if (battleFunction === startWildBattleActual && healthyPokemonCount > maxSelectable) {
+        shouldShowTeamSelect = true;
     }
-    else {
-        battleState.playerTeam = JSON.parse(JSON.stringify(selectedTrainerData.team.filter(p => p)));
+
+
+    if (shouldShowTeamSelect) {
+        battleState.pendingBattleStartFunction = battleFunction;
         battleState.isEliteFourBattle = isEliteFour;
         battleState.isPokemonLeagueBattle = isLeague;
+        battleState.isTeamRocketBattle = isTeamRocket;
+        showTeamSelectScreen(maxSelectable);
+    } else {
+        battleState.playerTeam = JSON.parse(JSON.stringify(selectedTrainerData.team.filter(p => p && p.currentHP > 0).slice(0, maxSelectable)));
+         if (battleState.playerTeam.length < requiredTeamSize) {
+            alert(`Not enough healthy Pokémon for this battle (need ${requiredTeamSize}, have ${battleState.playerTeam.length}).`);
+            switchScreen('playMenu');
+            return;
+        }
+        battleState.isEliteFourBattle = isEliteFour;
+        battleState.isPokemonLeagueBattle = isLeague;
+        battleState.isTeamRocketBattle = isTeamRocket;
         battleFunction();
     }
 }
 
-function showTeamSelectScreen(isEliteFourOrLeague = false) {
+function showTeamSelectScreen(numToSelect) {
     teamSelectGridEl.innerHTML = '';
     battleState.selectedBattleTeamIndexes = [];
     teamSelectConfirmButton.disabled = true;
 
-    const numToSelect = isEliteFourOrLeague ? 6 : 3;
     if (teamSelectTitleEl) {
-        teamSelectTitleEl.textContent = `SELECT YOUR BATTLE TEAM (CHOOSE ${numToSelect})`;
+        if (battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle) {
+            teamSelectTitleEl.textContent = `SELECT YOUR BATTLE TEAM (CHOOSE ${numToSelect})`;
+        } else {
+            teamSelectTitleEl.textContent = `SELECT YOUR TEAM (UP TO ${numToSelect})`;
+        }
     }
-
 
     selectedTrainerData.team.forEach((pokemon, index) => {
         if (!pokemon) return;
@@ -6942,7 +7370,7 @@ function showTeamSelectScreen(isEliteFourOrLeague = false) {
 
         const nfo = document.createElement('div');
         nfo.classList.add('team-select-info');
-        nfo.innerHTML = `<span class="name">${pokemon.name.toUpperCase()}</span><div class="hp-bar-container"><div class="hp-bar-fill" style="width:${Math.max(0,(pokemon.currentHP/pokemon.maxHP)*100)}%; background-color:${pokemon.currentHP/pokemon.maxHP > 0.5 ? 'var(--hp-high-color)' : (pokemon.currentHP/pokemon.maxHP > 0.2 ? 'var(--hp-medium-color)' : 'var(--hp-low-color)')};"></div></div><div class="hp-numbers">${Math.max(0,Math.floor(pokemon.currentHP))}/${pokemon.maxHP}</div>`;
+        nfo.innerHTML = `<span class="name">${pokemon.name.toUpperCase()}${pokemon.isShiny ? ' (S)' : ''}</span><div class="hp-bar-container"><div class="hp-bar-fill" style="width:${Math.max(0,(pokemon.currentHP/pokemon.maxHP)*100)}%; background-color:${pokemon.currentHP/pokemon.maxHP > 0.5 ? 'var(--hp-high-color)' : (pokemon.currentHP/pokemon.maxHP > 0.2 ? 'var(--hp-medium-color)' : 'var(--hp-low-color)')};"></div></div><div class="hp-numbers">${Math.max(0,Math.floor(pokemon.currentHP))}/${pokemon.maxHP}</div>`;
         opt.appendChild(nfo);
 
         if (pokemon.currentHP <= 0) {
@@ -6956,10 +7384,7 @@ function showTeamSelectScreen(isEliteFourOrLeague = false) {
 }
 
 function toggleTeamSelectOption(optionElement, pokemonIndex, numToSelect) {
-    if (optionElement.classList.contains('fainted')) return;
-
     const indexInSelection = battleState.selectedBattleTeamIndexes.indexOf(pokemonIndex);
-
     if (indexInSelection > -1) {
         battleState.selectedBattleTeamIndexes.splice(indexInSelection, 1);
         optionElement.classList.remove('selected');
@@ -6968,25 +7393,51 @@ function toggleTeamSelectOption(optionElement, pokemonIndex, numToSelect) {
             battleState.selectedBattleTeamIndexes.push(pokemonIndex);
             optionElement.classList.add('selected');
         } else {
-            alert(`You can only select up to ${numToSelect} Pokémon.`);
+            alert(`You can select a maximum of ${numToSelect} Pokémon for this battle mode.`);
         }
     }
-    teamSelectConfirmButton.disabled = battleState.selectedBattleTeamIndexes.length !== numToSelect;
+
+    let minRequired = 1;
+    if (battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle) {
+        minRequired = MAX_TEAM_SIZE;
+    }
+    teamSelectConfirmButton.disabled = !(battleState.selectedBattleTeamIndexes.length >= minRequired && battleState.selectedBattleTeamIndexes.length <= numToSelect);
 }
 
 teamSelectConfirmButton.addEventListener('click', () => {
-    const numRequired = battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle ? 6 : 3;
-    if (battleState.selectedBattleTeamIndexes.length === numRequired) {
-        battleState.playerTeam = battleState.selectedBattleTeamIndexes.map(index => {
-            return JSON.parse(JSON.stringify(selectedTrainerData.team[index]));
-        });
+    let maxAllowed;
+    let minRequired = 1;
 
-        if (battleState.pendingBattleStartFunction) {
-            battleState.pendingBattleStartFunction();
-            battleState.pendingBattleStartFunction = null;
-        }
+    if (battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle) {
+        maxAllowed = MAX_TEAM_SIZE;
+        minRequired = MAX_TEAM_SIZE;
+    } else if (battleState.isTeamRocketBattle) {
+        maxAllowed = TEAM_ROCKET_POKEMON_COUNT;
+        minRequired = 1;
+    } else if (battleState.isGymBattle) {
+        maxAllowed = 3;
+        minRequired = 1;
     } else {
-        alert(`Please select exactly ${numRequired} Pokémon.`);
+        maxAllowed = 3;
+        minRequired = 1;
+    }
+
+    if (battleState.selectedBattleTeamIndexes.length < minRequired) {
+        alert(`Please select at least ${minRequired} Pokémon.`);
+        return;
+    }
+    if (battleState.selectedBattleTeamIndexes.length > maxAllowed) {
+         alert(`You can select a maximum of ${maxAllowed} Pokémon.`);
+        return;
+    }
+
+    battleState.playerTeam = battleState.selectedBattleTeamIndexes.map(index => {
+        return JSON.parse(JSON.stringify(selectedTrainerData.team[index]));
+    });
+
+    if (battleState.pendingBattleStartFunction) {
+        battleState.pendingBattleStartFunction();
+        battleState.pendingBattleStartFunction = null;
     }
 });
 
@@ -6996,7 +7447,8 @@ function startWildBattleActual() {
     battleState.isGymBattle = false;
     battleState.isEliteFourBattle = false;
     battleState.isPokemonLeagueBattle = false;
-    screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')"; // Standaard achtergrond
+    battleState.isTeamRocketBattle = false;
+    screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')";
 
     battleState.opponentTeam = [];
     if (pokemonPool.length === 0) {
@@ -7012,6 +7464,7 @@ function startWildBattleActual() {
 
     updateBattleUI();
     switchScreen('battle');
+    startBattleMusic();
     const opponent = battleState.opponentTeam[0];
     const introMsg = opponent.isShiny ? `A wild SHINY ${opponent.name.toUpperCase()} appeared!` : `A wild ${opponent.name.toUpperCase()} appeared!`;
     typeMessage(introMsg, () => {
@@ -7026,17 +7479,14 @@ function startGymBattleActual() {
     battleState.isGymBattle = true;
     battleState.isEliteFourBattle = false;
     battleState.isPokemonLeagueBattle = false;
+    battleState.isTeamRocketBattle = false;
     screens.battle.style.backgroundImage = "url('https://archives.bulbagarden.net/media/upload/d/dd/Saffron_Gym_Battlefield.png')";
-
 
     const leaderData = gymLeadersData[battleState.currentGymLeaderKey];
     if (!leaderData) { alert("Error: Gym Leader data not found!"); switchScreen('playMenu'); return; }
 
     battleState.opponentTeam = leaderData.pokemonTeam.map(pokemonNameOrId => {
-        let pokemonBase = pokemonPool.find(p => p.name.toUpperCase() === String(pokemonNameOrId).toUpperCase());
-        if (!pokemonBase) {
-            pokemonBase = pokemonPool.find(p => p.pokedexId === parseInt(pokemonNameOrId));
-        }
+        const pokemonBase = pokemonPool.find(p => p.name.toUpperCase() === String(pokemonNameOrId).toUpperCase() || p.pokedexId === parseInt(pokemonNameOrId));
         if (!pokemonBase) {
             console.error(`Pokemon ${pokemonNameOrId} not found in pool for Gym Leader ${leaderData.name}`);
             return null;
@@ -7046,7 +7496,7 @@ function startGymBattleActual() {
 
 
     if (battleState.opponentTeam.length === 0) {
-        alert(`Error: Could not set up Gym Leader ${leaderData.name}'s team. Check if Pokémon names/IDs in gymLeadersData are correct and exist in pokemonPool.`);
+        alert(`Error: Could not set up Gym Leader ${leaderData.name}'s team. Check Pokémon names/IDs.`);
         switchScreen('playMenu');
         return;
     }
@@ -7055,6 +7505,7 @@ function startGymBattleActual() {
     battleState.opponentActiveIndex = 0;
     updateBattleUI();
     switchScreen('battle');
+    startBattleMusic();
     const opponent = battleState.opponentTeam[0];
     const introMsg = `${leaderData.name} challenges you to a battle! ${leaderData.name} sent out ${opponent.name.toUpperCase()}!`;
     typeMessage(introMsg, () => {
@@ -7069,15 +7520,13 @@ function startEliteFourBattleActual() {
     battleState.isGymBattle = false;
     battleState.isEliteFourBattle = true;
     battleState.isPokemonLeagueBattle = false;
+    battleState.isTeamRocketBattle = false;
     screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')";
 
     const memberData = eliteFourData[battleState.currentEliteFourMemberKey];
     if (!memberData) { alert("Error: Elite Four Member data not found!"); switchScreen('playMenu'); return; }
     battleState.opponentTeam = memberData.pokemonTeam.map(pokemonNameOrId => {
-        let pokemonBase = pokemonPool.find(p => p.name.toUpperCase() === String(pokemonNameOrId).toUpperCase());
-        if (!pokemonBase) {
-            pokemonBase = pokemonPool.find(p => p.pokedexId === parseInt(pokemonNameOrId));
-        }
+        const pokemonBase = pokemonPool.find(p => p.name.toUpperCase() === String(pokemonNameOrId).toUpperCase() || p.pokedexId === parseInt(pokemonNameOrId));
         if (!pokemonBase) {
             console.error(`Pokemon ${pokemonNameOrId} not found in pool for Elite Four ${memberData.name}`);
             return null;
@@ -7085,8 +7534,8 @@ function startEliteFourBattleActual() {
         return createPokemonFromData(pokemonBase, true, false);
     }).filter(p => p !== null);
 
-    if (battleState.opponentTeam.length === 0) {
-        alert(`Error: Could not set up Elite Four ${memberData.name}'s team. Check Pokémon names/IDs.`);
+    if (battleState.opponentTeam.length < MAX_TEAM_SIZE) {
+        alert(`Error: Could not set up Elite Four ${memberData.name}'s team correctly (needs ${MAX_TEAM_SIZE} Pokémon).`);
         switchScreen('playMenu');
         return;
     }
@@ -7094,6 +7543,7 @@ function startEliteFourBattleActual() {
     battleState.opponentActiveIndex = 0;
     updateBattleUI();
     switchScreen('battle');
+    startBattleMusic();
     const opponent = battleState.opponentTeam[0];
     const introMsg = `Elite Four ${memberData.name} challenges you! ${memberData.name} sent out ${opponent.name.toUpperCase()}!`;
     typeMessage(introMsg, () => {
@@ -7105,37 +7555,39 @@ function startEliteFourBattleActual() {
 
 // --- Pokémon League Functies ---
 function showPokemonLeagueScreen() {
-    if (!selectedTrainerData || selectedTrainerData.team.length < 6) {
-        alert("You need a full team of 6 Pokémon to challenge the Pokémon League!");
+    if (!selectedTrainerData || selectedTrainerData.team.filter(p=>p && p.currentHP > 0).length < MAX_TEAM_SIZE) {
+        alert(`You need a full team of ${MAX_TEAM_SIZE} healthy Pokémon to challenge the Pokémon League!`);
         switchScreen('playMenu');
         return;
     }
-    battleState.currentLeagueOpponentIndex = 0;
-    battleState.leagueBattlesWon = 0;
-    currentLeagueOrder = [...pokemonLeagueTrainers].sort(() => 0.5 - Math.random()); // Shuffle order each time
+    battleState.currentLeagueOpponentIndex = selectedTrainerData.currentLeagueOpponentIndex || 0;
+    battleState.leagueBattlesWon = selectedTrainerData.leagueBattlesWon || 0;
 
+    if (selectedTrainerData.defeatedPokemonLeague) {
+        updatePokemonLeagueScreenUI();
+        switchScreen('pokemonLeague');
+        return;
+    }
+    if ((battleState.currentLeagueOpponentIndex === 0 && battleState.leagueBattlesWon === 0) || !currentLeagueOrder || currentLeagueOrder.length !== pokemonLeagueTrainers.length) {
+        currentLeagueOrder = [...pokemonLeagueTrainers].sort(() => 0.5 - Math.random());
+    }
     updatePokemonLeagueScreenUI();
     switchScreen('pokemonLeague');
 }
 
 function updatePokemonLeagueScreenUI() {
-    if (battleState.leagueBattlesWon >= currentLeagueOrder.length) {
+    if (selectedTrainerData.defeatedPokemonLeague || battleState.leagueBattlesWon >= currentLeagueOrder.length) {
         pokemonLeagueProgressEl.textContent = "YOU ARE THE CHAMPION!";
         leagueOpponentNameEl.textContent = "N/A";
-        if(leagueOpponentCardEl) leagueOpponentCardEl.src = "";
-        if(leagueOpponentCardEl) leagueOpponentCardEl.alt = "";
+        if(leagueOpponentCardEl) leagueOpponentCardEl.src = "https://www.serebii.net/pokemonmasters/syncpairs/sprites/Serena_Champion.png";
+        if(leagueOpponentCardEl) leagueOpponentCardEl.alt = "Champion";
         btnStartLeagueBattle.style.display = 'none';
-        if (selectedTrainerData) {
-            selectedTrainerData.coins = (selectedTrainerData.coins || 0) + 150;
-            updateCoinDisplay();
-            saveGame();
-            alert("Congratulations! You have become the Pokémon Master and earned 150 coins!");
-        }
     } else {
         const nextOpponent = currentLeagueOrder[battleState.currentLeagueOpponentIndex];
         pokemonLeagueProgressEl.textContent = `Battle ${battleState.leagueBattlesWon + 1} of ${currentLeagueOrder.length}`;
         leagueOpponentNameEl.textContent = nextOpponent.name.toUpperCase();
-        if(leagueOpponentCardEl) leagueOpponentCardEl.src = nextOpponent.cardUrl;
+        if(leagueOpponentCardEl && nextOpponent.cardUrl) leagueOpponentCardEl.src = nextOpponent.cardUrl;
+        else if(leagueOpponentCardEl) leagueOpponentCardEl.src = "";
         if(leagueOpponentCardEl) leagueOpponentCardEl.alt = nextOpponent.name + " Card";
         btnStartLeagueBattle.style.display = 'block';
         btnStartLeagueBattle.textContent = `START BATTLE VS ${nextOpponent.name.toUpperCase()}`;
@@ -7147,20 +7599,18 @@ function startNextLeagueBattle() {
     battleState.isGymBattle = false;
     battleState.isEliteFourBattle = false;
     battleState.isWildBattle = false;
-    screens.battle.style.backgroundImage = "url('https://www.serebii.net/pokearth/maps/kanto/1-gym.png')"; // Placeholder, change if needed
+    battleState.isTeamRocketBattle = false;
+    screens.battle.style.backgroundImage = "url('https://www.serebii.net/pokearth/maps/kanto/1-gym.png')";
 
     const opponentData = currentLeagueOrder[battleState.currentLeagueOpponentIndex];
     if (!opponentData) {
-        console.error("Error: League opponent data not found!");
+        console.error("Error: League opponent data not found for index:", battleState.currentLeagueOpponentIndex);
         switchScreen('playMenu');
         return;
     }
 
     battleState.opponentTeam = opponentData.pokemonTeam.map(pokemonNameOrId => {
-        let pokemonBase = pokemonPool.find(p => p.name.toUpperCase() === String(pokemonNameOrId).toUpperCase());
-        if (!pokemonBase) {
-            pokemonBase = pokemonPool.find(p => p.pokedexId === parseInt(pokemonNameOrId));
-        }
+        const pokemonBase = pokemonPool.find(p => p.name.toUpperCase() === String(pokemonNameOrId).toUpperCase() || p.pokedexId === parseInt(pokemonNameOrId));
         if (!pokemonBase) {
             console.error(`Pokémon ${pokemonNameOrId} for League opponent ${opponentData.name} not in pool.`);
             return null;
@@ -7168,8 +7618,8 @@ function startNextLeagueBattle() {
         return createPokemonFromData(pokemonBase, true, false);
     }).filter(p => p);
 
-    if (battleState.opponentTeam.length === 0) {
-        alert(`Error: Could not set up ${opponentData.name}'s team for the League. Check if all their Pokémon exist in your pokemonPool.`);
+    if (battleState.opponentTeam.length < MAX_TEAM_SIZE) {
+        alert(`Error: Could not set up ${opponentData.name}'s team correctly for the League (needs ${MAX_TEAM_SIZE} Pokémon).`);
         switchScreen('pokemonLeague');
         return;
     }
@@ -7178,8 +7628,79 @@ function startNextLeagueBattle() {
     battleState.opponentActiveIndex = 0;
     updateBattleUI();
     switchScreen('battle');
+    startBattleMusic();
     const opponent = battleState.opponentTeam[0];
     const introMsg = `Pokémon League: ${opponentData.name} challenges you! ${opponentData.name} sent out ${opponent.name.toUpperCase()}!`;
+    typeMessage(introMsg, () => {
+        battleState.onMessageComplete = () => {
+            typeMessage(`Go ${battleState.playerTeam[0].name.toUpperCase()}!`, startTurnPhase);
+        }
+    });
+}
+
+// --- Team Rocket Functies ---
+function showTeamRocketScreen() {
+    if (!selectedTrainerData || selectedTrainerData.team.filter(p=>p && p.currentHP > 0).length < 1) {
+        alert(`You need at least 1 healthy Pokémon to challenge Team Rocket!`);
+        switchScreen('playMenu');
+        return;
+    }
+    battleState.currentTeamRocketGruntIndex = selectedTrainerData.teamRocketDefeatedCount || 0;
+
+    if (selectedTrainerData.defeatedAllTeamRocket) {
+        updateTeamRocketScreenUI();
+        switchScreen('teamRocket');
+        return;
+    }
+    updateTeamRocketScreenUI();
+    switchScreen('teamRocket');
+}
+
+function updateTeamRocketScreenUI() {
+    if (selectedTrainerData.defeatedAllTeamRocket || battleState.currentTeamRocketGruntIndex >= TEAM_ROCKET_GRUNTS_TO_DEFEAT) {
+        teamRocketProgressEl.textContent = "TEAM ROCKET DEFEATED!";
+        if (teamRocketOpponentNameEl) teamRocketOpponentNameEl.textContent = "N/A";
+        if (teamRocketOpponentCardEl) teamRocketOpponentCardEl.src = "";
+        btnStartTeamRocketBattle.style.display = 'none';
+    } else {
+        teamRocketProgressEl.textContent = `Grunt ${battleState.currentTeamRocketGruntIndex + 1} of ${TEAM_ROCKET_GRUNTS_TO_DEFEAT}`;
+        if (teamRocketOpponentNameEl) teamRocketOpponentNameEl.textContent = `TEAM ROCKET GRUNT #${battleState.currentTeamRocketGruntIndex + 1}`;
+        if (teamRocketOpponentCardEl) teamRocketOpponentCardEl.src = teamRocketCardData.url;
+        btnStartTeamRocketBattle.style.display = 'block';
+        btnStartTeamRocketBattle.textContent = `BATTLE GRUNT #${battleState.currentTeamRocketGruntIndex + 1}`;
+    }
+}
+
+function prepareTeamRocketBattle() {
+    prepareBattle(startNextTeamRocketBattleActual, false, false, true);
+}
+
+
+function startNextTeamRocketBattleActual() {
+    battleState.isTeamRocketBattle = true;
+    battleState.isWildBattle = false;
+    battleState.isGymBattle = false;
+    battleState.isEliteFourBattle = false;
+    battleState.isPokemonLeagueBattle = false;
+    screens.battle.style.backgroundImage = "url('https://i.ytimg.com/vi/AnKGuP2NE2A/maxresdefault.jpg')";
+
+    battleState.opponentTeam = getUniqueRandomPokemon([], pokemonPool, TEAM_ROCKET_POKEMON_COUNT)
+        .map(data => createPokemonFromData(data, true, false));
+
+    if (battleState.opponentTeam.length < TEAM_ROCKET_POKEMON_COUNT) {
+        alert(`Error: Could not set up Team Rocket Grunt's team (needs ${TEAM_ROCKET_POKEMON_COUNT} Pokémon).`);
+        switchScreen('teamRocket');
+        return;
+    }
+
+    battleState.playerActiveIndex = 0;
+    battleState.opponentActiveIndex = 0;
+    updateBattleUI();
+    switchScreen('battle');
+    startBattleMusic();
+    const opponent = battleState.opponentTeam[0];
+    const gruntName = `Team Rocket Grunt #${selectedTrainerData.teamRocketDefeatedCount + 1}`;
+    const introMsg = `${gruntName} ambushes you! ${gruntName} sent out ${opponent.name.toUpperCase()}!`;
     typeMessage(introMsg, () => {
         battleState.onMessageComplete = () => {
             typeMessage(`Go ${battleState.playerTeam[0].name.toUpperCase()}!`, startTurnPhase);
@@ -7214,17 +7735,17 @@ function playerActionPhase() {
                 hasAnyUsableItem = true;
             }
             if (battleState.isWildBattle &&
-               (selectedTrainerData.inventory["Poke Ball"] > 0 || selectedTrainerData.inventory["Great Ball"] > 0 || selectedTrainerData.inventory["Ultra Ball"] > 0)) {
+               (selectedTrainerData.inventory["Poke Ball"] > 0 || selectedTrainerData.inventory["Great Ball"] > 0 || selectedTrainerData.inventory["Ultra Ball"] > 0 || selectedTrainerData.inventory["Master Ball"] > 0 )) { // NIEUW: Master Ball
                 hasAnyUsableItem = true;
             }
         }
-        itemButtonInActionMenu.disabled = !hasAnyUsableItem || battleState.isEliteFourBattle || battleState.isGymBattle || battleState.isPokemonLeagueBattle;
+        itemButtonInActionMenu.disabled = !hasAnyUsableItem || battleState.isEliteFourBattle || battleState.isGymBattle || battleState.isPokemonLeagueBattle || battleState.isTeamRocketBattle;
     }
 
     const runButtonInActionMenu = actionMenuEl.querySelector('button[data-action="run"]');
     if (runButtonInActionMenu) {
         runButtonInActionMenu.style.display = 'block';
-        runButtonInActionMenu.disabled = battleState.isGymBattle || battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle;
+        runButtonInActionMenu.disabled = battleState.isGymBattle || battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle || battleState.isTeamRocketBattle;
     }
 
     const pokemonButtonInActionMenu = actionMenuEl.querySelector('button[data-action="pokemon"]');
@@ -7247,7 +7768,7 @@ function playerActionPhase() {
 }
 
 function opponentActionPhase() { if(!battleState.opponentTeam[battleState.opponentActiveIndex] || !battleState.playerTeam[battleState.playerActiveIndex]) {console.warn("Attempted opponent action phase with undefined active Pokemon."); return;} battleState.playerTurn = false; battleState.currentActingPokemonIsPlayer = false; const opponentPokemon = battleState.opponentTeam[battleState.opponentActiveIndex]; const opponentMoveCheck = checkCanMove(opponentPokemon, false); if (opponentMoveCheck.message) { typeMessage(opponentMoveCheck.message, () => { if (!opponentMoveCheck.canMove) { handleEndOfTurnStatusEffects(); } else { opponentChooseAndExecuteMove(); } }); } else { opponentChooseAndExecuteMove(); } }
-function opponentChooseAndExecuteMove() { if(!battleState.opponentTeam[battleState.opponentActiveIndex] || !battleState.playerTeam[battleState.playerActiveIndex]) {console.warn("Attempted opponent move with undefined active Pokemon."); return;} const attacker = battleState.opponentTeam[battleState.opponentActiveIndex]; const defender = battleState.playerTeam[battleState.playerActiveIndex]; if (attacker.currentHP <= 0) { handleOpponentFaint(); return; } let availableMoves = attacker.moves.filter(m => m.currentPp > 0); if (availableMoves.length === 0) { typeMessage(`${attacker.name.toUpperCase()} has no moves left!`, () => handleEndOfTurnStatusEffects()); return; } const move = availableMoves[Math.floor(Math.random() * availableMoves.length)]; executeMove(attacker, defender, move, false); }
+function opponentChooseAndExecuteMove() { if(!battleState.opponentTeam[battleState.opponentActiveIndex] || !battleState.playerTeam[battleState.playerActiveIndex]) {console.warn("Attempted opponent move with undefined active Pokemon."); return;} const attacker = battleState.opponentTeam[battleState.opponentActiveIndex]; const defender = battleState.playerTeam[battleState.playerActiveIndex]; if (attacker.currentHP <= 0) { handleOpponentFaint(); return; } let availableMoves = attacker.moves.filter(m => m.currentPp > 0); if (availableMoves.length === 0) { typeMessage(`${attacker.name.toUpperCase()} has no moves left! It used Struggle!`, () => { handleEndOfTurnStatusEffects(); }); return; } const move = availableMoves[Math.floor(Math.random() * availableMoves.length)]; executeMove(attacker, defender, move, false); }
 function checkCanMove(pokemon, isPlayer) { if (!pokemon) return { canMove: false, message: null}; const name = pokemon.name.toUpperCase(); if (pokemon.flinch) { pokemon.flinch = false; return { canMove: false, message: `${name} flinched and couldn't move!` }; } if (pokemon.status === "SLP") { if (pokemon.sleepTurns > 0) { pokemon.sleepTurns--; return { canMove: false, message: `${name} is fast asleep.` }; } else { pokemon.status = null; updateStatusTag(pokemon, isPlayer ? playerStatusTagEl : opponentStatusTagEl); return { canMove: true, message: `${name} woke up!` }; } } if (pokemon.status === "FRZ") { if (Math.random() < FREEZE_THAW_CHANCE) { pokemon.status = null; updateStatusTag(pokemon, isPlayer ? playerStatusTagEl : opponentStatusTagEl); return { canMove: true, message: `${name} thawed out!` }; } else { return { canMove: false, message: `${name} is frozen solid!` }; } } if (pokemon.status === "PAR") { if (Math.random() < PARALYSIS_CHANCE_NO_MOVE) { return { canMove: false, message: `${name} is fully paralyzed!` }; } } return { canMove: true, message: null }; }
 function showMoveMenu() { if(!battleState.playerTeam[battleState.playerActiveIndex]) {console.warn("Attempted to show move menu with undefined active Pokemon.");return;} actionMenuEl.style.display = 'none'; battleTextboxEl.style.display = 'none'; itemMenuEl.style.display = 'none'; const pPok = battleState.playerTeam[battleState.playerActiveIndex]; const moveBtns = moveMenuEl.querySelectorAll('button:not(.battle-menu-back-button)'); moveBtns.forEach(b => b.style.visibility = 'hidden'); pPok.moves.forEach((m, i) => { if (moveBtns[i]) { moveBtns[i].style.visibility = 'visible'; moveBtns[i].querySelector('.move-name').textContent = m.name.toUpperCase(); moveBtns[i].querySelector('.move-pp').textContent = `PP ${m.currentPp}/${m.maxPp}`; moveBtns[i].disabled = m.currentPp <= 0; } }); moveMenuEl.style.display = 'grid'; }
 function applyStatChange(targetPokemon, stat, stages, targetName, isSelf) { const statNames = Array.isArray(stat) ? stat : [stat]; let messages = []; let anyChange = false; statNames.forEach(s => { const currentStage = targetPokemon.stats[s] || 0; let newStage = currentStage; if (stages > 0) newStage = Math.min(6, currentStage + stages); else if (stages < 0) newStage = Math.max(-6, currentStage + stages); if (newStage !== currentStage) { targetPokemon.stats[s] = newStage; anyChange = true; if (stages === 1) messages.push(`${targetName.toUpperCase()}'s ${s} rose!`); else if (stages > 1) messages.push(`${targetName.toUpperCase()}'s ${s} sharply rose!`); else if (stages === -1) messages.push(`${(isSelf ? targetName.toUpperCase() : "Foe " + targetName.toUpperCase())}'s ${s} fell!`); else if (stages < -1) messages.push(`${(isSelf ? targetName.toUpperCase() : "Foe " + targetName.toUpperCase())}'s ${s} harshly fell!`); } }); if (!anyChange) messages.push(`${targetName.toUpperCase()}'s ${statNames.join(' and ')} won't go any ${stages > 0 ? 'higher' : 'lower'}!`); return messages; }
@@ -7255,12 +7776,11 @@ function executeMove(attacker, defender, move, isPlayerAttacking) { battleState.
 function processTurnMessages(messages, nextPokemonToActIfApplicable, isOriginalAttackerPlayer) { if (messages.length > 0) { const nextMsg = messages.shift(); typeMessage(nextMsg.message, nextMsg.callback || (() => processTurnMessages(messages, nextPokemonToActIfApplicable, isOriginalAttackerPlayer))); } else { if(!battleState.playerTeam[battleState.playerActiveIndex] || !battleState.opponentTeam[battleState.opponentActiveIndex]) {console.warn("Attempted to process turn end with undefined active Pokemon."); return;} const playerPokemon = battleState.playerTeam[battleState.playerActiveIndex]; const opponentPokemon = battleState.opponentTeam[battleState.opponentActiveIndex]; if (playerPokemon.currentHP <= 0) { handlePlayerFaint(); return; } if (opponentPokemon.currentHP <= 0) { handleOpponentFaint(); return; } if (isOriginalAttackerPlayer) { opponentActionPhase(); } else { handleEndOfTurnStatusEffects(); } } }
 function playerAttack(moveIndex) { if(!battleState.playerTeam[battleState.playerActiveIndex] || !battleState.opponentTeam[battleState.opponentActiveIndex]) {console.warn("Attempted player attack with undefined active Pokemon."); return;} moveMenuEl.style.display = 'none'; const attacker = battleState.playerTeam[battleState.playerActiveIndex]; const defender = battleState.opponentTeam[battleState.opponentActiveIndex]; const move = attacker.moves[moveIndex]; if (!move || move.currentPp <= 0) { playerActionPhase(); return; } battleState.attackerUsedMoveFirstThisTurn = true; executeMove(attacker, defender, move, true); }
 function handleEndOfTurnStatusEffects() { if(!battleState.playerTeam[battleState.playerActiveIndex] || !battleState.opponentTeam[battleState.opponentActiveIndex]) {console.warn("Attempted EOT effects with undefined active Pokemon."); return;} let turnEndMessages = []; let playerFaintedFromStatus = false; let opponentFaintedFromStatus = false; const playerPokemon = battleState.playerTeam[battleState.playerActiveIndex]; const opponentPokemon = battleState.opponentTeam[battleState.opponentActiveIndex]; const applyEOT = (pokemon, isPlayer) => { if (pokemon.currentHP > 0 && pokemon.status) { if (pokemon.status === "BRN" || pokemon.status === "PSN") { const damage = Math.floor(pokemon.maxHP / (pokemon.status === "PSN" ? 8 : 16)); pokemon.currentHP -= damage; turnEndMessages.push({ message: `${pokemon.name.toUpperCase()} was hurt by its ${pokemon.status === "BRN" ? "burn" : "poison"}!` }); if (pokemon.currentHP <= 0) isPlayer ? playerFaintedFromStatus = true : opponentFaintedFromStatus = true; } } }; applyEOT(playerPokemon, true); if (playerFaintedFromStatus) turnEndMessages.push({ message: `${playerPokemon.name.toUpperCase()} fainted!` }); if (opponentPokemon.currentHP > 0) { applyEOT(opponentPokemon, false); if (opponentFaintedFromStatus) turnEndMessages.push({ message: `${opponentPokemon.name.toUpperCase()} fainted!` }); } updateBattleUI(); const showEOTMessages = () => { if (turnEndMessages.length > 0) { const msg = turnEndMessages.shift(); typeMessage(msg.message, showEOTMessages); } else { if (playerPokemon.currentHP <= 0) handlePlayerFaint(); else if (opponentPokemon.currentHP <= 0) handleOpponentFaint(); else setTimeout(startTurnPhase, 800); } }; showEOTMessages(); }
-function showSwitchScreen(isForced = false) { battleState.switchingAfterFaint = isForced; actionMenuEl.style.display = 'none'; moveMenuEl.style.display = 'none'; itemMenuEl.style.display = 'none'; battleTextboxEl.style.display = 'none'; switchGridEl.innerHTML = ''; battleState.playerTeam.forEach((p, i) => { const opt = document.createElement('div'); opt.classList.add('switch-option'); opt.dataset.index = i; const sp = document.createElement('img'); sp.src = p.spriteFrontUrl; sp.alt = p.name.toUpperCase(); opt.appendChild(sp); const nfo = document.createElement('div'); nfo.classList.add('switch-info'); nfo.innerHTML = `<span class="name">${p.name.toUpperCase()} ${p.status ? '('+p.status.toUpperCase()+')' : ''}</span><div class="hp-bar-container"><div class="hp-bar-fill" style="width:${Math.max(0,(p.currentHP/p.maxHP)*100)}%; background-color:${p.currentHP/p.maxHP > 0.5 ? 'var(--hp-high-color)' : (p.currentHP/p.maxHP > 0.2 ? 'var(--hp-medium-color)' : 'var(--hp-low-color)')};"></div></div><div class="hp-numbers">${Math.max(0,Math.floor(p.currentHP))}/${p.maxHP}</div>`; opt.appendChild(nfo); if (p.currentHP <= 0) opt.classList.add('fainted'); else if (i === battleState.playerActiveIndex) opt.classList.add('active'); else opt.addEventListener('click', () => switchPokemonAction(i)); switchGridEl.appendChild(opt); }); switchCancelButton.style.display = isForced ? 'none' : 'block'; switchScreen('switchPokemon'); }
+function showSwitchScreen(isForced = false) { battleState.switchingAfterFaint = isForced; actionMenuEl.style.display = 'none'; moveMenuEl.style.display = 'none'; itemMenuEl.style.display = 'none'; battleTextboxEl.style.display = 'none'; switchGridEl.innerHTML = ''; battleState.playerTeam.forEach((p, i) => { const opt = document.createElement('div'); opt.classList.add('switch-option'); opt.dataset.index = i; const sp = document.createElement('img'); sp.src = p.spriteFrontUrl; sp.alt = p.name.toUpperCase(); opt.appendChild(sp); const nfo = document.createElement('div'); nfo.classList.add('switch-info'); nfo.innerHTML = `<span class="name">${p.name.toUpperCase()}${p.isShiny ? ' (S)' : ''} ${p.status ? '('+p.status.toUpperCase()+')' : ''}</span><div class="hp-bar-container"><div class="hp-bar-fill" style="width:${Math.max(0,(p.currentHP/p.maxHP)*100)}%; background-color:${p.currentHP/p.maxHP > 0.5 ? 'var(--hp-high-color)' : (p.currentHP/p.maxHP > 0.2 ? 'var(--hp-medium-color)' : 'var(--hp-low-color)')};"></div></div><div class="hp-numbers">${Math.max(0,Math.floor(p.currentHP))}/${p.maxHP}</div>`; opt.appendChild(nfo); if (p.currentHP <= 0) opt.classList.add('fainted'); else if (i === battleState.playerActiveIndex) opt.classList.add('active'); else opt.addEventListener('click', () => switchPokemonAction(i)); switchGridEl.appendChild(opt); }); switchCancelButton.style.display = isForced ? 'none' : 'block'; switchScreen('switchPokemon'); }
 function switchPokemonAction(newIndex) { if(!battleState.playerTeam[battleState.playerActiveIndex] || !battleState.playerTeam[newIndex]) {console.warn("Attempted switch with undefined Pokemon."); return;} const oldPok = battleState.playerTeam[battleState.playerActiveIndex]; const newPok = battleState.playerTeam[newIndex]; if (newPok.currentHP <= 0 || newIndex === battleState.playerActiveIndex) return; battleState.playerActiveIndex = newIndex; updateBattleUI(); switchScreen('battle'); let msgs = []; if (!battleState.switchingAfterFaint) { msgs.push({ message: `Come back, ${oldPok.name.toUpperCase()}!`}); battleState.playerTurn = false; } msgs.push({ message: `Go, ${newPok.name.toUpperCase()}!`, callback: null }); const finalCb = () => { battleState.switchingAfterFaint = false; if (!battleState.playerTurn && battleState.opponentTeam[battleState.opponentActiveIndex] && battleState.opponentTeam[battleState.opponentActiveIndex].currentHP > 0) { opponentActionPhase(); } else { startTurnPhase(); } }; const showNxt = () => { if (msgs.length > 0) { const n = msgs.shift(); typeMessage(n.message, n.callback || showNxt); } else { setTimeout(finalCb, 500); } }; showNxt(); }
 
 function finalizeBattleState() {
     if (!selectedTrainerData || !selectedTrainerData.team) return;
-
     battleState.playerTeam.forEach(battlePok => {
         if(!battlePok) return;
         const trainerPok = selectedTrainerData.team.find(p => p && p.id === battlePok.id);
@@ -7271,35 +7791,31 @@ function finalizeBattleState() {
             trainerPok.flinch = false;
             trainerPok.stats = { attack: 0, defense: 0, speed: 0, accuracy: 0, evasion: 0 };
 
-            trainerPok.moves.forEach(tpMove => { // Reset PP only for trainer's Pokémon
-                const originalMove = pokemonPool.find(p => p.pokedexId === trainerPok.pokedexId)?.moves.find(m => m.name === tpMove.name);
-                if (originalMove) {
-                    tpMove.currentPp = originalMove.maxPp;
-                }
-            });
+            if (!battleState.isPokemonLeagueBattle && !battleState.isEliteFourBattle && !battleState.isTeamRocketBattle) {
+                trainerPok.moves.forEach(tpMove => {
+                    const baseMoveData = pokemonPool.find(p => p.pokedexId === trainerPok.pokedexId)?.moves.find(m => m.name === tpMove.name);
+                    if (baseMoveData) {
+                        tpMove.currentPp = baseMoveData.maxPp;
+                    }
+                });
+            }
 
-
-            if (battlePok.originalEvolutionData) { // If it was a temporary evolution
-                const oldMaxHPBeforeRevert = trainerPok.maxHP;
-                const currentHPRatio = (oldMaxHPBeforeRevert > 0) ? (trainerPok.currentHP / oldMaxHPBeforeRevert) : 1;
-
+            if (battlePok.originalEvolutionData) {
                 trainerPok.pokedexId = battlePok.originalEvolutionData.pokedexId;
                 trainerPok.name = battlePok.originalEvolutionData.name;
                 trainerPok.types = [...battlePok.originalEvolutionData.types];
                 trainerPok.maxHP = battlePok.originalEvolutionData.maxHP;
-                trainerPok.currentHP = Math.max(0, Math.floor(currentHPRatio * trainerPok.maxHP));
-                if (battlePok.currentHP <= 0) trainerPok.currentHP = 0; // Ensure fainted stays fainted
+                trainerPok.currentHP = Math.min(Math.max(0, battlePok.currentHP), trainerPok.maxHP);
+                if (battlePok.currentHP <= 0) trainerPok.currentHP = 0;
                 trainerPok.baseStats = JSON.parse(JSON.stringify(battlePok.originalEvolutionData.baseStats));
                 trainerPok.moves = battlePok.originalEvolutionData.moves.map(m => ({ ...m, currentPp: m.maxPp }));
                 trainerPok.isShiny = battlePok.originalEvolutionData.isShiny;
-
                 const shinyBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
                 const basePokemonForSprite = pokemonPool.find(baseP => baseP.pokedexId === trainerPok.pokedexId) || {};
                 trainerPok.spriteFrontUrl = trainerPok.isShiny ? `${shinyBaseUrl}/shiny/${trainerPok.pokedexId}.png` : (basePokemonForSprite.spriteFront || `${shinyBaseUrl}/${trainerPok.pokedexId}.png`);
                 trainerPok.spriteBackUrl = trainerPok.isShiny ? `${shinyBaseUrl}/back/shiny/${trainerPok.pokedexId}.png` : (basePokemonForSprite.spriteBack || `${shinyBaseUrl}/back/${trainerPok.pokedexId}.png`);
-
-                trainerPok.originalEvolutionData = null; // Clear temp data
-                battlePok.originalEvolutionData = null; // Also clear from battle state copy
+                trainerPok.originalEvolutionData = null;
+                battlePok.originalEvolutionData = null;
             }
         }
     });
@@ -7314,6 +7830,7 @@ function handlePlayerFaint() {
     const cb = () => {
         const rem = battleState.playerTeam.filter(pk => pk.currentHP > 0);
         if (rem.length === 0) {
+            stopBattleMusic(true);
             let coinsEarned = 0;
             let lossMessage = "You have no more Pokémon! You lost the battle!";
             if (battleState.isGymBattle) {
@@ -7324,10 +7841,16 @@ function handlePlayerFaint() {
                 lossMessage = `You lost to Elite Four ${eliteFourData[battleState.currentEliteFourMemberKey].name}! You earned ${coinsEarned} coins.`;
             } else if (battleState.isPokemonLeagueBattle) {
                 coinsEarned = 25;
-                lossMessage = `You were defeated in the Pokémon League! You earned ${coinsEarned} coins. Better luck next time!`;
-                battleState.currentLeagueOpponentIndex = 0;
-                battleState.leagueBattlesWon = 0;
-            } else if (!battleState.isWildBattle) { // Quick Battle
+                lossMessage = `You were defeated in the Pokémon League by ${currentLeagueOrder[battleState.currentLeagueOpponentIndex].name}! You earned ${coinsEarned} coins.`;
+                if (selectedTrainerData) {
+                    selectedTrainerData.currentLeagueOpponentIndex = 0;
+                    selectedTrainerData.leagueBattlesWon = 0;
+                    selectedTrainerData.defeatedPokemonLeague = false;
+                }
+            } else if (battleState.isTeamRocketBattle) {
+                coinsEarned = 5;
+                lossMessage = `You were defeated by Team Rocket Grunt #${selectedTrainerData.teamRocketDefeatedCount + 1}! You earned ${coinsEarned} coins.`;
+            } else if (!battleState.isWildBattle) {
                 coinsEarned = 5;
                 lossMessage = `You lost the Quick Battle! You earned ${coinsEarned} coins.`;
             }
@@ -7337,8 +7860,8 @@ function handlePlayerFaint() {
             }
             typeMessage(lossMessage, () => setTimeout(() => {
                 finalizeBattleState();
-                screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')"; // Reset
-                battleState.isWildBattle = false; battleState.isGymBattle = false; battleState.isEliteFourBattle = false; battleState.isPokemonLeagueBattle = false;
+                screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')";
+                battleState.isWildBattle = false; battleState.isGymBattle = false; battleState.isEliteFourBattle = false; battleState.isPokemonLeagueBattle = false; battleState.isTeamRocketBattle = false;
                 battleState.currentGymLeaderKey = null; battleState.currentEliteFourMemberKey = null;
                 switchScreen('mainMenu');
             }, 1000));
@@ -7356,16 +7879,25 @@ function handleOpponentFaint() {
         console.warn("Attempted opponent faint with undefined Pokemon."); return;
     }
     const o = battleState.opponentTeam[battleState.opponentActiveIndex];
-    const cb = () => {
-        let coinsEarned = 0;
-        let winMessages = [];
+    let coinsEarned = 0;
+    let winMessages = [];
 
-        if (battleState.isWildBattle) {
-            coinsEarned = 3;
-            winMessages.push(`The wild ${o.name.toUpperCase()} fainted! You earned ${coinsEarned} coins!`);
-        } else if (battleState.isGymBattle) {
-            const remOpponent = battleState.opponentTeam.filter(pk => pk.currentHP > 0);
-            if (remOpponent.length === 0) {
+    const addCoins = (amount) => {
+        if (selectedTrainerData && amount > 0) {
+            selectedTrainerData.coins = (selectedTrainerData.coins || 0) + amount;
+            updateCoinDisplay();
+        }
+    };
+
+    const cb = () => {
+        const remOpponent = battleState.opponentTeam.filter(pk => pk.currentHP > 0);
+        if (remOpponent.length === 0) {
+            stopBattleMusic(true);
+            if (battleState.isWildBattle) {
+                coinsEarned = 3;
+                winMessages.push(`The wild ${o.name.toUpperCase()} fainted! You earned ${coinsEarned} coins!`);
+                addCoins(coinsEarned);
+            } else if (battleState.isGymBattle) {
                 coinsEarned = 30;
                 const leaderData = gymLeadersData[battleState.currentGymLeaderKey];
                 winMessages.push(`You defeated Gym Leader ${leaderData.name}!`);
@@ -7373,86 +7905,103 @@ function handleOpponentFaint() {
                 if (selectedTrainerData && !selectedTrainerData.defeatedGymLeaders.includes(battleState.currentGymLeaderKey)) {
                     selectedTrainerData.defeatedGymLeaders.push(battleState.currentGymLeaderKey);
                 }
-            }
-        } else if (battleState.isEliteFourBattle) {
-             const remOpponent = battleState.opponentTeam.filter(pk => pk.currentHP > 0);
-            if (remOpponent.length === 0) {
-                coinsEarned = 75;
+                addCoins(coinsEarned);
+            } else if (battleState.isEliteFourBattle) {
+                coinsEarned = 60;
                 const memberData = eliteFourData[battleState.currentEliteFourMemberKey];
                 winMessages.push(`You defeated Elite Four ${memberData.name}!`);
                 winMessages.push(`You earned the ${memberData.name}'s Trainer Card and ${coinsEarned} coins!`);
-                if (selectedTrainerData && !selectedTrainerData.defeatedEliteFourMembers.includes(battleState.currentEliteFourMemberKey)) {
+                 if (selectedTrainerData && !selectedTrainerData.defeatedEliteFourMembers.includes(battleState.currentEliteFourMemberKey)) {
                     selectedTrainerData.defeatedEliteFourMembers.push(battleState.currentEliteFourMemberKey);
                 }
-            }
-        } else if (battleState.isPokemonLeagueBattle) {
-            battleState.leagueBattlesWon++;
-            const remOpponentLeague = battleState.opponentTeam.filter(pk => pk.currentHP > 0);
-            if (remOpponentLeague.length === 0) {
-                 battleState.currentLeagueOpponentIndex++;
-                 if (battleState.leagueBattlesWon >= currentLeagueOrder.length) {
+                addCoins(coinsEarned);
+            } else if (battleState.isPokemonLeagueBattle) {
+                selectedTrainerData.leagueBattlesWon = (selectedTrainerData.leagueBattlesWon || 0) + 1;
+                battleState.leagueBattlesWon = selectedTrainerData.leagueBattlesWon;
+                battleState.currentLeagueOpponentIndex++;
+                if (battleState.leagueBattlesWon >= currentLeagueOrder.length) {
                     coinsEarned = 150;
                     winMessages.push(`You have defeated the Pokémon League!`);
                     winMessages.push(`YOU ARE THE POKéMON MASTER! You earned ${coinsEarned} coins!`);
-                 } else {
+                    selectedTrainerData.defeatedPokemonLeague = true;
+                    addCoins(coinsEarned);
+                } else {
                     coinsEarned = 50;
-                    winMessages.push(`You defeated ${o.name.toUpperCase()}! You earned ${coinsEarned} coins!`);
-                 }
+                    const defeatedLeagueTrainerName = currentLeagueOrder[battleState.currentLeagueOpponentIndex - 1].name;
+                    winMessages.push(`You defeated ${defeatedLeagueTrainerName}! You earned ${coinsEarned} coins!`);
+                    addCoins(coinsEarned);
+                }
+            } else if (battleState.isTeamRocketBattle) {
+                coinsEarned = 15;
+                winMessages.push(`You defeated Team Rocket Grunt #${selectedTrainerData.teamRocketDefeatedCount + 1}! You earned ${coinsEarned} coins.`);
+                addCoins(coinsEarned);
+                selectedTrainerData.teamRocketDefeatedCount = (selectedTrainerData.teamRocketDefeatedCount || 0) + 1;
+                battleState.currentTeamRocketGruntIndex = selectedTrainerData.teamRocketDefeatedCount;
+
+                if (selectedTrainerData.teamRocketDefeatedCount >= TEAM_ROCKET_GRUNTS_TO_DEFEAT) {
+                    winMessages.push(`You've driven off Team Rocket! You received 5 Ultra Balls and 50 bonus coins!`);
+                    selectedTrainerData.inventory["Ultra Ball"] = (selectedTrainerData.inventory["Ultra Ball"] || 0) + 5;
+                    addCoins(50);
+                    selectedTrainerData.defeatedAllTeamRocket = true;
+                    if (!selectedTrainerData.collectedSpecialCards) selectedTrainerData.collectedSpecialCards = [];
+                    if (!selectedTrainerData.collectedSpecialCards.some(card => card.name === teamRocketCardData.name)) {
+                         selectedTrainerData.collectedSpecialCards.push(teamRocketCardData);
+                         winMessages.push(`You obtained the ${teamRocketCardData.name} card!`);
+                    }
+                }
+            } else {
+                 coinsEarned = 15;
+                 winMessages.push(`You defeated the opponent and earned ${coinsEarned} coins!`);
+                 addCoins(coinsEarned);
             }
         }
-         else { // Quick Battle
-             const remOpponent = battleState.opponentTeam.filter(pk => pk.currentHP > 0);
-             if (remOpponent.length === 0) {
-                coinsEarned = 15;
-                winMessages.push(`You defeated the opponent and earned ${coinsEarned} coins!`);
-             }
-        }
 
-        if (selectedTrainerData && coinsEarned > 0) {
-            selectedTrainerData.coins = (selectedTrainerData.coins || 0) + coinsEarned;
-            updateCoinDisplay();
-        }
-
-        const processWinMessages = () => {
+        const processWinMessagesSequence = () => {
             if (winMessages.length > 0) {
-                typeMessage(winMessages.shift(), processWinMessages);
+                typeMessage(winMessages.shift(), processWinMessagesSequence);
             } else {
-                const remOpponent = battleState.opponentTeam.filter(pk => pk.currentHP > 0);
-                if (remOpponent.length === 0) {
-                    if (battleState.isPokemonLeagueBattle && battleState.leagueBattlesWon < currentLeagueOrder.length) {
+                const stillOpponentsLeft = battleState.opponentTeam.filter(pk => pk.currentHP > 0).length > 0;
+                if (!stillOpponentsLeft) {
+                    if (battleState.isPokemonLeagueBattle && !selectedTrainerData.defeatedPokemonLeague) {
                         finalizeBattleState();
                         switchScreen('pokemonLeague');
                         updatePokemonLeagueScreenUI();
+                    } else if (battleState.isTeamRocketBattle && !selectedTrainerData.defeatedAllTeamRocket) {
+                        finalizeBattleState();
+                        switchScreen('teamRocket');
+                        updateTeamRocketScreenUI();
                     } else {
                         setTimeout(() => {
                             finalizeBattleState();
                             screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')";
-                            battleState.isWildBattle = false; battleState.isGymBattle = false; battleState.isEliteFourBattle = false; battleState.isPokemonLeagueBattle = false;
+                            battleState.isWildBattle = false; battleState.isGymBattle = false; battleState.isEliteFourBattle = false; battleState.isPokemonLeagueBattle = false; battleState.isTeamRocketBattle = false;
                             battleState.currentGymLeaderKey = null; battleState.currentEliteFourMemberKey = null;
-                            battleState.currentLeagueOpponentIndex = 0; battleState.leagueBattlesWon = 0;
                             switchScreen('mainMenu');
                         }, 1200);
                     }
                 } else {
-                    let nxtIdx = -1;
-                    for (let i=0; i<battleState.opponentTeam.length; i++) if (battleState.opponentTeam[i].currentHP > 0) { nxtIdx = i; break; }
+                    let nxtIdx = battleState.opponentTeam.findIndex(p => p.currentHP > 0);
                     if (nxtIdx !== -1) {
                         battleState.opponentActiveIndex = nxtIdx;
                         const newOpp = battleState.opponentTeam[nxtIdx];
-                        const opponentName = battleState.isGymBattle ? gymLeadersData[battleState.currentGymLeaderKey].name :
-                                             battleState.isEliteFourBattle ? eliteFourData[battleState.currentEliteFourMemberKey].name :
-                                             battleState.isPokemonLeagueBattle ? currentLeagueOrder[battleState.currentLeagueOpponentIndex].name : "Opponent";
-                        typeMessage(`${opponentName} sent out ${newOpp.name.toUpperCase()}!`, () => {
+                        let opponentTrainerName = "Opponent";
+                        if (battleState.isGymBattle) opponentTrainerName = gymLeadersData[battleState.currentGymLeaderKey].name;
+                        else if (battleState.isEliteFourBattle) opponentTrainerName = eliteFourData[battleState.currentEliteFourMemberKey].name;
+                        else if (battleState.isPokemonLeagueBattle) opponentTrainerName = currentLeagueOrder[battleState.currentLeagueOpponentIndex].name;
+                        else if (battleState.isTeamRocketBattle) opponentTrainerName = `Team Rocket Grunt #${selectedTrainerData.teamRocketDefeatedCount + 1}`;
+
+                        typeMessage(`${opponentTrainerName} sent out ${newOpp.name.toUpperCase()}!`, () => {
                             updateBattleUI();
                             setTimeout(startTurnPhase, 800);
                         });
                     } else {
-                        typeMessage("Error: Opponent has no more Pokémon, but battle didn't end?", () => { finalizeBattleState(); switchScreen('mainMenu'); });
+                        console.error("Error: Opponent has no more Pokémon, but battle didn't end as expected.");
+                        finalizeBattleState(); switchScreen('mainMenu');
                     }
                 }
             }
         };
-        typeMessage(`Foe's ${o.name.toUpperCase()} fainted!`, processWinMessages);
+        typeMessage(`Foe's ${o.name.toUpperCase()} fainted!`, processWinMessagesSequence);
     };
     cb();
     updateBattleUI();
@@ -7471,6 +8020,8 @@ function evolvePokemon(pokemonToEvolve, evolvedFormData, isPermanentEvolution = 
     const originalName = pokemonToEvolve.name.toUpperCase();
     const originalPokedexId = pokemonToEvolve.pokedexId;
     const wasShiny = pokemonToEvolve.isShiny;
+
+    markAsSeen(evolvedFormData.pokedexId, wasShiny); // Mark new form as seen
 
     if (!isPermanentEvolution && !pokemonToEvolve.originalEvolutionData) {
         pokemonToEvolve.originalEvolutionData = {
@@ -7495,7 +8046,7 @@ function evolvePokemon(pokemonToEvolve, evolvedFormData, isPermanentEvolution = 
     pokemonToEvolve.baseStats = JSON.parse(JSON.stringify(evolvedFormData.baseStats));
     pokemonToEvolve.moves = evolvedFormData.moves.map(m => ({ ...m, currentPp: m.maxPp }));
     pokemonToEvolve.evolvesToPokedexId = evolvedFormData.evolvesToPokedexId || null;
-    pokemonToEvolve.isShiny = wasShiny; // Behoud shiny status
+    pokemonToEvolve.isShiny = wasShiny;
 
     const shinyBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
     pokemonToEvolve.spriteFrontUrl = pokemonToEvolve.isShiny ? `${shinyBaseUrl}/shiny/${evolvedFormData.pokedexId}.png` : evolvedFormData.spriteFront;
@@ -7505,18 +8056,20 @@ function evolvePokemon(pokemonToEvolve, evolvedFormData, isPermanentEvolution = 
     if (isPermanentEvolution) {
         const teamPokemonInstance = selectedTrainerData.team.find(p => p && p.id === pokemonToEvolve.id);
         if (teamPokemonInstance) {
-            teamPokemonInstance.pokedexId = pokemonToEvolve.pokedexId;
-            teamPokemonInstance.name = pokemonToEvolve.name.toUpperCase();
-            teamPokemonInstance.types = [...pokemonToEvolve.types];
-            teamPokemonInstance.maxHP = pokemonToEvolve.maxHP;
-            teamPokemonInstance.currentHP = pokemonToEvolve.currentHP;
-            teamPokemonInstance.baseStats = JSON.parse(JSON.stringify(pokemonToEvolve.baseStats));
-            teamPokemonInstance.moves = pokemonToEvolve.moves.map(m => ({...m}));
-            teamPokemonInstance.isShiny = pokemonToEvolve.isShiny;
-            teamPokemonInstance.spriteFrontUrl = pokemonToEvolve.spriteFrontUrl;
-            teamPokemonInstance.spriteBackUrl = pokemonToEvolve.spriteBackUrl;
-            teamPokemonInstance.evolvesToPokedexId = pokemonToEvolve.evolvesToPokedexId;
-            teamPokemonInstance.originalEvolutionData = null; // Belangrijk: permanente evolutie
+            Object.assign(teamPokemonInstance, {
+                pokedexId: pokemonToEvolve.pokedexId,
+                name: pokemonToEvolve.name.toUpperCase(),
+                types: [...pokemonToEvolve.types],
+                maxHP: pokemonToEvolve.maxHP,
+                currentHP: pokemonToEvolve.currentHP,
+                baseStats: JSON.parse(JSON.stringify(pokemonToEvolve.baseStats)),
+                moves: pokemonToEvolve.moves.map(m => ({...m})),
+                isShiny: pokemonToEvolve.isShiny,
+                spriteFrontUrl: pokemonToEvolve.spriteFrontUrl,
+                spriteBackUrl: pokemonToEvolve.spriteBackUrl,
+                evolvesToPokedexId: pokemonToEvolve.evolvesToPokedexId,
+                originalEvolutionData: null
+            });
             saveGame();
         }
     }
@@ -7530,7 +8083,7 @@ function useEvolutionItem(itemName) {
 
     if (evolutionTargetData && selectedTrainerData.inventory[itemName] > 0) {
         selectedTrainerData.inventory[itemName]--;
-        if (!isPermanent) saveGame(); // Save non-permanent stone usage immediately
+        if (!isPermanent) saveGame();
 
         itemMenuEl.style.display = 'none';
         typeMessage(`${selectedTrainerData.name} used a ${itemName}!`, () => {
@@ -7538,12 +8091,9 @@ function useEvolutionItem(itemName) {
                 playerPokemonSpriteEl.parentElement.classList.add('flash-anim');
                 setTimeout(() => {
                     playerPokemonSpriteEl.parentElement.classList.remove('flash-anim');
-
                     const originalName = evolvePokemon(playerPokemon, evolutionTargetData, isPermanent);
                     updateBattleUI();
-
                     typeMessage(`Congratulations! Your ${originalName} evolved into ${playerPokemon.name.toUpperCase()}!${isPermanent ? " (Permanently)" : ""}`, () => {
-                        if (isPermanent) saveGame(); // Save permanent evolution after confirmation
                         opponentActionPhase();
                     });
                 }, 1000);
@@ -7574,47 +8124,48 @@ function throwPokeball(itemName) {
     typeMessage(`${selectedTrainerData.name} used a ${itemName}!`, () => {
         const pokeballAnim = document.createElement('div');
         pokeballAnim.classList.add('pokeball-throw-animation');
-
+        if (itemName === "Master Ball") pokeballAnim.classList.add('masterball'); // NIEUW
         const playerRect = playerPokemonSpriteEl.getBoundingClientRect();
         const opponentRect = opponentPokemonSpriteEl.getBoundingClientRect();
         const arenaRect = screens.battle.querySelector('.battle-arena').getBoundingClientRect();
-
         pokeballAnim.style.left = `${playerRect.left + playerRect.width / 2 - arenaRect.left - 15}px`;
         pokeballAnim.style.top = `${playerRect.bottom - arenaRect.top - 30 - 15}px`;
-
         pokeballAnim.style.setProperty('--target-x', `${opponentRect.left + opponentRect.width / 2 - (playerRect.left + playerRect.width / 2)}px`);
         pokeballAnim.style.setProperty('--target-y', `${opponentRect.top + opponentRect.height / 2 - (playerRect.bottom - 30)}px`);
-
-
         if (itemName === "Great Ball") pokeballAnim.style.backgroundImage = 'var(--item-icon-greatball)';
         else if (itemName === "Ultra Ball") pokeballAnim.style.backgroundImage = 'var(--item-icon-ultraball)';
-
-
+        else if (itemName === "Master Ball") pokeballAnim.style.backgroundImage = 'var(--item-icon-masterball)'; // NIEUW
         attackAnimationLayer.appendChild(pokeballAnim);
 
         setTimeout(() => {
             pokeballAnim.remove();
-            const catchRateBase = itemName === "Ultra Ball" ? 2 : (itemName === "Great Ball" ? 1.5 : 1);
-            const maxHP = opponentPokemon.maxHP;
-            const currentHP = opponentPokemon.currentHP;
-            let catchChance = (((3 * maxHP - 2 * currentHP) * 45 * catchRateBase) / (3 * maxHP)) / 255;
-            if (opponentPokemon.status && (opponentPokemon.status === "SLP" || opponentPokemon.status === "FRZ")) catchChance *= 2.5;
-            else if (opponentPokemon.status && (opponentPokemon.status === "PAR" || opponentPokemon.status === "PSN" || opponentPokemon.status === "BRN")) catchChance *= 1.5;
+            let catchSuccess = false;
+            if (itemName === "Master Ball") {
+                catchSuccess = true;
+            } else {
+                const catchRateBase = itemName === "Ultra Ball" ? 2 : (itemName === "Great Ball" ? 1.5 : 1);
+                const maxHP = opponentPokemon.maxHP;
+                const currentHP = opponentPokemon.currentHP;
+                let catchChance = (((3 * maxHP - 2 * currentHP) * 45 * catchRateBase) / (3 * maxHP)) / 255;
+                if (opponentPokemon.status && (opponentPokemon.status === "SLP" || opponentPokemon.status === "FRZ")) catchChance *= 2.5;
+                else if (opponentPokemon.status && (opponentPokemon.status === "PAR" || opponentPokemon.status === "PSN" || opponentPokemon.status === "BRN")) catchChance *= 1.5;
+                catchSuccess = (Math.random() < catchChance || opponentPokemon.currentHP <= 1);
+            }
 
-            if (Math.random() < catchChance || opponentPokemon.currentHP <= 1) {
+
+            if (catchSuccess) {
+                stopBattleMusic(true);
                 typeMessage(`Gotcha! ${opponentPokemon.name.toUpperCase()} was caught!`, () => {
                     opponentPokemonSpriteEl.parentElement.classList.add('pokemon-caught-flash');
                     setTimeout(() => {
                         opponentPokemonSpriteEl.parentElement.classList.remove('pokemon-caught-flash');
                         const caughtPokemonData = pokemonPool.find(p => p.pokedexId === opponentPokemon.pokedexId);
                         const newPlayerPokemon = createPokemonFromData(
-                            {...caughtPokemonData, isShiny: opponentPokemon.isShiny}, // Pass shiny status
-                            false,
-                            true
+                            {...caughtPokemonData, isShiny: opponentPokemon.isShiny},
+                            false, true
                         );
                         newPlayerPokemon.currentHP = Math.max(1, opponentPokemon.currentHP);
                         newPlayerPokemon.status = opponentPokemon.status;
-
                         if (selectedTrainerData.team.length < MAX_TEAM_SIZE) {
                             selectedTrainerData.team.push(newPlayerPokemon);
                             alert(`${newPlayerPokemon.name.toUpperCase()}${newPlayerPokemon.isShiny ? " (Shiny)" : ""} was added to your team!`);
@@ -7624,16 +8175,16 @@ function throwPokeball(itemName) {
                         } else {
                              alert(`Team and PC Box are full! Cannot catch ${newPlayerPokemon.name.toUpperCase()}.`);
                         }
-                        finalizeBattleState(); // This now calls saveGame()
+                        finalizeBattleState();
                         battleState.isWildBattle = false;
-                        screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')"; // Reset
+                        screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')";
                         switchScreen('mainMenu');
                     }, 600);
                 });
             } else {
                 typeMessage(`Oh no! The Pokémon broke free!`, opponentActionPhase);
             }
-        }, 3500);
+        }, itemName === "Master Ball" ? 1000 : 3500); // Master Ball is quicker animation-wise
     });
 }
 
@@ -7663,7 +8214,7 @@ function showItemMenu() {
 
 
     if (battleState.isWildBattle) {
-        const balls = ["Poke Ball", "Great Ball", "Ultra Ball"];
+        const balls = ["Poke Ball", "Great Ball", "Ultra Ball", "Master Ball"]; // NIEUW: Master Ball
         balls.forEach(ballName => {
             if (selectedTrainerData.inventory[ballName] > 0) {
                 const btn = document.createElement('button');
@@ -7671,6 +8222,7 @@ function showItemMenu() {
                 let battleIconClass = "pokeball";
                 if (ballName === "Great Ball") battleIconClass = "greatball";
                 else if (ballName === "Ultra Ball") battleIconClass = "ultraball";
+                else if (ballName === "Master Ball") battleIconClass = "masterball"; // NIEUW
 
                 btn.innerHTML = `<span class="item-icon-battle ${battleIconClass}"></span><span class="item-name-battle">${ballName}</span><span class="item-count-battle">x${selectedTrainerData.inventory[ballName]}</span>`;
                 itemMenuEl.appendChild(btn);
@@ -7725,7 +8277,7 @@ function showGymLeaderDetailScreen(leaderKey) {
     btnStartGymBattle.onclick = () => {
         battleState.currentGymLeaderKey = leaderKey;
         battleState.isEliteFourBattle = false;
-        prepareBattle(startGymBattleActual, false, false);
+        prepareBattle(startGymBattleActual, false, false, false);
     };
     switchScreen('gymLeaderDetail');
 }
@@ -7759,7 +8311,7 @@ function showEliteFourDetailScreen(memberKey) {
     btnStartEliteFourBattle.onclick = () => {
         battleState.currentEliteFourMemberKey = memberKey;
         battleState.isEliteFourBattle = true;
-        prepareBattle(startEliteFourBattleActual, true, false);
+        prepareBattle(startEliteFourBattleActual, true, false, false);
     };
     switchScreen('eliteFourDetail');
 }
@@ -7770,27 +8322,31 @@ function showMyCardsScreen() {
         switchScreen('mainMenu');
         return;
     }
-
     displayedCardCollection = [];
     (selectedTrainerData.defeatedGymLeaders || []).forEach(leaderKey => {
         const leaderData = gymLeadersData[leaderKey];
         if (leaderData && leaderData.cardUrl) {
-            displayedCardCollection.push({ name: leaderData.name, url: leaderData.cardUrl, type: 'Trainer' });
+            displayedCardCollection.push({ name: leaderData.name, url: leaderData.cardUrl, type: 'Gym Leader' });
         }
     });
     (selectedTrainerData.defeatedEliteFourMembers || []).forEach(memberKey => {
         const memberData = eliteFourData[memberKey];
         if (memberData && memberData.cardUrl) {
-            displayedCardCollection.push({ name: memberData.name, url: memberData.cardUrl, type: 'Trainer' });
+            displayedCardCollection.push({ name: memberData.name, url: memberData.cardUrl, type: 'Elite Four' });
         }
     });
-    (selectedTrainerData.defeatedPokemonLeagueTrainers || []).forEach(leagueTrainerName => {
-         const trainerData = pokemonLeagueTrainers.find(t => t.name === leagueTrainerName);
-         if (trainerData && trainerData.cardUrl) {
-            displayedCardCollection.push({ name: trainerData.name, url: trainerData.cardUrl, type: 'League Trainer'});
-         }
+    if (selectedTrainerData.defeatedPokemonLeague) {
+        pokemonLeagueTrainers.forEach(leagueTrainer => {
+             if (leagueTrainer.cardUrl) {
+                displayedCardCollection.push({ name: leagueTrainer.name, url: leagueTrainer.cardUrl, type: 'League Trainer'});
+             }
+        });
+    }
+    (selectedTrainerData.collectedSpecialCards || []).forEach(specialCard => {
+        if (!displayedCardCollection.some(card => card.name === specialCard.name && card.url === specialCard.url)) {
+            displayedCardCollection.push(specialCard);
+        }
     });
-
 
     currentCardIndex = 0;
     updateDisplayedCard();
@@ -7802,7 +8358,6 @@ function showMyCardsScreen() {
     if (cardViewerControls) {
         cardViewerControls.style.display = displayedCardCollection.length > 0 ? 'flex' : 'none';
     }
-
     switchScreen('myCards');
 }
 
@@ -7826,7 +8381,7 @@ function updateDisplayedCard() {
     const card = displayedCardCollection[currentCardIndex];
     if(displayedCardImageEl) {
         displayedCardImageEl.src = card.url;
-        displayedCardImageEl.alt = `${card.name} Card`;
+        displayedCardImageEl.alt = `${card.name} Card (${card.type})`;
     }
     if(prevCardButton) prevCardButton.disabled = currentCardIndex === 0;
     if(nextCardButton) nextCardButton.disabled = currentCardIndex >= displayedCardCollection.length - 1;
@@ -7924,7 +8479,7 @@ function showTcgCardModal(imageUrl, cardName) {
 
 function showStarterSelectScreen() {
     startersGridEl.innerHTML = '';
-    const starterPokedexIds = [1,4,7,152,155,158,252,255,258]; // Bulbasaur & Dragonite (voorbeeld, pas aan naar wens)
+    const starterPokedexIds = [1, 4, 7, 152, 155, 158, 252, 255, 258];
     starterPokedexIds.forEach(pokedexId => {
         const pokemonData = pokemonPool.find(p => p.pokedexId === pokedexId);
         if (pokemonData) {
@@ -7953,16 +8508,29 @@ function showStarterSelectScreen() {
 }
 
 
-function saveGame() { if (selectedTrainerData) { localStorage.setItem(SAVE_KEY, JSON.stringify(selectedTrainerData)); console.log("Game Saved!"); } else { console.warn("No trainer selected to save!"); } }
-
+function saveGame() {
+    if (selectedTrainerData) {
+        selectedTrainerData.isMenuMusicEnabled = isMenuMusicEnabled;
+        selectedTrainerData.isBattleMusicEnabled = isBattleMusicEnabled;
+        localStorage.setItem(SAVE_KEY, JSON.stringify(selectedTrainerData));
+        console.log("Game Saved!");
+        if (currentScreen === 'optionsMenu' || currentScreen === 'adminMode') {
+            alert("Game progress has been saved!");
+        }
+    } else {
+        console.warn("No trainer selected to save!");
+    }
+}
 function loadGame() {
     const sd = localStorage.getItem(SAVE_KEY);
     if (sd) {
         try {
-            selectedTrainerData = JSON.parse(sd);
+            const loadedData = JSON.parse(sd);
+            selectedTrainerData = loadedData;
+
             selectedTrainerData.coins = selectedTrainerData.coins || 0;
-            selectedTrainerData.inventory = selectedTrainerData.inventory || { "Poke Ball": 5, "Great Ball": 0, "Ultra Ball": 0, "Evolution Stone": 1, "Perma Evolution Stone": 0, "TCG Pack": 0 };
-            const defaultItems = { "Poke Ball": 0, "Great Ball": 0, "Ultra Ball": 0, "Evolution Stone": 0, "Perma Evolution Stone": 0, "TCG Pack": 0 };
+            selectedTrainerData.inventory = selectedTrainerData.inventory || { "Poke Ball": 5, "Great Ball": 0, "Ultra Ball": 0, "Master Ball": 0, "Evolution Stone": 1, "Perma Evolution Stone": 0, "TCG Pack": 0 };
+            const defaultItems = { "Poke Ball": 0, "Great Ball": 0, "Ultra Ball": 0, "Master Ball": 0, "Evolution Stone": 0, "Perma Evolution Stone": 0, "TCG Pack": 0 }; // NIEUW: Master Ball
             for (const item in defaultItems) {
                 if (typeof selectedTrainerData.inventory[item] === 'undefined') {
                     selectedTrainerData.inventory[item] = defaultItems[item];
@@ -7972,9 +8540,24 @@ function loadGame() {
             selectedTrainerData.pcBox = selectedTrainerData.pcBox || [];
             selectedTrainerData.defeatedGymLeaders = selectedTrainerData.defeatedGymLeaders || [];
             selectedTrainerData.defeatedEliteFourMembers = selectedTrainerData.defeatedEliteFourMembers || [];
-            selectedTrainerData.defeatedPokemonLeagueTrainers = selectedTrainerData.defeatedPokemonLeagueTrainers || [];
             selectedTrainerData.collectedTcgCards = (selectedTrainerData.collectedTcgCards || []).map(c => ({ ...c, tcgSet: c.tcgSet || "Unknown Set" }));
+            selectedTrainerData.collectedSpecialCards = selectedTrainerData.collectedSpecialCards || [];
+            selectedTrainerData.pokedexSeen = selectedTrainerData.pokedexSeen || {}; // NIEUW
+            selectedTrainerData.pokedexShinySeen = selectedTrainerData.pokedexShinySeen || {}; // NIEUW
             selectedTrainerData.hasChosenStarter = typeof selectedTrainerData.hasChosenStarter !== 'undefined' ? selectedTrainerData.hasChosenStarter : false;
+
+            selectedTrainerData.currentLeagueOpponentIndex = selectedTrainerData.currentLeagueOpponentIndex || 0;
+            selectedTrainerData.leagueBattlesWon = selectedTrainerData.leagueBattlesWon || 0;
+            selectedTrainerData.defeatedPokemonLeague = selectedTrainerData.defeatedPokemonLeague || false;
+            selectedTrainerData.teamRocketDefeatedCount = selectedTrainerData.teamRocketDefeatedCount || 0;
+            selectedTrainerData.defeatedAllTeamRocket = selectedTrainerData.defeatedAllTeamRocket || false;
+
+            isMenuMusicEnabled = typeof selectedTrainerData.isMenuMusicEnabled === 'boolean' ? selectedTrainerData.isMenuMusicEnabled : true;
+            isBattleMusicEnabled = typeof selectedTrainerData.isBattleMusicEnabled === 'boolean' ? selectedTrainerData.isBattleMusicEnabled : true;
+
+            btnToggleMenuMusicOpt.textContent = `MENU MUSIC: ${isMenuMusicEnabled ? 'ON' : 'OFF'}`;
+            btnToggleBattleMusicOpt.textContent = `BATTLE MUSIC: ${isBattleMusicEnabled ? 'ON' : 'OFF'}`;
+
 
             selectedTrainerData.team = restoreFullPokemonList(selectedTrainerData.team, false);
             selectedTrainerData.pcBox = restoreFullPokemonList(selectedTrainerData.pcBox, false);
@@ -7991,50 +8574,18 @@ function loadGame() {
         } catch (e) {
             console.error('Load error:', e);
             localStorage.removeItem(SAVE_KEY);
+            selectedTrainerData = null;
             return false;
         }
     }
+    selectedTrainerData = null;
     return false;
 }
-
-function restoreFullPokemonList(listData, isOpponentTeam = false) {
-    return (listData || []).map(savedPok => {
-        if (!savedPok || typeof savedPok.pokedexId === 'undefined') return null;
-        const baseData = pokemonPool.find(p => p.pokedexId === savedPok.pokedexId);
-        if (!baseData) {
-            console.warn(`Pokémon with PokedexID ${savedPok.pokedexId} not found in current pool. Skipping.`);
-            return null;
-        }
-
-        // Pass the saved shiny status directly to createPokemonFromData
-        let fullPokemon = createPokemonFromData(baseData, isOpponentTeam, !isOpponentTeam, savedPok.isShiny || false);
-
-        fullPokemon.id = savedPok.id || fullPokemon.id;
-        fullPokemon.currentHP = Math.min(savedPok.currentHP, fullPokemon.maxHP);
-        // maxHP is set by createPokemonFromData
-        fullPokemon.status = savedPok.status || null;
-        // isShiny is set by createPokemonFromData
-        fullPokemon.originalEvolutionData = savedPok.originalEvolutionData || null;
-
-        if (savedPok.moves && Array.isArray(savedPok.moves)) {
-            fullPokemon.moves = baseData.moves.map(baseMove => {
-                const savedMoveData = savedPok.moves.find(sm => sm.name === baseMove.name);
-                return {
-                    ...baseMove,
-                    currentPp: (savedMoveData && typeof savedMoveData.currentPp !== 'undefined') ? savedMoveData.currentPp : baseMove.maxPp
-                };
-            });
-        } else {
-             fullPokemon.moves = baseData.moves.map(m => ({ ...m, currentPp: m.maxPp }));
-        }
-        return fullPokemon;
-    }).filter(p => p);
-}
-
-
 function performResetGame() {
     localStorage.removeItem(SAVE_KEY);
     localStorage.removeItem('blazingThunder_darkMode');
+    localStorage.removeItem('blazingThunder_menuMusicEnabled');
+    localStorage.removeItem('blazingThunder_battleMusicEnabled');
     selectedTrainerData = null;
     tempSelectedStarter = null;
     isNewGameSetup = false;
@@ -8043,91 +8594,49 @@ function performResetGame() {
     if(marketCoinDisplayEl) marketCoinDisplayEl.textContent = "Coins: 0";
     generatedPasswordArea.value = "";
     inputPasswordArea.value = "";
+    currentLeagueOrder = [];
+    battleState.currentLeagueOpponentIndex = 0;
+    battleState.leagueBattlesWon = 0;
+    battleState.currentTeamRocketGruntIndex = 0;
+    isMenuMusicEnabled = true;
+    isBattleMusicEnabled = true;
+    btnToggleMenuMusicOpt.textContent = "MENU MUSIC: ON";
+    btnToggleBattleMusicOpt.textContent = "BATTLE MUSIC: ON";
+    stopIntroMusic();
+    stopBattleMusic(true);
     alert("Game Reset! Select a new trainer.");
     screens.resetConfirmDialog.style.display = 'none';
     switchScreen('intro');
 }
 
-// --- Functies voor wachtwoordbeheer ---
-function generatePassword() {
-    if (!selectedTrainerData) {
-        alert("No game data to generate a password from.");
-        return;
-    }
-    try {
-        const exportData = {
-            name: selectedTrainerData.name,
-            imageUrl: selectedTrainerData.imageUrl,
-            coins: selectedTrainerData.coins,
-            inventory: selectedTrainerData.inventory,
-            team: selectedTrainerData.team.map(p => p ? { pokedexId: p.pokedexId, currentHP: p.currentHP, maxHP: p.maxHP, status: p.status, isShiny: p.isShiny, moves: p.moves.map(m => ({name: m.name, currentPp: m.currentPp})), id: p.id, originalEvolutionData: p.originalEvolutionData } : null).filter(p => p),
-            pcBox: selectedTrainerData.pcBox.map(p => p ? { pokedexId: p.pokedexId, currentHP: p.currentHP, maxHP: p.maxHP, status: p.status, isShiny: p.isShiny, moves: p.moves.map(m => ({name: m.name, currentPp: m.currentPp})), id: p.id, originalEvolutionData: p.originalEvolutionData } : null).filter(p => p),
-            defeatedGymLeaders: selectedTrainerData.defeatedGymLeaders,
-            defeatedEliteFourMembers: selectedTrainerData.defeatedEliteFourMembers,
-            collectedTcgCards: selectedTrainerData.collectedTcgCards.map(c => ({ id: c.id, pokemonGameName: c.pokemonGameName, pokedexId: c.pokedexId, spriteUrl: c.spriteUrl, tcgCardName: c.tcgCardName, tcgSet: c.tcgSet || null })),
-            hasChosenStarter: selectedTrainerData.hasChosenStarter
-        };
-        const jsonString = JSON.stringify(exportData);
-        const base64String = btoa(jsonString);
-        generatedPasswordArea.value = base64String;
-        alert("Password generated and copied to the text area. Save it securely!");
-    } catch (error) {
-        console.error("Error generating password:", error);
-        alert("Could not generate password. See console for details.");
-        generatedPasswordArea.value = "Error generating password.";
-    }
+// --- Admin Mode Functies ---
+function showAdminModeScreen() {
+    adminPasswordInput.value = '';
+    adminMessageEl.textContent = '';
+    switchScreen('adminMode');
 }
 
-function loadFromPassword() {
-    const base64String = inputPasswordArea.value.trim();
-    if (!base64String) {
-        alert("Please enter a password.");
+function submitAdminPassword() {
+    if (!selectedTrainerData) {
+        adminMessageEl.textContent = "No trainer data loaded.";
+        adminMessageEl.style.color = "red";
         return;
     }
-    try {
-        const jsonString = atob(base64String);
-        const importedData = JSON.parse(jsonString);
-
-        if (!importedData || typeof importedData.name !== 'string' || !Array.isArray(importedData.team)) {
-            throw new Error("Invalid password format.");
-        }
-
-        const baseTrainer = trainersData[importedData.name] || Object.values(trainersData)[0];
-        selectedTrainerData = JSON.parse(JSON.stringify(baseTrainer));
-
-        selectedTrainerData.coins = parseInt(importedData.coins) || 0;
-        selectedTrainerData.inventory = importedData.inventory || { "Poke Ball": 5, "Great Ball": 0, "Ultra Ball": 0, "Evolution Stone": 1, "Perma Evolution Stone": 0, "TCG Pack": 0 };
-        if(importedData.inventory && typeof importedData.inventory["Ultra Ball"] !== 'undefined'){
-             selectedTrainerData.inventory["Ultra Ball"] = importedData.inventory["Ultra Ball"];
-        } else if (!selectedTrainerData.inventory["Ultra Ball"]) {
-            selectedTrainerData.inventory["Ultra Ball"] = 0;
-        }
-
-        selectedTrainerData.defeatedGymLeaders = importedData.defeatedGymLeaders || [];
-        selectedTrainerData.defeatedEliteFourMembers = importedData.defeatedEliteFourMembers || [];
-        selectedTrainerData.collectedTcgCards = (importedData.collectedTcgCards || []).map(c => ({ ...c, tcgSet: c.tcgSet || "Unknown Set" }));
-        selectedTrainerData.hasChosenStarter = typeof importedData.hasChosenStarter === 'boolean' ? importedData.hasChosenStarter : false;
-
-
-        selectedTrainerData.team = restoreFullPokemonList(importedData.team, false);
-        selectedTrainerData.pcBox = restoreFullPokemonList(importedData.pcBox, false);
-
-
-        if (chosenTrainerImageMainMenu && selectedTrainerData.imageUrl) {
-            chosenTrainerImageMainMenu.src = selectedTrainerData.imageUrl;
-            chosenTrainerImageMainMenu.alt = selectedTrainerData.name;
-        }
+    if (adminPasswordInput.value === ADMIN_PASSWORD) {
+        selectedTrainerData.coins = (selectedTrainerData.coins || 0) + 1000;
+        selectedTrainerData.inventory["Ultra Ball"] = (selectedTrainerData.inventory["Ultra Ball"] || 0) + 100;
+        selectedTrainerData.inventory["Master Ball"] = (selectedTrainerData.inventory["Master Ball"] || 0) + 5; // NIEUW
         updateCoinDisplay();
         saveGame();
-        alert("Game data loaded successfully from password!");
-        switchScreen('mainMenu');
-        inputPasswordArea.value = "";
-
-    } catch (error) {
-        console.error("Error loading from password:", error);
-        alert("Invalid or corrupted password. Could not load game data. Error: " + error.message);
+        adminMessageEl.textContent = "Admin rewards granted! 1000 Coins, 100 Ultra Balls, and 5 Master Balls added.";
+        adminMessageEl.style.color = "lime";
+        adminPasswordInput.value = '';
+    } else {
+        adminMessageEl.textContent = "Incorrect password.";
+        adminMessageEl.style.color = "red";
     }
 }
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const cyEl = document.getElementById('currentYear'); if (cyEl) cyEl.textContent = new Date().getFullYear();
@@ -8141,14 +8650,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if(confirmYesButton) confirmYesButton.addEventListener('click', () => {
             if (selectedTrainerData) {
                 selectedTrainerData.coins = 0;
-                selectedTrainerData.inventory = { "Poke Ball": 5, "Great Ball": 0, "Ultra Ball": 0, "Evolution Stone": 1, "Perma Evolution Stone": 0, "TCG Pack": 0 };
+                selectedTrainerData.inventory = { "Poke Ball": 5, "Great Ball": 0, "Ultra Ball": 0, "Master Ball": 0, "Evolution Stone": 1, "Perma Evolution Stone": 0, "TCG Pack": 0 }; // NIEUW: Master Ball
                 selectedTrainerData.team = [];
                 selectedTrainerData.pcBox = [];
                 selectedTrainerData.defeatedGymLeaders = [];
                 selectedTrainerData.defeatedEliteFourMembers = [];
-                selectedTrainerData.defeatedPokemonLeagueTrainers = [];
                 selectedTrainerData.collectedTcgCards = [];
+                selectedTrainerData.collectedSpecialCards = [];
+                selectedTrainerData.pokedexSeen = {}; // NIEUW
+                selectedTrainerData.pokedexShinySeen = {}; // NIEUW
                 selectedTrainerData.hasChosenStarter = false;
+                selectedTrainerData.currentLeagueOpponentIndex = 0;
+                selectedTrainerData.leagueBattlesWon = 0;
+                selectedTrainerData.defeatedPokemonLeague = false;
+                selectedTrainerData.teamRocketDefeatedCount = 0;
+                selectedTrainerData.defeatedAllTeamRocket = false;
+                currentLeagueOrder = [];
 
                 if (isNewGameSetup) {
                     showStarterSelectScreen();
@@ -8185,11 +8702,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         if(btnPlay) btnPlay.addEventListener('click', () => switchScreen('playMenu'));
-        if(btnQuickBattlePlay) btnQuickBattlePlay.addEventListener('click', () => prepareBattle(startQuickBattle, false, false));
-        if(btnWildModePlay) btnWildModePlay.addEventListener('click', () => prepareBattle(startWildBattleActual, false, false));
+        if(btnQuickBattlePlay) btnQuickBattlePlay.addEventListener('click', startQuickBattle);
+        if(btnWildModePlay) btnWildModePlay.addEventListener('click', () => prepareBattle(startWildBattleActual, false, false, false));
         if(btnGymBattlePlay) btnGymBattlePlay.addEventListener('click', showGymLeaderSelectScreen);
         if(btnEliteBattlesPlay) btnEliteBattlesPlay.addEventListener('click', showEliteFourSelectScreen);
-        if(btnPokemonLeaguePlay) btnPokemonLeaguePlay.addEventListener('click', () => prepareBattle(showPokemonLeagueScreen, false, true));
+        if(btnPokemonLeaguePlay) btnPokemonLeaguePlay.addEventListener('click', () => prepareBattle(showPokemonLeagueScreen, false, true, false));
+        if(btnTeamRocketPlay) btnTeamRocketPlay.addEventListener('click', () => showTeamRocketScreen());
         if(btnBackToMainFromPlay) btnBackToMainFromPlay.addEventListener('click', () => switchScreen('mainMenu'));
 
         if(btnOptions) btnOptions.addEventListener('click', () => switchScreen('optionsMenu'));
@@ -8197,6 +8715,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(tabTcgCards) tabTcgCards.addEventListener('click', showTcgCardsScreen);
         if(tabTeam) tabTeam.addEventListener('click', showTeamScreen);
         if(tabMyPc) tabMyPc.addEventListener('click', showPcBoxScreen);
+        if(tabPokedex) tabPokedex.addEventListener('click', showPokedexScreen); // NIEUW
         if(tabPassword) tabPassword.addEventListener('click', () => {
             generatedPasswordArea.value = "";
             inputPasswordArea.value = "";
@@ -8204,11 +8723,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if(tabMarket) tabMarket.addEventListener('click', showMarketScreen);
         if(tabInventory) tabInventory.addEventListener('click', showInventoryScreen);
-        if(marketItemsGridEl) { marketItemsGridEl.addEventListener('click', (e) => { if (e.target.classList.contains('buy-button')) { const itemName = e.target.dataset.itemName; const price = e.target.dataset.price; buyItem(itemName, price); } }); }
+        if(marketItemsGridEl) { marketItemsGridEl.addEventListener('click', (e) => { const buyButton = e.target.closest('.buy-button'); if (buyButton) { const itemName = buyButton.dataset.itemName; const price = buyButton.dataset.price; buyItem(itemName, price); } }); }
         if(btnBackToMainFromMarket) btnBackToMainFromMarket.addEventListener('click', () => switchScreen('mainMenu'));
         if(btnBackToMainFromInventory) btnBackToMainFromInventory.addEventListener('click', () => switchScreen('mainMenu'));
         if(btnBackToMainFromTeam) btnBackToMainFromTeam.addEventListener('click', () => switchScreen('mainMenu'));
         if(btnBackToMainFromPcBox) btnBackToMainFromPcBox.addEventListener('click', () => switchScreen('mainMenu'));
+        if(btnBackToMainFromPokedex) btnBackToMainFromPokedex.addEventListener('click', () => switchScreen('mainMenu')); // NIEUW
         if(btnBackToMainFromTcgCards) btnBackToMainFromTcgCards.addEventListener('click', () => switchScreen('mainMenu'));
         if(btnSaveGameOpt) btnSaveGameOpt.addEventListener('click', saveGame);
 
@@ -8218,18 +8738,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if(resetConfirmYesButton) resetConfirmYesButton.addEventListener('click', () => {
             performResetGame();
         });
-        if(resetConfirmNoButton) resetConfirmNoButton.addEventListener('click', () => {screens.resetConfirmDialog.style.display = 'none'; switchScreen('optionsMenu');});
-
-        // Pokémon Verwijderen Dialoog Knoppen
-        if(deletePokemonConfirmYesButton) deletePokemonConfirmYesButton.addEventListener('click', executeDeletePokemon);
-        if(deletePokemonConfirmNoButton) deletePokemonConfirmNoButton.addEventListener('click', () => {
-            screens.deletePokemonConfirmDialog.style.display = 'none';
-            pokemonToDeleteInfo = null;
-        });
+        if(btnToggleMenuMusicOpt) btnToggleMenuMusicOpt.addEventListener('click', toggleMenuMusic);
+        if(btnToggleBattleMusicOpt) btnToggleBattleMusicOpt.addEventListener('click', toggleBattleMusic);
+        if(btnAdminModeOpt) btnAdminModeOpt.addEventListener('click', showAdminModeScreen);
 
 
         if(btnDarkModeOpt) btnDarkModeOpt.addEventListener('click', () => { gameBody.classList.toggle('dark-mode'); localStorage.setItem('blazingThunder_darkMode', gameBody.classList.contains('dark-mode')); });
         if(btnBackToMainOpts) btnBackToMainOpts.addEventListener('click', () => switchScreen('mainMenu'));
+        if(resetConfirmNoButton) resetConfirmNoButton.addEventListener('click', () => {screens.resetConfirmDialog.style.display = 'none'; switchScreen('optionsMenu');});
+
+        if(btnSubmitAdminPassword) btnSubmitAdminPassword.addEventListener('click', submitAdminPassword);
+        if(btnBackToOptionsFromAdmin) btnBackToOptionsFromAdmin.addEventListener('click', () => switchScreen('optionsMenu'));
+
 
         if(btnGeneratePassword) btnGeneratePassword.addEventListener('click', generatePassword);
         if(btnLoadFromPassword) btnLoadFromPassword.addEventListener('click', loadFromPassword);
@@ -8242,8 +8762,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if(btnBackToPlayMenuFromEliteFourSelect) btnBackToPlayMenuFromEliteFourSelect.addEventListener('click', () => switchScreen('playMenu'));
         if(btnBackToEliteFourSelectFromDetail) btnBackToEliteFourSelectFromDetail.addEventListener('click', showEliteFourSelectScreen);
 
-        if(btnStartLeagueBattle) btnStartLeagueBattle.addEventListener('click', () => prepareBattle(startNextLeagueBattle, false, true));
+        if(btnStartLeagueBattle) btnStartLeagueBattle.addEventListener('click', () => prepareBattle(startNextLeagueBattle, false, true, false));
         if(btnBackToPlayMenuFromLeague) btnBackToPlayMenuFromLeague.addEventListener('click', () => switchScreen('mainMenu'));
+
+        if(btnStartTeamRocketBattle) btnStartTeamRocketBattle.addEventListener('click', () => prepareTeamRocketBattle());
+        if(btnBackToPlayMenuFromTeamRocket) btnBackToPlayMenuFromTeamRocket.addEventListener('click', () => switchScreen('mainMenu'));
 
 
         if(prevCardButton) prevCardButton.addEventListener('click', () => {
@@ -8281,6 +8804,24 @@ document.addEventListener('DOMContentLoaded', () => {
             screens.tcgCardModal.style.display = 'none';
         });
 
+        if(prevRevealedTcgCardButton) {
+            prevRevealedTcgCardButton.addEventListener('click', () => {
+                if (currentRevealedTcgCardIndex > 0) {
+                    currentRevealedTcgCardIndex--;
+                    displayRevealedTcgCard();
+                }
+            });
+        }
+        if(nextRevealedTcgCardButton) {
+            nextRevealedTcgCardButton.addEventListener('click', () => {
+                if (currentRevealedTcgCardIndex < revealedTcgCards.length - 1) {
+                    currentRevealedTcgCardIndex++;
+                    displayRevealedTcgCard();
+                }
+            });
+        }
+        if(closeTcgRevealButton) closeTcgRevealButton.addEventListener('click', () => { screens.tcgPackOpeningOverlay.style.display = 'none'; });
+
 
         if(actionMenuEl) actionMenuEl.addEventListener('click', (e) => {
             if (!battleState.playerTurn || battleState.isProcessingMessage) return;
@@ -8294,27 +8835,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     case 'pokemon': showSwitchScreen(false); break;
                     case 'run':
                         if (battleState.isWildBattle) {
+                            stopBattleMusic(true);
                             typeMessage("Got away safely!", () => {
                                 finalizeBattleState();
                                 battleState.isWildBattle = false;
                                 battleState.playerTeam = []; battleState.opponentTeam = [];
-                                battleState.currentGymLeaderKey = null; battleState.currentEliteFourMemberKey = null;
-                                battleState.isPokemonLeagueBattle = false; battleState.currentLeagueOpponentIndex = 0; battleState.leagueBattlesWon = 0;
                                 screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')";
                                 switchScreen('mainMenu');
                             });
-                        } else if (battleState.isGymBattle || battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle) {
+                        } else if (battleState.isGymBattle || battleState.isEliteFourBattle || battleState.isPokemonLeagueBattle || battleState.isTeamRocketBattle) {
                              typeMessage("You can't run from this important battle!", playerActionPhase);
                         } else {
+                            stopBattleMusic(true);
                             typeMessage("You chose to forfeit the Quick Battle.", () => {
                                 finalizeBattleState();
                                 selectedTrainerData.coins = Math.max(0, (selectedTrainerData.coins || 0) - 2);
                                 updateCoinDisplay();
                                 saveGame();
-                                battleState.isWildBattle = false; battleState.isGymBattle = false; battleState.isEliteFourBattle = false;
+                                battleState.isWildBattle = false; battleState.isGymBattle = false; battleState.isEliteFourBattle = false; battleState.isPokemonLeagueBattle = false; battleState.isTeamRocketBattle = false;
                                 battleState.playerTeam = []; battleState.opponentTeam = [];
-                                battleState.currentGymLeaderKey = null; battleState.currentEliteFourMemberKey = null;
-                                battleState.isPokemonLeagueBattle = false; battleState.currentLeagueOpponentIndex = 0; battleState.leagueBattlesWon = 0;
                                 screens.battle.style.backgroundImage = "url('https://pokemonrevolution.net/forum/uploads/monthly_2021_03/DVMT-6OXcAE2rZY.jpg.afab972f972bd7fbd4253bc7aa1cf27f.jpg')";
                                 switchScreen('mainMenu');
                             });
@@ -8340,7 +8879,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (itemName === "Evolution Stone" || itemName === "Perma Evolution Stone") {
                     useEvolutionItem(itemName);
-                } else if (itemName === "Poke Ball" || itemName === "Great Ball" || itemName === "Ultra Ball") {
+                } else if (itemName === "Poke Ball" || itemName === "Great Ball" || itemName === "Ultra Ball" || itemName === "Master Ball") { // NIEUW: Master Ball
                     if (battleState.isWildBattle) {
                         throwPokeball(itemName);
                     } else {
@@ -8371,7 +8910,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(switchCancelButton) switchCancelButton.addEventListener('click', () => { if (currentScreen === 'switchPokemon' && !battleState.switchingAfterFaint) { switchScreen('battle'); playerActionPhase(); }});
 
-        if(closeTcgRevealButton) closeTcgRevealButton.addEventListener('click', () => { screens.tcgPackOpeningOverlay.style.display = 'none'; });
 
         if(pcPrevButton) {
             pcPrevButton.addEventListener('click', () => {
@@ -8392,9 +8930,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
+        if(teamSelectCancelButton) {
+            teamSelectCancelButton.addEventListener('click', () => {
+                battleState.pendingBattleStartFunction = null;
+                switchScreen('playMenu');
+            });
+        }
 
     }
+
     setupEvtLstnrs();
+    const menuMusicSaved = localStorage.getItem('blazingThunder_menuMusicEnabled');
+    const battleMusicSaved = localStorage.getItem('blazingThunder_battleMusicEnabled');
+
+    isMenuMusicEnabled = menuMusicSaved !== null ? JSON.parse(menuMusicSaved) : true;
+    isBattleMusicEnabled = battleMusicSaved !== null ? JSON.parse(battleMusicSaved) : true;
+
+    btnToggleMenuMusicOpt.textContent = `MENU MUSIC: ${isMenuMusicEnabled ? 'ON' : 'OFF'}`;
+    btnToggleBattleMusicOpt.textContent = `BATTLE MUSIC: ${isBattleMusicEnabled ? 'ON' : 'OFF'}`;
+
+
     if (loadGame()) {
         if (selectedTrainerData.hasChosenStarter) {
             switchScreen('mainMenu');
@@ -8413,7 +8968,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCoinDisplay();
     if (screens[currentScreen] && screens[currentScreen].style.display === 'none' && currentScreen === 'intro' && !isNewGameSetup) {
         screens.intro.style.display = 'flex';
-    } else if (currentScreen === 'intro' && !isNewGameSetup && !loadGame()) {
+    } else if (currentScreen === 'intro' && !isNewGameSetup && !localStorage.getItem(SAVE_KEY)) {
         screens.intro.style.display = 'flex';
     }
 });
