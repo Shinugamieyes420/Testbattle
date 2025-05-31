@@ -6366,6 +6366,12 @@ const pokemonLeagueTrainers = [
         dialog: "My psychic powers are unmatched!"
     }
 ];
+let currentLeagueOrder = [];
+const teamRocketCardData = {
+    name: "Team Rocket's Handiwork",
+    url: "https://www.pokemonkaart.nl/wp-content/uploads/Fates-Collide_Team-Rocket%E2%80%99s-Handiwork.jpg",
+    type: 'Special Trainer'
+};
 
 let displayedCardCollection = [];
 let currentCardIndex = 0;
