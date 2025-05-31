@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Blazing Thunder - Pokemon master (Pokedex & Admin Update)</title> <!-- Versie update -->
+    <title>Blazing Thunder - Pokemon Master (Raid & Gold Update)</title> <!-- Versie update -->
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script> <!-- Anime.js CDN -->
 </head>
@@ -63,6 +63,7 @@
              <div class="trainer-display-area">
                  <div class="trainer-card-frame"><img id="chosenTrainerImageMainMenu" src="" alt="Gekozen Trainer"></div>
                  <div id="playerCoinsDisplayMainMenu" class="player-coins">Coins: 0</div>
+                 <div id="playerGoldDisplayMainMenu" class="player-gold">Gold: 0</div> <!-- NIEUW -->
                  <div class="submenu-tabs-container">
                      <button class="submenu-tab" id="tabMarket">MARKET</button>
                      <button class="submenu-tab" id="tabInventory">INVENTORY</button>
@@ -84,6 +85,7 @@
             <button class="play-mode-button" id="btnPokemonLeaguePlay">POKéMON LEAGUE</button>
             <button class="play-mode-button" id="btnTeamRocketPlay">TEAM ROCKET</button>
             <button class="play-mode-button" id="btnWildModePlay">WILD MODE</button>
+            <button class="play-mode-button" id="btnRaidBattlePlay">RAID BATTLE</button> <!-- NIEUW -->
             <button class="play-mode-button" id="btnBackToMainFromPlay">BACK</button>
         </div>
 
@@ -100,8 +102,8 @@
 
         <div id="adminModeScreen" class="screen" style="display: none;">
             <h2>ADMIN MODE</h2>
-            <p>Enter Admin Password/Code:</p> <!-- Aangepast -->
-            <input type="text" id="adminPasswordInput" class="admin-input"> <!-- type="text" voor codes -->
+            <p>Enter Admin Password/Code:</p>
+            <input type="text" id="adminPasswordInput" class="admin-input">
             <button id="btnSubmitAdminPassword" class="admin-button">SUBMIT</button>
             <p id="adminMessage" class="admin-message"></p>
             <button id="btnBackToOptionsFromAdmin" class="admin-button back">BACK TO OPTIONS</button>
@@ -127,48 +129,55 @@
         <div id="marketScreen" class="screen" style="display: none;">
             <h2>MARKET</h2>
             <div id="marketCoinDisplay">Coins: 0</div>
+            <div id="marketGoldDisplay">Gold: 0</div> <!-- NIEUW -->
             <div class="market-items-grid">
                 <div class="market-item" data-item-id="pokeball">
                     <img class="item-icon pokeball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Poké Ball">
                     <p class="item-name">Poké Ball</p>
                     <p class="item-price">Price: 5 Coins</p>
-                    <button class="buy-button" data-item-name="Poke Ball" data-price="5">BUY</button>
+                    <button class="buy-button" data-item-name="Poke Ball" data-price="5" data-currency="coins">BUY</button>
                 </div>
                 <div class="market-item" data-item-id="greatball">
                     <img class="item-icon greatball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Great Ball">
                     <p class="item-name">Great Ball</p>
                     <p class="item-price">Price: 10 Coins</p>
-                    <button class="buy-button" data-item-name="Great Ball" data-price="10">BUY</button>
+                    <button class="buy-button" data-item-name="Great Ball" data-price="10" data-currency="coins">BUY</button>
                 </div>
                 <div class="market-item" data-item-id="ultraball">
                     <img class="item-icon ultraball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Ultra Ball">
                     <p class="item-name">Ultra Ball</p>
                     <p class="item-price">Price: 15 Coins</p>
-                    <button class="buy-button" data-item-name="Ultra Ball" data-price="15">BUY</button>
+                    <button class="buy-button" data-item-name="Ultra Ball" data-price="15" data-currency="coins">BUY</button>
                 </div>
                 <div class="market-item" data-item-id="masterball">
                     <img class="item-icon masterball-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Master Ball">
                     <p class="item-name">Master Ball</p>
                     <p class="item-price">Price: 200 Coins</p>
-                    <button class="buy-button" data-item-name="Master Ball" data-price="200">BUY</button>
+                    <button class="buy-button" data-item-name="Master Ball" data-price="200" data-currency="coins">BUY</button>
                 </div>
                 <div class="market-item" data-item-id="evolutionstone">
                     <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Evolution Stone">
                     <p class="item-name">Evolution Stone</p>
                     <p class="item-price">Price: 10 Coins</p>
-                    <button class="buy-button" data-item-name="Evolution Stone" data-price="10">BUY</button>
+                    <button class="buy-button" data-item-name="Evolution Stone" data-price="10" data-currency="coins">BUY</button>
                 </div>
                  <div class="market-item" data-item-id="permaevolutionstone">
                     <img class="item-icon evolutionstone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Perma Evolution Stone">
                     <p class="item-name">Perma Evolution Stone</p>
                     <p class="item-price">Price: 100 Coins</p>
-                    <button class="buy-button" data-item-name="Perma Evolution Stone" data-price="100">BUY</button>
+                    <button class="buy-button" data-item-name="Perma Evolution Stone" data-price="100" data-currency="coins">BUY</button>
+                </div>
+                <div class="market-item" data-item-id="shinystone"> <!-- NIEUW -->
+                    <img class="item-icon shinystone-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Shiny Stone">
+                    <p class="item-name">Shiny Stone</p>
+                    <p class="item-price">Price: 100 Gold</p>
+                    <button class="buy-button" data-item-name="Shiny Stone" data-price="100" data-currency="gold">BUY</button>
                 </div>
                 <div class="market-item" data-item-id="tcgpack">
                     <img class="item-icon tcgpack-icon" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="TCG Pack">
                     <p class="item-name">TCG Pack</p>
                     <p class="item-price">Price: 8 Coins</p>
-                    <button class="buy-button" data-item-name="TCG Pack" data-price="8">BUY</button>
+                    <button class="buy-button" data-item-name="TCG Pack" data-price="8" data-currency="coins">BUY</button>
                 </div>
             </div>
             <button id="btnBackToMainFromMarket" class="market-back-button">BACK TO MAIN MENU</button>
@@ -216,7 +225,7 @@
 
         <div id="pokedexScreen" class="screen" style="display: none;">
             <h2>POKéDEX</h2>
-            <div class="pokedex-controls"> <!-- NIEUW -->
+            <div class="pokedex-controls">
                 <input type="text" id="pokedexSearchInput" placeholder="Search by Name or ID...">
             </div>
             <div id="pokedexGrid" class="pokedex-grid">
@@ -393,6 +402,20 @@
             <div class="switch-grid" id="switchGrid"></div>
             <button id="switchCancelButton">CANCEL</button>
         </div>
+
+         <!-- Use Item on Team Screen (NIEUW) -->
+        <div id="useItemScreen" class="dialog-overlay" style="display: none;">
+            <div class="dialog-content">
+                <h3 id="useItemTitle">Use Item on:</h3>
+                <div id="useItemPokemonGrid" class="team-grid">
+                    <!-- Pokémon from team will be populated here -->
+                </div>
+                <div class="dialog-buttons">
+                    <button id="cancelUseItem">Cancel</button>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 

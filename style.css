@@ -33,6 +33,7 @@
     --item-icon-ultraball: url('https://www.serebii.net/itemdex/sprites/sv/ultraball.png');
     --item-icon-masterball: url('https://www.serebii.net/itemdex/sprites/sv/masterball.png');
     --item-icon-evolutionstone: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIj48cGF0aCBmaWxsPSIjRkZBRjAwIiBkPSJNMTIgMi42NWwtMi4wOTEgNC4yMDkgNC42NjcgMi4xODItMi41NzYgNi4zOTIgNi4xODQgMS4wMzktMy41NzkgNS40MDctNC45NTUtNC4wNjUtNC45NTUgNC4wNjUtMy41NzktNS40MDcgNi4xODQtMS4wMzktMi41NzYtNi4zOTIgNC42NjctMi4xODJ6Ii8+PHBhdGggZmlsbD0iI0ZGRDg4MiIgZD0iTTEyIDRsLTEuNSA0IDQgMi0yIDUtNSAyLTEuNS01IDEuNS01LTUgMi0yLTQtMS41LTQgMS41IDIgMyA0IDMtNC0zLTQtMyAyIDUgMiA1eiIvPjwvc3ZnPg==');
+    --item-icon-shinystone: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjRkZGRjAwIiBkPSJNMTIgMS41bDItNSwyIDUtNCAzIDQtMy0yLTUtMiA1eiIvPjxwYXRoIGZpbGw9InllbGxvdyIgZD0iTTEyIDJMMTAgN0w1IDdsMy41IDQuNUwyIDE2bDYtMiA0IDYgNC02IDYgMi0xLjUtNC41TDE5IDdMMTQgN3oiLz48cGF0aCBmaWxsPSIjRkZENjAwIiBkPSJNMTIgNC41bDItNCwyIDQgMy41IDMuNS0zLjUtMy41LTItNC0yIDQgMy41IDMuNS0zLjUtMy41eiIgdHJhbnNmb3JtPSJyb3RhdGUoMzAgMTIgMTIpIi8+PC9zdmc+'); /* Placeholder Shiny Stone icon */
     --item-icon-tcgpack: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjMDA3NUJGIiBkPSJNMjAuNSA0LjVIMy41QzIuNjcgNC41IDIgNS4xNyAyIDZWMTlDMiAxOS44MyAyLjY3IDIwLjUgMy41IDIwLjVIMjAuNUMyMS4zMyAyMC41IDIyIDE5LjgzIDIyIDE5VjdDMjIgNS4xNyAyMS4zMyA0LjUgMjAuNSA0LjVaTTQgN0gyMFYxMUg0VjdaTTQgMTNIMTBWMTVINFYxM1pNNCAxN0gxMFYxOUg0VjE3Wk0xMiAxM0gxNFYxNUgxMlYxM1pNMTYgMTNIMThWMTVIMTZWMTNaTTEyIDE3SDE0VjE5SDEyVjE3Wk0xNiAxN0gxOFYxOUgxNlYxN1oiLz48cGF0aCBmaWxsPSIjRkZDMzA5IiBkPSJNMjAgMTFWMThIMjFWMTEiLz48cGF0aCBmaWxsPSIjRkZDMzA5IiBkPSJNMjEgN0gyMFYxMEgyMVY3WiIvPjxwYXRoIGZpbGw9IiNGRkMzMDkiIGQ9Ik0xMiA4QzExLjQ1IDggMTEgOC40NSAxMSA5VjEwLjVDMTEgMTEuMDUsMTEuNDUgMTEuNSAxMiAxMS41QzEyLjU1IDExLjUgMTMgMTEuMDUgMTMgMTAuNVY5QzEzIDguNDUgMTIuNTUgOCAxMiA4WiIvPjwvc3ZnPg==');
     --pokeball-svg-battle: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2Ij48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSI5IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLXdpZHRoPSIxIi8+PHBhdGggZD0iTTEsMTAgYTksOSAwIDAsMSAxOCwwIiBmaWxsPSJyZWQiLz48cGF0aCBkPSJNMSwxMCBoMTgiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMiIvPjxjaXJjbGUgY3g9IjEwIiBjeT0iMTAiIHI9IjMiIGZpbGw9IndoaXRlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEiLz48Y2lyY2xlIGN4PSIxMCIgY3k9IjEwIiByPSIxLjUiIGZpbGw9IndoaXRlIi8+PC9zdmc+');
 }
@@ -169,14 +170,16 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     box-sizing:border-box; overflow: hidden;
 }
 #chosenTrainerImageMainMenu { max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 4px; }
-#playerCoinsDisplayMainMenu {
+#playerCoinsDisplayMainMenu, #playerGoldDisplayMainMenu { /* Gold display toegevoegd */
     font-size: clamp(0.8em, 2.5vmin, 1em);
     color: var(--text-color-default); text-shadow: 1px 1px #222;
     padding: 0.6vmin 1.2vmin; background-color: rgba(0,0,0,0.25);
-    border-radius: 6px; margin: 1vmin 0;
+    border-radius: 6px; margin: 0.5vmin 0; /* Kleinere margin voor gold */
     text-align: center; width: fit-content; align-self: center;
     flex-shrink: 0;
 }
+#playerGoldDisplayMainMenu { color: gold; } /* Gold kleur */
+
 .submenu-tabs-container {
     width: 100%;
     display: flex;
@@ -310,6 +313,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 #playMenuScreen #btnEliteBattlesPlay { background-color: #bf00ff; border-color: #a000d4; }
 #playMenuScreen #btnPokemonLeaguePlay { background-color: #e67e22; border-color: #d35400; }
 #playMenuScreen #btnTeamRocketPlay { background-color: #c0392b; border-color: #a12f23; }
+#playMenuScreen #btnRaidBattlePlay { background-color: #8e44ad; border-color: #732d91; } /* NIEUW Raid knop */
 
 
 #optionsMenuScreen .options-button:active, #playMenuScreen .play-mode-button:active,
@@ -588,7 +592,15 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 }
 
 
-#marketCoinDisplay { font-size: clamp(1em, 3.5vmin, 1.3em); margin-bottom: 3vmin; padding: 1vmin 2vmin; background-color: rgba(0,0,0,0.3); border-radius: 5px; }
+#marketCoinDisplay, #marketGoldDisplay { /* Gold display toegevoegd */
+    font-size: clamp(1em, 3.5vmin, 1.3em);
+    margin-bottom: 1vmin; /* Aangepaste margin */
+    padding: 1vmin 2vmin;
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 5px;
+}
+#marketGoldDisplay { color: gold; margin-bottom: 3vmin; } /* Specifieke margin voor gold */
+
 .market-items-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(clamp(150px, 35vw, 220px), 1fr)); gap: 3vmin; width: 100%; max-width: 700px; }
 .market-item { background-color: var(--button-subtle-bg); border: 2px solid var(--button-subtle-border); border-radius: 10px; padding: 2vmin; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1vmin; box-shadow: 0 2px 4px var(--button-subtle-shadow); }
 .market-item img.item-icon {
@@ -604,6 +616,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .market-item img.item-icon.ultraball-icon { background-image: var(--item-icon-ultraball); }
 .market-item img.item-icon.masterball-icon { background-image: var(--item-icon-masterball); }
 .market-item img.item-icon.evolutionstone-icon { background-image: var(--item-icon-evolutionstone); }
+.market-item img.item-icon.shinystone-icon { background-image: var(--item-icon-shinystone); } /* NIEUW */
 .market-item img.item-icon.tcgpack-icon { background-image: var(--item-icon-tcgpack); }
 
 .market-item .item-name { font-size: clamp(0.9em, 3vmin, 1.1em); font-weight: bold; }
@@ -614,6 +627,21 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 
 .inventory-grid, .team-grid { display: flex; flex-direction: column; gap: 2vmin; width: 100%; max-width: 500px; padding: 1vmin; background-color: rgba(0,0,0,0.2); border-radius: 8px; min-height: 100px; max-height: 60vh; overflow-y: auto;}
 .inventory-item { display: flex; align-items: center; gap: 2vmin; background-color: var(--button-subtle-bg); padding: 1.5vmin; border-radius: 6px; border: 1px solid var(--button-subtle-border); }
+.inventory-item .use-item-button { /* NIEUW */
+    margin-left: auto;
+    padding: 0.8vmin 1.2vmin;
+    font-size: clamp(0.7em, 2.5vmin, 0.9em);
+    background-color: #2ecc71;
+    border-color: #27ae60;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.inventory-item .use-item-button:hover {
+    background-color: #25a25a;
+}
+
+
 .team-pokemon-card {
     display: flex; align-items: center; gap: 1.5vmin;
     background-color: var(--button-subtle-bg);
@@ -634,6 +662,7 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 .inventory-item img.item-icon { background-size: contain; background-repeat: no-repeat; background-position: center; }
 .inventory-item img.item-icon.tcgpack-icon { background-image: var(--item-icon-tcgpack); }
 .inventory-item img.item-icon.masterball-icon { background-image: var(--item-icon-masterball); }
+.inventory-item img.item-icon.shinystone-icon { background-image: var(--item-icon-shinystone); }
 
 
 .inventory-item .item-details, .team-pokemon-card .pokemon-details { font-size: clamp(0.9em, 3vmin, 1.1em); flex-grow: 1; }
@@ -829,11 +858,11 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     grid-template-columns: repeat(auto-fit, minmax(clamp(220px, 30vw, 300px), 1fr));
     gap: 2vmin;
     width: 95%;
-    max-width: 1000px; /* Increased max-width */
+    max-width: 1000px;
     padding: 1vmin;
     background-color: rgba(0,0,0,0.15);
     border-radius: 8px;
-    flex-grow: 1; /* Allow grid to take available space */
+    flex-grow: 1;
     overflow-y: auto;
     align-self: center;
 }
@@ -881,12 +910,12 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
     font-size: clamp(0.7em, 2.2vmin, 0.85em);
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align checkboxes to the left */
+    align-items: flex-start;
     gap: 0.5vmin;
 }
 .pokedex-seen-status label {
     margin-right: 1vmin;
-    display: flex; /* For aligning checkbox and text */
+    display: flex;
     align-items: center;
 }
 .pokedex-seen-status input[type="checkbox"] {
@@ -1127,4 +1156,24 @@ body.dark-mode .game-container { border-color: #555; box-shadow: 0 0 15px rgba(1
 /* Shiny Sprite Indicator */
 .shiny-sprite-indicator {
     /* filter: drop-shadow(0 0 3px gold); */
+}
+
+/* Use Item Screen */
+#useItemScreen .dialog-content {
+    max-width: 600px; /* Or adjust as needed */
+}
+#useItemScreen h3 {
+    font-size: clamp(1.2em, 4.5vmin, 1.8em);
+    margin-bottom: 1.5vmin;
+}
+#useItemPokemonGrid {
+    max-height: 50vh; /* Limit height for scrollability */
+    overflow-y: auto;
+    margin-bottom: 2vmin;
+}
+#useItemPokemonGrid .team-pokemon-card { /* Make cards in this grid clickable */
+    cursor: pointer;
+}
+#useItemPokemonGrid .team-pokemon-card:hover {
+    border-color: var(--border-trainer-frame);
 }
