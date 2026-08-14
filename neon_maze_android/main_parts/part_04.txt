@@ -1,0 +1,180 @@
+			continue
+
+		if power_mode > 0.0 and not g.eyes:
+			g.eyes = true
+			ghost_combo += 1
+			var values := [200, 400, 800, 1600]
+			var pts: int = values[min(ghost_combo - 1, values.size() - 1)]
+			_add_score(pts, g.pos, "+" + str(pts))
+			_spawn_burst(g.pos, C_CYAN, 22)
+			_haptic(22)
+		elif not g.eyes:
+			if shield:
+				shield = false
+				g.pos = g.home
+				shake = 12.0
+				_spawn_burst(player.pos, C_CYAN, 24)
+				_haptic(34)
+			else:
+				_lose_life()
+				return
+
+		if g.eyes and g.pos.distance_to(g.home) < 0.55:
+			g.eyes = false
+
+func _lose_life() -> void:
+	lives -= 1
+	streak = 0
+	power_mode = 0.0
+	ghost_combo = 0
+	shake = 18.0
+	_spawn_burst(player.pos, C_RED, 40)
+	_haptic(80)
+
+	if lives <= 0:
+		_finish_game("GAME OVER")
+		return
+
+	_reset_positions()
+	countdown = 1.8
+
+func _reset_positions() -> void:
+	player.pos = player_spawn
+	player.dir = Vector2.RIGHT
+	player.queued = Vector2.RIGHT
+	for i in range(ghosts.size()):
+		ghosts[i].pos = ghost_spawns[i]
+		ghosts[i].dir = DIRS[rng.randi_range(0, 3)]
+		ghosts[i].eyes = false
+
+func _update_chaos(delta: float) -> void:
+	chaos_timer -= delta
+	if chaos_timer > 0.0:
+		return
+
+	chaos_timer = rng.randf_range(8.0, 14.0)
+	var event := rng.randi_range(0, 4)
+	match event:
+		0:
+			reverse_timer = 3.0
+			_popup(player.pos, "REVERSE!", C_RED)
+		1:
+			ghost_rush_timer = 4.0
+			_popup(player.pos, "GHOST RUSH!", C_RED)
+		2:
+			double_score_timer = 5.0
+			_popup(player.pos, "DOUBLE SCORE!", C_GOLD)
+		3:
+			for _i in range(3):
+				_spawn_fruit()
+			_popup(player.pos, "FRUIT STORM!", C_GREEN)
+		4:
+			if inventory == "":
+				inventory = ["speed", "shield", "magnet", "dash", "bomb"][rng.randi_range(0, 4)]
+				_popup(player.pos, "FREE POWER!", C_PURPLE)
+	_haptic(20)
+
+func _update_visuals(delta: float) -> void:
+	shake = max(0.0, shake - delta * 45.0)
+
+	for i in range(fruits.size() - 1, -1, -1):
+		fruits[i].life -= delta
+		if fruits[i].life <= 0.0:
+			fruits.remove_at(i)
+
+	for i in range(power_pickups.size() - 1, -1, -1):
+		power_pickups[i].life -= delta
+		if power_pickups[i].life <= 0.0:
+			power_pickups.remove_at(i)
+
+	for i in range(particles.size() - 1, -1, -1):
+		var p: Dictionary = particles[i]
+		p.pos += p.vel * delta
+		p.vel *= 0.96
+		p.life -= delta
+		if p.life <= 0.0:
+			particles.remove_at(i)
+
+	for i in range(popups.size() - 1, -1, -1):
+		popups[i].life -= delta
+		popups[i].offset -= 26.0 * delta
+		if popups[i].life <= 0.0:
+			popups.remove_at(i)
+
+func _add_score(points: int, world_pos: Vector2, label := "") -> void:
+	var mult := 2 if double_score_timer > 0.0 else 1
+	var final_points := points * mult
+	score += final_points
+	if label != "":
+		_popup(world_pos, label if mult == 1 else label + " x2", C_GOLD)
+	if score > highscores.get(mode, 0):
+		highscores[mode] = score
+
+func _finish_game(title: String) -> void:
+	state = "end"
+	paused = false
+	_save()
+	_popup(player.pos if not player.is_empty() else Vector2.ZERO, title, C_PINK)
+	_haptic(45)
+
+func _power_label(p: String) -> String:
+	match p:
+		"speed": return "SPEED"
+		"shield": return "SHIELD"
+		"magnet": return "MAGNET"
+		"dash": return "DASH"
+		"bomb": return "PULSE BOMB"
+	return "POWER"
+
+func _spawn_burst(world_pos: Vector2, color: Color, amount: int) -> void:
+	for _i in range(amount):
+		var angle := rng.randf_range(0.0, TAU)
+		var speed := rng.randf_range(0.7, 3.4)
+		particles.append({
+			"pos": world_pos,
+			"vel": Vector2(cos(angle), sin(angle)) * speed,
+			"life": rng.randf_range(0.35, 0.85),
+			"color": color,
+			"size": rng.randf_range(0.06, 0.16)
+		})
+
+func _popup(world_pos: Vector2, text: String, color: Color) -> void:
+	popups.append({
+		"pos": world_pos,
+		"text": text,
+		"color": color,
+		"life": 1.0,
+		"offset": 0.0
+	})
+
+func _haptic(ms: int) -> void:
+	Input.vibrate_handheld(ms)
+
+func _draw() -> void:
+	var size := get_viewport_rect().size
+	_draw_background(size)
+	_draw_top_hud(size)
+
+	match state:
+		"menu":
+			_draw_menu(size)
+		"play":
+			_draw_game(size)
+			if paused:
+				_draw_pause(size)
+		"end":
+			_draw_game(size)
+			_draw_end(size)
+
+func _draw_background(size: Vector2) -> void:
+	draw_rect(Rect2(Vector2.ZERO, size), C_BG)
+
+	var spacing := 52.0
+	var x := 0.0
+	while x <= size.x:
+		draw_line(Vector2(x, 0), Vector2(x, size.y), C_GRID, 1.0)
+		x += spacing
+	var y := 0.0
+	while y <= size.y:
+		draw_line(Vector2(0, y), Vector2(size.x, y), C_GRID, 1.0)
+		y += spacing
