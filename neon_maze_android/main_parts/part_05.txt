@@ -1,0 +1,180 @@
+
+	# Subtle neon horizon.
+	draw_circle(Vector2(size.x * 0.5, size.y * 0.45), min(size.x, size.y) * 0.42, Color(0.03, 0.19, 0.28, 0.10))
+	draw_circle(Vector2(size.x * 0.5, size.y * 0.45), min(size.x, size.y) * 0.31, Color(0.05, 0.05, 0.20, 0.10))
+
+func _draw_top_hud(size: Vector2) -> void:
+	var top_h := clamp(size.y * 0.09, 58.0, 86.0)
+	draw_rect(Rect2(Vector2(14, 10), Vector2(size.x - 28, top_h)), Color(0.05, 0.08, 0.16, 0.93), true)
+	draw_rect(Rect2(Vector2(14, 10), Vector2(size.x - 28, top_h)), Color(0.3, 0.95, 1.0, 0.18), false, 2.0)
+
+	_text("NEON MAZE MUNCHER", Vector2(38, 10 + top_h * 0.60), 25, C_TEXT)
+	_text("GODOT ANDROID EDITION", Vector2(39, 10 + top_h * 0.84), 11, C_MUTED)
+
+	if state == "menu":
+		_text_right("HI " + str(_best_highscore()), Vector2(size.x - 40, 10 + top_h * 0.61), 20, C_GOLD)
+		return
+
+	var center := size.x * 0.54
+	_text_center("SCORE  " + str(score), Vector2(center - 240, 10 + top_h * 0.58), 22, C_GOLD, 190)
+	var middle := "TIME " + str(int(ceil(time_left))) if mode == MODE_TIME else "LEVEL " + str(level)
+	_text_center(middle, Vector2(center - 30, 10 + top_h * 0.58), 20, C_TEXT, 170)
+	_text_center("LIVES  " + str(lives), Vector2(center + 165, 10 + top_h * 0.58), 20, C_RED, 160)
+	_text_right("HI " + str(highscores.get(mode, 0)), Vector2(size.x - 42, 10 + top_h * 0.58), 18, C_GOLD)
+
+func _draw_game(size: Vector2) -> void:
+	if grid.is_empty():
+		return
+
+	var shake_offset := Vector2.ZERO
+	if shake > 0.0:
+		shake_offset = Vector2(rng.randf_range(-shake, shake), rng.randf_range(-shake, shake)) * 0.25
+
+	draw_set_transform(shake_offset)
+	_draw_maze()
+	_draw_pickups()
+	for g in ghosts:
+		_draw_ghost(g)
+	_draw_player()
+	_draw_particles()
+	_draw_popups()
+	draw_set_transform(Vector2.ZERO)
+
+	_draw_mobile_controls(size)
+
+	if countdown > 0.0:
+		var number := int(ceil(countdown))
+		_draw_center_overlay(str(number) if number > 0 else "MUNCH!", C_CYAN)
+
+func _draw_maze() -> void:
+	for y in range(rows):
+		for x in range(cols):
+			var cell: String = grid[y][x]
+			var r := Rect2(maze_rect.position + Vector2(x, y) * tile_size, Vector2.ONE * tile_size)
+			if cell == "#":
+				var inset := r.grow(-tile_size * 0.08)
+				draw_rect(inset, C_WALL, true)
+				draw_rect(inset, Color(C_WALL_EDGE, 0.66), false, max(1.5, tile_size * 0.055))
+				draw_line(inset.position + Vector2(tile_size * 0.18, tile_size * 0.18), inset.position + Vector2(tile_size * 0.42, tile_size * 0.18), Color(1,1,1,0.10), max(1.0, tile_size * 0.035))
+			elif cell == ".":
+				var c := _world_to_screen(Vector2(x + 0.5, y + 0.5))
+				draw_circle(c, tile_size * 0.075, Color(C_PELLET, 0.25))
+				draw_circle(c, tile_size * 0.045, C_PELLET)
+			elif cell == "o":
+				var c := _world_to_screen(Vector2(x + 0.5, y + 0.5))
+				var pulse := 0.15 + 0.05 * sin(Time.get_ticks_msec() * 0.006)
+				draw_circle(c, tile_size * (0.25 + pulse), Color(C_POWER, 0.08))
+				draw_circle(c, tile_size * (0.16 + pulse * 0.25), C_POWER)
+
+func _draw_player() -> void:
+	if player.is_empty():
+		return
+	var c := _world_to_screen(player.pos)
+	var r := tile_size * 0.39
+	var d: Vector2 = player.dir if player.dir != Vector2.ZERO else Vector2.RIGHT
+	var angle := d.angle()
+	var mouth := 0.20 + abs(sin(player.mouth)) * 0.22
+
+	draw_circle(c, r * 1.32, Color(C_PLAYER, 0.08))
+	var points := PackedVector2Array([c])
+	var segments := 30
+	for i in range(segments + 1):
+		var a := angle + mouth + (TAU - mouth * 2.0) * float(i) / float(segments)
+		points.append(c + Vector2(cos(a), sin(a)) * r)
+	draw_colored_polygon(points, C_PLAYER)
+
+	var eye_pos := c + d * r * 0.12 + d.rotated(-PI * 0.5) * r * 0.34
+	draw_circle(eye_pos, r * 0.095, Color("#111522"))
+
+	if shield:
+		draw_arc(c, r * 1.38, 0, TAU, 40, C_CYAN, max(2.0, tile_size * 0.08), true)
+	if speed_timer > 0.0:
+		for i in range(3):
+			draw_line(c - d * (r * (1.2 + i * 0.34)), c - d * (r * (1.7 + i * 0.34)), Color(C_CYAN, 0.55 - i * 0.10), max(2.0, tile_size * 0.07))
+
+func _draw_ghost(g: Dictionary) -> void:
+	var c := _world_to_screen(g.pos)
+	var r := tile_size * 0.37
+	var scared := power_mode > 0.0 and not g.eyes
+	var blink := scared and power_mode < 2.0 and int(Time.get_ticks_msec() / 140) % 2 == 0
+	var color: Color = Color("#ffffff") if g.eyes else (Color("#ffffff") if blink else C_CYAN) if scared else g.color
+
+	draw_circle(c, r * 1.3, Color(color, 0.08))
+	draw_circle(c + Vector2(0, -r * 0.08), r, color)
+	draw_rect(Rect2(c + Vector2(-r, -r * 0.05), Vector2(r * 2, r * 0.82)), color)
+
+	for i in range(3):
+		var foot_c := c + Vector2(-r * 0.66 + i * r * 0.66, r * 0.77)
+		draw_circle(foot_c, r * 0.34, color)
+
+	var look: Vector2 = g.dir * r * 0.10
+	for side in [-1.0, 1.0]:
+		var eye := c + Vector2(r * 0.35 * side, -r * 0.20)
+		draw_circle(eye, r * 0.20, Color.WHITE)
+		draw_circle(eye + look, r * 0.09, Color("#10142b"))
+
+	if scared:
+		draw_line(c + Vector2(-r * 0.34, r * 0.24), c + Vector2(-r * 0.10, r * 0.14), Color("#10142b"), 2.0)
+		draw_line(c + Vector2(-r * 0.10, r * 0.14), c + Vector2(r * 0.12, r * 0.24), Color("#10142b"), 2.0)
+		draw_line(c + Vector2(r * 0.12, r * 0.24), c + Vector2(r * 0.34, r * 0.14), Color("#10142b"), 2.0)
+
+func _draw_pickups() -> void:
+	for f in fruits:
+		var c := _world_to_screen(f.pos)
+		var pulse := 1.0 + sin(Time.get_ticks_msec() * 0.007) * 0.08
+		draw_circle(c, tile_size * 0.28 * pulse, Color(f.color, 0.18))
+		draw_circle(c, tile_size * 0.19 * pulse, f.color)
+		_text_center(f.label.substr(0, 1), c + Vector2(0, tile_size * 0.09), max(9, int(tile_size * 0.28)), C_BG, tile_size)
+
+	for p in power_pickups:
+		var c := _world_to_screen(p.pos)
+		draw_circle(c, tile_size * 0.34, Color(C_PURPLE, 0.12))
+		draw_circle(c, tile_size * 0.22, C_PURPLE)
+		var letter := _power_label(p.type).substr(0, 1)
+		_text_center(letter, c + Vector2(0, tile_size * 0.10), max(10, int(tile_size * 0.30)), C_TEXT, tile_size)
+
+func _draw_particles() -> void:
+	for p in particles:
+		var c := _world_to_screen(p.pos)
+		var alpha: float = clamp(p.life / 0.85, 0.0, 1.0)
+		draw_circle(c, tile_size * p.size, Color(p.color, alpha))
+
+func _draw_popups() -> void:
+	for p in popups:
+		var c := _world_to_screen(p.pos) + Vector2(0, p.offset)
+		var alpha: float = clamp(p.life, 0.0, 1.0)
+		_text_center(p.text, c, max(13, int(tile_size * 0.36)), Color(p.color, alpha), tile_size * 5.0)
+
+func _draw_mobile_controls(size: Vector2) -> void:
+	# Joystick - deliberately large for thumb play on phones.
+	draw_circle(joy_center, joy_radius * 1.15, Color(C_CYAN, 0.045))
+	draw_arc(joy_center, joy_radius, 0, TAU, 56, Color(C_CYAN, 0.32), 3.0, true)
+	draw_circle(joy_center, joy_radius * 0.66, Color(0.03, 0.12, 0.22, 0.70))
+	draw_line(joy_center + Vector2(-joy_radius * 0.42, 0), joy_center + Vector2(joy_radius * 0.42, 0), Color(1,1,1,0.10), 2.0)
+	draw_line(joy_center + Vector2(0, -joy_radius * 0.42), joy_center + Vector2(0, joy_radius * 0.42), Color(1,1,1,0.10), 2.0)
+
+	var knob := joy_center + joy_knob
+	draw_circle(knob, joy_radius * 0.35, Color(C_CYAN, 0.14))
+	draw_circle(knob, joy_radius * 0.29, C_CYAN)
+	draw_circle(knob + Vector2(-joy_radius * 0.07, -joy_radius * 0.08), joy_radius * 0.07, Color(1,1,1,0.38))
+	_text_center("BESTUREN", joy_center + Vector2(0, joy_radius * 1.20), 11, C_MUTED, joy_radius * 2.2)
+
+	var power_color := C_PURPLE if inventory != "" else Color(0.28, 0.30, 0.42, 0.72)
+	if inventory != "":
+		draw_circle(power_center, power_radius * (1.22 + 0.05 * sin(Time.get_ticks_msec() * 0.008)), Color(C_PURPLE, 0.10))
+	draw_circle(power_center, power_radius, Color(power_color, 0.92))
+	draw_arc(power_center, power_radius, 0, TAU, 48, Color(1,1,1,0.28), 3.0, true)
+	_text_center("POWER", power_center + Vector2(0, -4), 17, C_TEXT, power_radius * 1.6)
+	var power_name := _power_label(inventory) if inventory != "" else "GEEN"
+	_text_center(power_name, power_center + Vector2(0, 20), 10, Color(1,1,1,0.76), power_radius * 1.7)
+
+	if power_mode > 0.0:
+		var bar_w := min(size.x * 0.25, 360.0)
+		var bar_pos := Vector2(size.x * 0.5 - bar_w * 0.5, size.y - 62.0)
+		draw_rect(Rect2(bar_pos, Vector2(bar_w, 12)), Color(0,0,0,0.42), true)
+		var ratio: float = clamp(power_mode / 8.8, 0.0, 1.0)
+		draw_rect(Rect2(bar_pos, Vector2(bar_w * ratio, 12)), C_PINK, true)
+		_text_center("POWER MODE", bar_pos + Vector2(0, -8), 11, C_PINK, bar_w)
+
+	if streak >= 5:
+		_text_center(str(streak) + " STREAK", Vector2(size.x * 0.5 - 120, size.y - 92), 17, C_GOLD, 240)
