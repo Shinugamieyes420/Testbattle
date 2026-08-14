@@ -1,0 +1,75 @@
+name: Build Neon Maze APK Complete
+
+on:
+  push:
+    branches:
+      - neon-maze-apk-build
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout complete source
+        uses: actions/checkout@v5
+
+      - name: Reconstruct main.gd
+        shell: bash
+        run: |
+          cat neon_maze_android/main_parts/part_*.txt > neon_maze_android/main.gd
+          test -s neon_maze_android/main.gd
+          test -f neon_maze_android/Main.tscn
+          test -f neon_maze_android/export_presets.cfg
+          echo "main.gd lines: $(wc -l < neon_maze_android/main.gd)"
+
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Android API 35 packages
+        shell: bash
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Godot 4.7.1 Android export
+        id: export
+        uses: firebelley/godot-export@v8.0.0
+        with:
+          godot_executable_download_url: https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip
+          godot_export_templates_download_url: https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_export_templates.tpz
+          relative_project_path: ./neon_maze_android/
+          presets_to_export: Android
+          export_debug: true
+          use_preset_export_path: true
+          cache: true
+          verbose: true
+
+      - name: Package final APK
+        shell: bash
+        run: |
+          find . -type f -name '*.apk' -print
+          APK=$(find . -type f -name 'NeonMazeMuncher.apk' -print -quit)
+          if [ -z "$APK" ]; then APK=$(find . -type f -name '*.apk' -print -quit); fi
+          test -n "$APK"
+          mkdir -p final_apk
+          cp "$APK" final_apk/NeonMazeMuncher.apk
+          test -s final_apk/NeonMazeMuncher.apk
+          ls -lh final_apk/NeonMazeMuncher.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: NeonMazeMuncher-Android-APK-Complete
+          path: final_apk/NeonMazeMuncher.apk
+          if-no-files-found: error
+          retention-days: 7
