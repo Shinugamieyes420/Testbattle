@@ -21,11 +21,14 @@ jobs:
         shell: bash
         run: |
           cat neon_maze_android/main_parts/part_*.txt > neon_maze_android/main.gd
+          # Godot 4.7's strict inference rejects := when Dictionary/Variant values are involved.
+          # Dynamic declarations are appropriate here because actors are Dictionaries.
+          sed -i 's/:=/=/g' neon_maze_android/main.gd
           test -s neon_maze_android/main.gd
           echo "main.gd lines: $(wc -l < neon_maze_android/main.gd)"
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -74,4 +77,4 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-# Complete source set trigger 2026-08-14
+# Godot strict typing + Android ETC2 retry
