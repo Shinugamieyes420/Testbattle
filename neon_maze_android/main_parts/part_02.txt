@@ -1,0 +1,180 @@
+				pellets_left += 1
+				total_pellets += 1
+			row.append(c)
+		grid.append(row)
+
+	_recalculate_layout()
+	_apply_level_speed()
+
+func _new_actor(pos: Vector2, dir: Vector2, speed: float) -> Dictionary:
+	return {
+		"pos": pos,
+		"dir": dir,
+		"queued": dir,
+		"speed": speed,
+		"mouth": 0.0
+	}
+
+func _apply_level_speed() -> void:
+	if player.is_empty():
+		return
+	player.speed = 7.4 + min(2.0, level * 0.17)
+	for i in range(ghosts.size()):
+		ghosts[i].speed = 5.05 + level * 0.27 + i * 0.08 + (0.50 if mode == MODE_CHAOS else 0.0)
+
+func _update_game(delta: float) -> void:
+	if countdown > 0.0:
+		countdown -= delta
+		return
+
+	if mode == MODE_TIME:
+		time_left -= delta
+		if time_left <= 0.0:
+			_finish_game("TIME UP")
+			return
+
+	power_mode = max(0.0, power_mode - delta)
+	if power_mode <= 0.0:
+		ghost_combo = 0
+
+	streak_timer -= delta
+	if streak_timer <= 0.0:
+		streak = 0
+
+	speed_timer = max(0.0, speed_timer - delta)
+	magnet_timer = max(0.0, magnet_timer - delta)
+	reverse_timer = max(0.0, reverse_timer - delta)
+	ghost_rush_timer = max(0.0, ghost_rush_timer - delta)
+	double_score_timer = max(0.0, double_score_timer - delta)
+
+	_move_actor(player, delta, true)
+	_eat_current_tile()
+	_collect_pickups()
+
+	for ghost in ghosts:
+		_move_actor(ghost, delta, false)
+
+	_check_collisions()
+
+	if magnet_timer > 0.0:
+		_apply_magnet()
+
+	if mode == MODE_CHAOS:
+		_update_chaos(delta)
+
+func _move_actor(actor: Dictionary, delta: float, is_player: bool) -> void:
+	var center := Vector2(floor(actor.pos.x) + 0.5, floor(actor.pos.y) + 0.5)
+	var threshold := actor.speed * delta + 0.035
+
+	if actor.pos.distance_to(center) <= threshold:
+		actor.pos = center
+		var tile := Vector2i(floor(actor.pos.x), floor(actor.pos.y))
+
+		if is_player:
+			if actor.queued != Vector2.ZERO and _can_move(tile, actor.queued):
+				actor.dir = actor.queued
+			if not _can_move(tile, actor.dir):
+				actor.dir = Vector2.ZERO
+		else:
+			actor.dir = _choose_ghost_direction(actor)
+
+	var speed_mult := 1.55 if is_player and speed_timer > 0.0 else 1.0
+	var ghost_mult := 1.18 if not is_player and ghost_rush_timer > 0.0 else 1.0
+	actor.pos += actor.dir * actor.speed * speed_mult * ghost_mult * delta
+	actor.mouth += delta * 10.0
+
+	if actor.pos.x < -0.15:
+		actor.pos.x = cols + 0.10
+	elif actor.pos.x > cols + 0.15:
+		actor.pos.x = -0.10
+
+func _can_move(tile: Vector2i, d: Vector2) -> bool:
+	if d == Vector2.ZERO:
+		return false
+	var target := tile + Vector2i(int(d.x), int(d.y))
+	return not _is_wall(target.x, target.y)
+
+func _is_wall(x: int, y: int) -> bool:
+	if y < 0 or y >= rows:
+		return true
+	if x < 0 or x >= cols:
+		return false
+	return grid[y][x] == "#"
+
+func _valid_dirs(tile: Vector2i) -> Array:
+	var result: Array = []
+	for d in DIRS:
+		if _can_move(tile, d):
+			result.append(d)
+	return result
+
+func _choose_ghost_direction(g: Dictionary) -> Vector2:
+	var tile := Vector2i(floor(g.pos.x), floor(g.pos.y))
+	var options := _valid_dirs(tile)
+	if options.is_empty():
+		return -g.dir
+
+	if options.size() > 1:
+		options.erase(-g.dir)
+		if options.is_empty():
+			options.append(-g.dir)
+
+	if g.eyes:
+		var home_tile := Vector2i(floor(g.home.x), floor(g.home.y))
+		return _best_dir_to_target(tile, options, home_tile, false)
+
+	if power_mode > 0.0:
+		var p_tile := Vector2i(floor(player.pos.x), floor(player.pos.y))
+		return _best_dir_to_target(tile, options, p_tile, true)
+
+	var target := Vector2i(floor(player.pos.x), floor(player.pos.y))
+
+	match g.type:
+		"hunter":
+			pass
+		"ambusher":
+			var ahead := player.dir * 4.0
+			target = Vector2i(
+				clamp(int(floor(player.pos.x + ahead.x)), 0, cols - 1),
+				clamp(int(floor(player.pos.y + ahead.y)), 0, rows - 1)
+			)
+		"drifter":
+			if rng.randf() < 0.40:
+				return options[rng.randi_range(0, options.size() - 1)]
+			target += Vector2i(rng.randi_range(-3, 3), rng.randi_range(-3, 3))
+		"guard":
+			var nearest := _nearest_power_tile(g.pos)
+			if nearest.x >= 0 and g.pos.distance_to(player.pos) > 4.5:
+				target = nearest
+
+	return _best_dir_to_target(tile, options, target, false)
+
+func _best_dir_to_target(start: Vector2i, options: Array, target: Vector2i, flee: bool) -> Vector2:
+	var best := options[0]
+	var best_score := -999999 if flee else 999999
+	for d in options:
+		var next := start + Vector2i(int(d.x), int(d.y))
+		var score_d := _maze_distance(next, target, 90)
+		if flee:
+			if score_d > best_score:
+				best_score = score_d
+				best = d
+		else:
+			if score_d < best_score:
+				best_score = score_d
+				best = d
+	return best
+
+func _maze_distance(start: Vector2i, goal: Vector2i, max_nodes: int) -> int:
+	goal.x = clamp(goal.x, 0, cols - 1)
+	goal.y = clamp(goal.y, 0, rows - 1)
+	if start == goal:
+		return 0
+
+	var queue: Array = [start]
+	var distances := {start: 0}
+	var head := 0
+
+	while head < queue.size() and head < max_nodes:
+		var cur: Vector2i = queue[head]
+		head += 1
