@@ -1,3 +1,43 @@
+	fruits.clear()
+	power_pickups.clear()
+	particles.clear()
+	popups.clear()
+	_load_level(0)
+	countdown = 3.2
+	_haptic(18)
+
+func _load_level(index: int) -> void:
+	var lines := maps[index % maps.size()].split("\n")
+	rows = lines.size()
+	cols = lines[0].length()
+	grid.clear()
+	ghosts.clear()
+	ghost_spawns.clear()
+	pellets_left = 0
+	total_pellets = 0
+
+	for y in range(rows):
+		var row: Array[String] = []
+		for x in range(cols):
+			var c := lines[y].substr(x, 1)
+			if c == "P":
+				player_spawn = Vector2(x + 0.5, y + 0.5)
+				player = _new_actor(player_spawn, Vector2.RIGHT, 7.4)
+				c = "."
+			elif c in ["1", "2", "3", "4"]:
+				var gi := int(c) - 1
+				var types := ["hunter", "ambusher", "drifter", "guard"]
+				var colors := [C_RED, C_PURPLE, C_GREEN, C_GOLD]
+				var spawn := Vector2(x + 0.5, y + 0.5)
+				var ghost := _new_actor(spawn, DIRS[rng.randi_range(0, 3)], 5.0 + gi * 0.10)
+				ghost.type = types[gi]
+				ghost.color = colors[gi]
+				ghost.home = spawn
+				ghost.eyes = false
+				ghosts.append(ghost)
+				ghost_spawns.append(spawn)
+				c = "."
+			if c == "." or c == "o":
 				pellets_left += 1
 				total_pellets += 1
 			row.append(c)
@@ -142,39 +182,3 @@ func _choose_ghost_direction(g: Dictionary) -> Vector2:
 			if rng.randf() < 0.40:
 				return options[rng.randi_range(0, options.size() - 1)]
 			target += Vector2i(rng.randi_range(-3, 3), rng.randi_range(-3, 3))
-		"guard":
-			var nearest := _nearest_power_tile(g.pos)
-			if nearest.x >= 0 and g.pos.distance_to(player.pos) > 4.5:
-				target = nearest
-
-	return _best_dir_to_target(tile, options, target, false)
-
-func _best_dir_to_target(start: Vector2i, options: Array, target: Vector2i, flee: bool) -> Vector2:
-	var best := options[0]
-	var best_score := -999999 if flee else 999999
-	for d in options:
-		var next := start + Vector2i(int(d.x), int(d.y))
-		var score_d := _maze_distance(next, target, 90)
-		if flee:
-			if score_d > best_score:
-				best_score = score_d
-				best = d
-		else:
-			if score_d < best_score:
-				best_score = score_d
-				best = d
-	return best
-
-func _maze_distance(start: Vector2i, goal: Vector2i, max_nodes: int) -> int:
-	goal.x = clamp(goal.x, 0, cols - 1)
-	goal.y = clamp(goal.y, 0, rows - 1)
-	if start == goal:
-		return 0
-
-	var queue: Array = [start]
-	var distances := {start: 0}
-	var head := 0
-
-	while head < queue.size() and head < max_nodes:
-		var cur: Vector2i = queue[head]
-		head += 1
