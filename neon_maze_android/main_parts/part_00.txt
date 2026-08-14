@@ -1,0 +1,180 @@
+extends Node2D
+
+# Neon Maze Muncher - native Godot 4 Android edition.
+# No external game assets are required: the game is rendered procedurally.
+
+const C_BG := Color("#050914")
+const C_GRID := Color(0.08, 0.22, 0.34, 0.22)
+const C_WALL := Color("#26356f")
+const C_WALL_EDGE := Color("#4df4ff")
+const C_PLAYER := Color("#ffe66d")
+const C_PELLET := Color("#ffe66d")
+const C_POWER := Color("#ff4fd8")
+const C_TEXT := Color("#f7f8ff")
+const C_MUTED := Color("#aeb8df")
+const C_PINK := Color("#ff4fd8")
+const C_GREEN := Color("#51ff9d")
+const C_RED := Color("#ff5277")
+const C_PURPLE := Color("#bd69ff")
+const C_CYAN := Color("#4df4ff")
+const C_GOLD := Color("#ffd45c")
+
+const MODE_CLASSIC := "classic"
+const MODE_TIME := "time"
+const MODE_CHAOS := "chaos"
+
+const DIRS := [Vector2.LEFT, Vector2.RIGHT, Vector2.UP, Vector2.DOWN]
+const SAVE_PATH := "user://neon_muncher_save.json"
+
+var maps: Array[String] = [
+"""#####################
+#P....#.......#....1#
+#.###.#.#####.#.###.#
+#o#...#...#...#...#o#
+#.#.#####.#.#####.#.#
+#.....#...2...#.....#
+###.#.#.#####.#.#.###
+#...#...#...#...#...#
+#.#####.#.#.#####.#.#
+#.....#...#...#.....#
+#.#.#.#####.#####.#.#
+#o#.#...3.....#...#o#
+#.###.#.#####.#.###.#
+#4....#.......#.....#
+#####################""",
+"""#####################
+#P....#.....#.....1o#
+#.##.#.#.###.#.#.##.#
+#....#.#...#.#.#....#
+###.##.###.#.###.##.#
+#o..#.....2.....#..o#
+#.#.###.#####.###.#.#
+#.#.....#...#.....#.#
+#.#####.#.#.#####.#.#
+#.....#...#...#.....#
+###.#.###.#.###.#.###
+#o..#.....3.....#..o#
+#.##.###.###.###.##.#
+#4......#.....#.....#
+#####################""",
+"""#####################
+#P..#.......#.....1o#
+#.#.#.#####.#.###.#.#
+#.#...#...#...#...#.#
+#.#.###.#.###.#.###.#
+#o#.....#..2..#.....#
+#.#####.#####.#####.#
+#.....#...#...#.....#
+###.#.###.#.###.#.###
+#...#.....#.....#...#
+#.###.#########.###.#
+#o....#...3...#....o#
+###.#.#.#####.#.#.###
+#4..#.........#.....#
+#####################""",
+"""#####################
+#P....#...#...#....1#
+#.##.###.#.#.###.##.#
+#o...#...#.#...#...o#
+###.#.#.##.##.#.#.###
+#...#...#2..#...#...#
+#.#####.###.###.#####
+#.......#.....#.....#
+#####.#.#.###.#.#.###
+#.....#...#...#.....#
+#.###.#####.#####.###
+#o..#....3......#..o#
+###.#.###.#.###.#.###
+#4....#.......#.....#
+#####################"""
+]
+
+var grid: Array = []
+var rows := 0
+var cols := 0
+var pellets_left := 0
+var total_pellets := 0
+
+var state := "menu"
+var mode := MODE_CLASSIC
+var level := 1
+var score := 0
+var lives := 3
+var time_left := 120.0
+var countdown := 0.0
+var paused := false
+
+var highscores := {
+	MODE_CLASSIC: 0,
+	MODE_TIME: 0,
+	MODE_CHAOS: 0
+}
+
+var player := {}
+var player_spawn := Vector2.ZERO
+var ghosts: Array = []
+var ghost_spawns: Array = []
+
+var power_mode := 0.0
+var ghost_combo := 0
+var streak := 0
+var streak_timer := 0.0
+var inventory := ""
+var shield := false
+var speed_timer := 0.0
+var magnet_timer := 0.0
+var reverse_timer := 0.0
+var ghost_rush_timer := 0.0
+
+var fruits: Array = []
+var power_pickups: Array = []
+var particles: Array = []
+var popups: Array = []
+
+var chaos_timer := 8.0
+var double_score_timer := 0.0
+var shake := 0.0
+
+var maze_rect := Rect2()
+var tile_size := 32.0
+
+var joy_center := Vector2.ZERO
+var joy_radius := 105.0
+var joy_knob := Vector2.ZERO
+var joy_pointer := -1
+var joy_active := false
+var joy_dir := Vector2.ZERO
+
+var power_center := Vector2.ZERO
+var power_radius := 88.0
+var power_pressed := false
+
+var rng := RandomNumberGenerator.new()
+var font: Font
+
+var menu_buttons: Array = []
+var pause_buttons: Array = []
+var end_buttons: Array = []
+
+func _ready() -> void:
+	rng.randomize()
+	font = ThemeDB.fallback_font
+	RenderingServer.set_default_clear_color(C_BG)
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	get_viewport().size_changed.connect(_recalculate_layout)
+	_load_save()
+	_recalculate_layout()
+	set_process(true)
+	set_process_input(true)
+	queue_redraw()
+
+func _recalculate_layout() -> void:
+	var size := get_viewport_rect().size
+	var top_h := clamp(size.y * 0.105, 68.0, 96.0)
+	var bottom_h := clamp(size.y * 0.22, 150.0, 210.0)
+	var side_pad := clamp(size.x * 0.025, 24.0, 60.0)
+	var usable := Rect2(
+		Vector2(side_pad, top_h + 10.0),
+		Vector2(size.x - side_pad * 2.0, size.y - top_h - bottom_h - 20.0)
+	)
+	if cols > 0 and rows > 0:
