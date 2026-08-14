@@ -1,13 +1,50 @@
-		tile_size = floor(min(usable.size.x / float(cols), usable.size.y / float(rows)))
-		tile_size = max(18.0, tile_size)
-		var maze_size := Vector2(cols * tile_size, rows * tile_size)
-		maze_rect = Rect2(usable.position + (usable.size - maze_size) * 0.5, maze_size)
+	var top_h = clamp(74.0 * ui_scale, 64.0, 94.0)
+	var bottom_h = clamp(166.0 * ui_scale, 142.0, 205.0)
+	hud_rect = Rect2(
+		Vector2(safe_rect.position.x, safe_rect.position.y),
+		Vector2(safe_rect.size.x, top_h)
+	)
 
-	joy_radius = clamp(size.y * 0.115, 72.0, 112.0)
-	joy_center = Vector2(max(joy_radius + 34.0, size.x * 0.105), size.y - joy_radius - 24.0)
-	power_radius = clamp(size.y * 0.09, 62.0, 92.0)
-	power_center = Vector2(size.x - max(power_radius + 34.0, size.x * 0.095), size.y - power_radius - 35.0)
+	var maze_zone = Rect2(
+		Vector2(safe_rect.position.x + 8.0, safe_rect.position.y + top_h + 10.0),
+		Vector2(safe_rect.size.x - 16.0, max(120.0, safe_rect.size.y - top_h - bottom_h - 18.0))
+	)
+	if cols > 0 and rows > 0:
+		tile_size = floor(min(maze_zone.size.x / float(cols), maze_zone.size.y / float(rows)))
+		tile_size = max(18.0, tile_size)
+		var maze_size = Vector2(cols * tile_size, rows * tile_size)
+		maze_rect = Rect2(maze_zone.position + (maze_zone.size - maze_size) * 0.5, maze_size)
+
+	joy_radius = clamp(size.y * 0.118, 78.0, 108.0)
+	power_radius = clamp(size.y * 0.092, 66.0, 88.0)
+	var bottom_y = safe_rect.end.y
+	joy_center = Vector2(
+		safe_rect.position.x + joy_radius + 18.0,
+		bottom_y - joy_radius - 10.0
+	)
+	power_center = Vector2(
+		safe_rect.end.x - power_radius - 22.0,
+		bottom_y - power_radius - 20.0
+	)
+	var pause_size = clamp(58.0 * ui_scale, 54.0, 70.0)
+	pause_rect = Rect2(
+		Vector2(safe_rect.end.x - pause_size, safe_rect.position.y + (top_h - pause_size) * 0.5),
+		Vector2.ONE * pause_size
+	)
 	queue_redraw()
+
+func _safe_area_in_viewport(view_size: Vector2) -> Rect2:
+	# Godot reports Android safe area in display pixels; touch/game input uses viewport coordinates.
+	var screen_size_i = DisplayServer.screen_get_size(DisplayServer.SCREEN_OF_MAIN_WINDOW)
+	var display_safe = DisplayServer.get_display_safe_area()
+	if screen_size_i.x <= 0 or screen_size_i.y <= 0 or display_safe.size.x <= 0 or display_safe.size.y <= 0:
+		return Rect2(Vector2.ZERO, view_size)
+	var screen_size = Vector2(screen_size_i)
+	var scale = Vector2(view_size.x / screen_size.x, view_size.y / screen_size.y)
+	return Rect2(
+		Vector2(display_safe.position) * scale,
+		Vector2(display_safe.size) * scale
+	)
 
 func _process(delta: float) -> void:
 	if state == "play" and not paused:
@@ -53,7 +90,11 @@ func _touch_down(index: int, pos: Vector2) -> void:
 	if state != "play":
 		return
 
-	if pos.distance_to(joy_center) <= joy_radius * 1.5:
+	if pause_rect.has_point(pos):
+		paused = true
+		_haptic(12)
+		return
+	if pos.distance_to(joy_center) <= joy_radius * 1.45:
 		joy_pointer = index
 		joy_active = true
 		_update_joystick(pos)
@@ -117,6 +158,9 @@ func _handle_back_or_pause() -> void:
 		_haptic(10)
 	elif state == "end":
 		state = "menu"
+		_haptic(8)
+	elif state == "menu":
+		get_tree().quit()
 
 func _start_game(new_mode: String) -> void:
 	mode = new_mode
@@ -138,43 +182,3 @@ func _start_game(new_mode: String) -> void:
 	streak_timer = 0.0
 	power_mode = 0.0
 	ghost_combo = 0
-	fruits.clear()
-	power_pickups.clear()
-	particles.clear()
-	popups.clear()
-	_load_level(0)
-	countdown = 3.2
-	_haptic(18)
-
-func _load_level(index: int) -> void:
-	var lines := maps[index % maps.size()].split("\n")
-	rows = lines.size()
-	cols = lines[0].length()
-	grid.clear()
-	ghosts.clear()
-	ghost_spawns.clear()
-	pellets_left = 0
-	total_pellets = 0
-
-	for y in range(rows):
-		var row: Array[String] = []
-		for x in range(cols):
-			var c := lines[y].substr(x, 1)
-			if c == "P":
-				player_spawn = Vector2(x + 0.5, y + 0.5)
-				player = _new_actor(player_spawn, Vector2.RIGHT, 7.4)
-				c = "."
-			elif c in ["1", "2", "3", "4"]:
-				var gi := int(c) - 1
-				var types := ["hunter", "ambusher", "drifter", "guard"]
-				var colors := [C_RED, C_PURPLE, C_GREEN, C_GOLD]
-				var spawn := Vector2(x + 0.5, y + 0.5)
-				var ghost := _new_actor(spawn, DIRS[rng.randi_range(0, 3)], 5.0 + gi * 0.10)
-				ghost.type = types[gi]
-				ghost.color = colors[gi]
-				ghost.home = spawn
-				ghost.eyes = false
-				ghosts.append(ghost)
-				ghost_spawns.append(spawn)
-				c = "."
-			if c == "." or c == "o":
