@@ -1,3 +1,34 @@
+	for _i in range(4):
+		var tile := Vector2i(floor(player.pos.x), floor(player.pos.y))
+		if not _can_move(tile, player.dir):
+			break
+		player.pos += player.dir
+
+func _pulse_bomb() -> void:
+	for g in ghosts:
+		if not g.eyes and g.pos.distance_to(player.pos) < 6.0:
+			_add_score(150, g.pos, "STUN +150")
+			g.pos = g.home
+			g.dir = DIRS[rng.randi_range(0, 3)]
+	shake = 15.0
+
+func _apply_magnet() -> void:
+	var radius := 2.35
+	for y in range(rows):
+		for x in range(cols):
+			if grid[y][x] != ".":
+				continue
+			var p := Vector2(x + 0.5, y + 0.5)
+			if player.pos.distance_to(p) <= radius:
+				grid[y][x] = " "
+				pellets_left -= 1
+				_add_score(10, p)
+	if pellets_left <= 0:
+		_next_level()
+
+func _check_collisions() -> void:
+	for g in ghosts:
+		if player.pos.distance_to(g.pos) >= 0.58:
 			continue
 
 		if power_mode > 0.0 and not g.eyes:
@@ -151,30 +182,3 @@ func _haptic(ms: int) -> void:
 	Input.vibrate_handheld(ms)
 
 func _draw() -> void:
-	var size := get_viewport_rect().size
-	_draw_background(size)
-	_draw_top_hud(size)
-
-	match state:
-		"menu":
-			_draw_menu(size)
-		"play":
-			_draw_game(size)
-			if paused:
-				_draw_pause(size)
-		"end":
-			_draw_game(size)
-			_draw_end(size)
-
-func _draw_background(size: Vector2) -> void:
-	draw_rect(Rect2(Vector2.ZERO, size), C_BG)
-
-	var spacing := 52.0
-	var x := 0.0
-	while x <= size.x:
-		draw_line(Vector2(x, 0), Vector2(x, size.y), C_GRID, 1.0)
-		x += spacing
-	var y := 0.0
-	while y <= size.y:
-		draw_line(Vector2(0, y), Vector2(size.x, y), C_GRID, 1.0)
-		y += spacing
