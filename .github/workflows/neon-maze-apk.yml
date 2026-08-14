@@ -73,3 +73,5 @@ jobs:
           path: final_apk/NeonMazeMuncher.apk
           if-no-files-found: error
           retention-days: 7
+
+# Complete source set trigger 2026-08-14
