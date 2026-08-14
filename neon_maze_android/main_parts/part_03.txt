@@ -1,0 +1,180 @@
+		var cd: int = distances[cur]
+		for d in DIRS:
+			var nxt := cur + Vector2i(int(d.x), int(d.y))
+			if _is_wall(nxt.x, nxt.y) or distances.has(nxt):
+				continue
+			if nxt == goal:
+				return cd + 1
+			distances[nxt] = cd + 1
+			queue.append(nxt)
+	return 999
+
+func _nearest_power_tile(from_pos: Vector2) -> Vector2i:
+	var best := Vector2i(-1, -1)
+	var best_d := 99999.0
+	for y in range(rows):
+		for x in range(cols):
+			if grid[y][x] == "o":
+				var d := from_pos.distance_squared_to(Vector2(x + 0.5, y + 0.5))
+				if d < best_d:
+					best_d = d
+					best = Vector2i(x, y)
+	return best
+
+func _eat_current_tile() -> void:
+	var x := int(floor(player.pos.x))
+	var y := int(floor(player.pos.y))
+	if x < 0 or x >= cols or y < 0 or y >= rows:
+		return
+
+	var cell: String = grid[y][x]
+	if cell != "." and cell != "o":
+		return
+
+	grid[y][x] = " "
+	pellets_left -= 1
+	streak += 1
+	streak_timer = 2.25
+
+	if cell == "o":
+		_add_score(50, player.pos, "CORE")
+		power_mode = max(4.8, 8.8 - level * 0.34)
+		ghost_combo = 0
+		_spawn_burst(player.pos, C_PINK, 24)
+		_haptic(24)
+	else:
+		_add_score(10, player.pos)
+
+	if streak == 10:
+		_add_score(100, player.pos, "10 STREAK")
+	elif streak == 25:
+		_add_score(300, player.pos, "25 STREAK")
+	elif streak == 50:
+		_add_score(750, player.pos, "50 STREAK")
+
+	var power_chance := 0.038 if mode == MODE_CHAOS else 0.020
+	if inventory == "" and rng.randf() < power_chance:
+		_spawn_power_pickup()
+	if rng.randf() < 0.015:
+		_spawn_fruit()
+
+	if pellets_left <= 0:
+		_next_level()
+
+func _next_level() -> void:
+	level += 1
+	power_mode = 0.0
+	ghost_combo = 0
+	_add_score(500 + level * 100, player.pos, "LEVEL CLEAR")
+	_spawn_burst(player.pos, C_CYAN, 36)
+	_haptic(35)
+	_load_level(level - 1)
+	countdown = 2.5
+
+func _spawn_power_pickup() -> void:
+	var tile := _random_open_tile()
+	if tile.x < 0:
+		return
+	var types := ["speed", "shield", "magnet", "dash", "bomb"]
+	power_pickups.append({
+		"pos": Vector2(tile.x + 0.5, tile.y + 0.5),
+		"type": types[rng.randi_range(0, types.size() - 1)],
+		"life": 13.0
+	})
+
+func _spawn_fruit() -> void:
+	var tile := _random_open_tile()
+	if tile.x < 0:
+		return
+	var labels := ["CHERRY", "BERRY", "MELON", "STAR"]
+	var points := [250, 400, 650, 1000]
+	var i := rng.randi_range(0, labels.size() - 1)
+	fruits.append({
+		"pos": Vector2(tile.x + 0.5, tile.y + 0.5),
+		"label": labels[i],
+		"points": points[i],
+		"life": 11.0,
+		"color": [C_RED, C_PINK, C_GREEN, C_GOLD][i]
+	})
+
+func _random_open_tile() -> Vector2i:
+	for _try in range(80):
+		var x := rng.randi_range(1, cols - 2)
+		var y := rng.randi_range(1, rows - 2)
+		if grid[y][x] != "#" and Vector2(x + 0.5, y + 0.5).distance_to(player.pos) > 4.0:
+			return Vector2i(x, y)
+	return Vector2i(-1, -1)
+
+func _collect_pickups() -> void:
+	for i in range(fruits.size() - 1, -1, -1):
+		var f: Dictionary = fruits[i]
+		if player.pos.distance_to(f.pos) < 0.62:
+			_add_score(f.points, f.pos, f.label + " +" + str(f.points))
+			_spawn_burst(f.pos, f.color, 18)
+			fruits.remove_at(i)
+			_haptic(12)
+
+	for i in range(power_pickups.size() - 1, -1, -1):
+		var p: Dictionary = power_pickups[i]
+		if player.pos.distance_to(p.pos) < 0.62:
+			inventory = p.type
+			_popup(p.pos, _power_label(inventory), C_PURPLE)
+			_spawn_burst(p.pos, C_PURPLE, 18)
+			power_pickups.remove_at(i)
+			_haptic(14)
+
+func _use_power() -> void:
+	if state != "play" or paused or inventory == "":
+		return
+
+	match inventory:
+		"speed":
+			speed_timer = 5.0
+		"shield":
+			shield = true
+		"magnet":
+			magnet_timer = 5.5
+		"dash":
+			_dash_player()
+		"bomb":
+			_pulse_bomb()
+
+	_spawn_burst(player.pos, C_PURPLE, 28)
+	_popup(player.pos, _power_label(inventory), C_PURPLE)
+	inventory = ""
+	_haptic(28)
+
+func _dash_player() -> void:
+	if player.dir == Vector2.ZERO:
+		return
+	for _i in range(4):
+		var tile := Vector2i(floor(player.pos.x), floor(player.pos.y))
+		if not _can_move(tile, player.dir):
+			break
+		player.pos += player.dir
+
+func _pulse_bomb() -> void:
+	for g in ghosts:
+		if not g.eyes and g.pos.distance_to(player.pos) < 6.0:
+			_add_score(150, g.pos, "STUN +150")
+			g.pos = g.home
+			g.dir = DIRS[rng.randi_range(0, 3)]
+	shake = 15.0
+
+func _apply_magnet() -> void:
+	var radius := 2.35
+	for y in range(rows):
+		for x in range(cols):
+			if grid[y][x] != ".":
+				continue
+			var p := Vector2(x + 0.5, y + 0.5)
+			if player.pos.distance_to(p) <= radius:
+				grid[y][x] = " "
+				pellets_left -= 1
+				_add_score(10, p)
+	if pellets_left <= 0:
+		_next_level()
+
+func _check_collisions() -> void:
+	for g in ghosts:
+		if player.pos.distance_to(g.pos) >= 0.58:
