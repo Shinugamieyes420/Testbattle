@@ -1,32 +1,90 @@
+func _draw_popups() -> void:
+	for p in popups:
+		var c := _world_to_screen(p.pos) + Vector2(0, p.offset)
+		var alpha: float = clamp(p.life, 0.0, 1.0)
+		_text_center(p.text, c, max(13, int(tile_size * 0.36)), Color(p.color, alpha), tile_size * 5.0)
+
+func _draw_mobile_controls(size: Vector2) -> void:
+	# Large thumb-first joystick. The interaction zone is larger than the visible circle.
+	var joy_alpha = 0.42 if joy_active else 0.30
+	draw_circle(joy_center, joy_radius * 1.13, Color(C_CYAN, 0.045))
+	draw_circle(joy_center, joy_radius * 0.88, Color(0.02, 0.08, 0.16, 0.78))
+	draw_arc(joy_center, joy_radius, 0, TAU, 64, Color(C_CYAN, joy_alpha), max(2.0, 3.0 * ui_scale), true)
+	for d in DIRS:
+		draw_line(joy_center + d * joy_radius * 0.48, joy_center + d * joy_radius * 0.72, Color(1,1,1,0.16), max(2.0, 2.0 * ui_scale))
+
+	var knob = joy_center + joy_knob
+	draw_circle(knob, joy_radius * 0.38, Color(C_CYAN, 0.14))
+	draw_circle(knob, joy_radius * 0.30, C_CYAN)
+	draw_circle(knob + Vector2(-joy_radius * 0.07, -joy_radius * 0.09), joy_radius * 0.07, Color(1,1,1,0.42))
+
+	var ready = inventory != ""
+	var power_color = C_PURPLE if ready else Color(0.22, 0.25, 0.36, 0.92)
+	if ready:
+		var pulse = 1.18 + 0.045 * sin(Time.get_ticks_msec() * 0.008)
+		draw_circle(power_center, power_radius * pulse, Color(C_PURPLE, 0.11))
+	draw_circle(power_center, power_radius, power_color)
+	draw_arc(power_center, power_radius, 0, TAU, 56, Color(1,1,1,0.29), max(2.0, 3.0 * ui_scale), true)
+	_text_center("POWER", power_center + Vector2(0, -8.0 * ui_scale), int(16 * ui_scale), C_TEXT, power_radius * 1.6)
+	var power_name = _power_label(inventory) if ready else "LEEG"
+	_text_center(power_name, power_center + Vector2(0, 17.0 * ui_scale), int(9 * ui_scale), Color(1,1,1,0.78), power_radius * 1.75)
+
+	# Central status is kept above the Android gesture zone.
+	var center_x = safe_rect.get_center().x if safe_rect.size.x > 0.0 else size.x * 0.5
+	var status_y = min(joy_center.y + joy_radius * 0.52, safe_rect.end.y - 34.0 * ui_scale)
+	if power_mode > 0.0:
+		var bar_w = min(size.x * 0.25, 330.0 * ui_scale)
+		var bar_pos = Vector2(center_x - bar_w * 0.5, status_y)
+		draw_rect(Rect2(bar_pos, Vector2(bar_w, 11.0 * ui_scale)), Color(0,0,0,0.46), true)
+		var ratio = clamp(power_mode / 8.8, 0.0, 1.0)
+		draw_rect(Rect2(bar_pos, Vector2(bar_w * ratio, 11.0 * ui_scale)), C_PINK, true)
+		_text_center("POWER MODE", Vector2(center_x, bar_pos.y - 8.0 * ui_scale), int(10 * ui_scale), C_PINK, bar_w)
+
+	if streak >= 5:
+		_text_center(str(streak) + " STREAK", Vector2(center_x, status_y - 32.0 * ui_scale), int(15 * ui_scale), C_GOLD, 230.0 * ui_scale)
 
 func _draw_menu(size: Vector2) -> void:
-	var center := Vector2(size.x * 0.5, size.y * 0.46)
-	_text_center("GHOST GRID", center + Vector2(0, -190), 56, C_CYAN, min(800.0, size.x * 0.8))
-	_text_center("Neon maze-chase, gebouwd voor Android touch.", center + Vector2(0, -145), 17, C_MUTED, min(800.0, size.x * 0.8))
+	var r = safe_rect if safe_rect.size.x > 0.0 else Rect2(Vector2(24, 24), size - Vector2(48, 48))
+	var center = r.get_center()
+	var top = r.position.y + hud_rect.size.y + 26.0 * ui_scale
+
+	# Muncher mark.
+	var logo_c = Vector2(center.x, top + 58.0 * ui_scale)
+	draw_circle(logo_c, 54.0 * ui_scale, Color(C_PLAYER, 0.10))
+	draw_circle(logo_c, 42.0 * ui_scale, C_PLAYER)
+	draw_colored_polygon(PackedVector2Array([
+		logo_c,
+		logo_c + Vector2(54.0, -25.0) * ui_scale,
+		logo_c + Vector2(54.0, 25.0) * ui_scale
+	]), C_BG)
+
+	_text_center("GHOST GRID", Vector2(center.x, top + 132.0 * ui_scale), int(40 * ui_scale), C_CYAN, min(760.0, r.size.x * 0.82))
+	_text_center("Snelle neon maze-chase · gemaakt voor Android touch", Vector2(center.x, top + 168.0 * ui_scale), int(14 * ui_scale), C_MUTED, min(760.0, r.size.x * 0.82))
 
 	menu_buttons = []
-	var bw := min(540.0, size.x * 0.46)
-	var bh := 78.0
-	var gap := 18.0
-	var labels := [
+	var bw = min(600.0 * ui_scale, r.size.x * 0.52)
+	var bh = clamp(76.0 * ui_scale, 68.0, 94.0)
+	var gap = 14.0 * ui_scale
+	var start_y = top + 208.0 * ui_scale
+	var labels = [
 		["CLASSIC RUN", MODE_CLASSIC, C_CYAN],
 		["TIME ATTACK · 120 SEC", MODE_TIME, C_GOLD],
 		["CHAOS MODE", MODE_CHAOS, C_PINK]
 	]
 	for i in range(labels.size()):
-		var rect := Rect2(Vector2(center.x - bw * 0.5, center.y - 70 + i * (bh + gap)), Vector2(bw, bh))
+		var rect = Rect2(Vector2(center.x - bw * 0.5, start_y + i * (bh + gap)), Vector2(bw, bh))
 		_draw_button(rect, labels[i][0], labels[i][2], false)
 		menu_buttons.append({"rect": rect, "action": "start", "value": labels[i][1]})
 
-	_text_center("Joystick links · Power rechts · Highscores worden automatisch opgeslagen", Vector2(center.x - size.x * 0.35, size.y - 62), 13, C_MUTED, size.x * 0.70)
+	_text_center("Grote joystick links · power rechts · automatisch opslaan", Vector2(center.x, min(r.end.y - 18.0 * ui_scale, start_y + 3.0 * (bh + gap) + 24.0 * ui_scale)), int(11 * ui_scale), C_MUTED, min(820.0, r.size.x * 0.85))
 
 func _draw_pause(size: Vector2) -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0,0,0,0.66), true)
-	var c := size * 0.5
+	var c = safe_rect.get_center() if safe_rect.size.x > 0.0 else size * 0.5
 	_text_center("PAUZE", c + Vector2(0, -110), 52, C_TEXT, 500)
 	pause_buttons = []
-	var resume := Rect2(c + Vector2(-210, -38), Vector2(420, 72))
-	var menu := Rect2(c + Vector2(-210, 54), Vector2(420, 72))
+	var resume = Rect2(c + Vector2(-230 * ui_scale, -42 * ui_scale), Vector2(460 * ui_scale, 78 * ui_scale))
+	var menu = Rect2(c + Vector2(-230 * ui_scale, 58 * ui_scale), Vector2(460 * ui_scale, 78 * ui_scale))
 	_draw_button(resume, "VERDER", C_GREEN, false)
 	_draw_button(menu, "TERUG NAAR MENU", C_RED, false)
 	pause_buttons.append({"rect": resume, "action": "resume"})
@@ -34,15 +92,15 @@ func _draw_pause(size: Vector2) -> void:
 
 func _draw_end(size: Vector2) -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0,0,0,0.72), true)
-	var c := size * 0.5
+	var c = safe_rect.get_center() if safe_rect.size.x > 0.0 else size * 0.5
 	var title := "RUN COMPLETE" if mode == MODE_TIME and time_left <= 0.0 else "GAME OVER"
 	_text_center(title, c + Vector2(0, -165), 54, C_PINK, 700)
 	_text_center("SCORE " + str(score), c + Vector2(0, -95), 30, C_GOLD, 500)
 	_text_center("LEVEL " + str(level) + "    ·    HI " + str(highscores.get(mode, 0)), c + Vector2(0, -55), 17, C_TEXT, 600)
 
 	end_buttons = []
-	var again := Rect2(c + Vector2(-230, 18), Vector2(460, 72))
-	var menu := Rect2(c + Vector2(-230, 108), Vector2(460, 72))
+	var again = Rect2(c + Vector2(-230 * ui_scale, 18 * ui_scale), Vector2(460 * ui_scale, 78 * ui_scale))
+	var menu = Rect2(c + Vector2(-230 * ui_scale, 112 * ui_scale), Vector2(460 * ui_scale, 78 * ui_scale))
 	_draw_button(again, "NOG EEN KEER", C_GREEN, false)
 	_draw_button(menu, "HOOFDMENU", C_CYAN, false)
 	end_buttons.append({"rect": again, "action": "restart"})
@@ -51,13 +109,13 @@ func _draw_end(size: Vector2) -> void:
 func _draw_center_overlay(text: String, color: Color) -> void:
 	var size := get_viewport_rect().size
 	draw_rect(Rect2(Vector2.ZERO, size), Color(0,0,0,0.38), true)
-	_text_center(text, Vector2(size.x * 0.25, size.y * 0.53), 72, color, size.x * 0.50)
+	_text_center(text, Vector2(size.x * 0.5, size.y * 0.53), int(72 * ui_scale), color, size.x * 0.50)
 
 func _draw_button(rect: Rect2, label: String, color: Color, pressed: bool) -> void:
 	var fill := Color(color, 0.31 if not pressed else 0.50)
 	draw_rect(rect, fill, true)
 	draw_rect(rect, Color(color, 0.80), false, 2.0)
-	_text_center(label, rect.position + Vector2(0, rect.size.y * 0.62), 19, C_TEXT, rect.size.x)
+	_text_center(label, Vector2(rect.get_center().x, rect.position.y + rect.size.y * 0.62), int(18 * ui_scale), C_TEXT, rect.size.x * 0.92)
 
 func _hit_button(pos: Vector2, buttons: Array) -> void:
 	for b in buttons:
@@ -83,10 +141,12 @@ func _text(text: String, pos: Vector2, size: int, color: Color) -> void:
 	draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
 
 func _text_right(text: String, pos: Vector2, size: int, color: Color) -> void:
-	draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_RIGHT, 0, size, color)
+	var text_size = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size)
+	draw_string(font, Vector2(pos.x - text_size.x, pos.y), text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
 
 func _text_center(text: String, pos: Vector2, size: int, color: Color, width: float) -> void:
-	draw_string(font, pos, text, HORIZONTAL_ALIGNMENT_CENTER, width, size, color)
+	var w = max(1.0, width)
+	draw_string(font, Vector2(pos.x - w * 0.5, pos.y), text, HORIZONTAL_ALIGNMENT_CENTER, w, size, color)
 
 func _best_highscore() -> int:
 	return max(highscores[MODE_CLASSIC], highscores[MODE_TIME], highscores[MODE_CHAOS])
@@ -109,6 +169,16 @@ func _save() -> void:
 	if file == null:
 		return
 	file.store_string(JSON.stringify({"highscores": highscores}))
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		_handle_back_or_pause()
+	elif what == NOTIFICATION_APPLICATION_PAUSED:
+		_save()
+		if state == "play":
+			paused = true
+	elif what == NOTIFICATION_APPLICATION_RESUMED:
+		_recalculate_layout()
 
 func _exit_tree() -> void:
 	_save()
