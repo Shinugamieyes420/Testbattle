@@ -147,6 +147,10 @@ var joy_dir := Vector2.ZERO
 
 var power_center := Vector2.ZERO
 var power_radius := 88.0
+var safe_rect := Rect2()
+var pause_rect := Rect2()
+var hud_rect := Rect2()
+var ui_scale := 1.0
 var power_pressed := false
 
 var rng := RandomNumberGenerator.new()
@@ -159,8 +163,11 @@ var end_buttons: Array = []
 func _ready() -> void:
 	rng.randomize()
 	font = ThemeDB.fallback_font
+	Engine.max_fps = 60
 	RenderingServer.set_default_clear_color(C_BG)
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	if DisplayServer.has_feature(DisplayServer.FEATURE_ORIENTATION):
+		DisplayServer.screen_set_orientation(DisplayServer.SCREEN_SENSOR_LANDSCAPE)
 	get_viewport().size_changed.connect(_recalculate_layout)
 	_load_save()
 	_recalculate_layout()
@@ -169,12 +176,8 @@ func _ready() -> void:
 	queue_redraw()
 
 func _recalculate_layout() -> void:
-	var size := get_viewport_rect().size
-	var top_h := clamp(size.y * 0.105, 68.0, 96.0)
-	var bottom_h := clamp(size.y * 0.22, 150.0, 210.0)
-	var side_pad := clamp(size.x * 0.025, 24.0, 60.0)
-	var usable := Rect2(
-		Vector2(side_pad, top_h + 10.0),
-		Vector2(size.x - side_pad * 2.0, size.y - top_h - bottom_h - 20.0)
-	)
-	if cols > 0 and rows > 0:
+	var size = get_viewport_rect().size
+	ui_scale = clamp(size.y / 720.0, 0.82, 1.45)
+	safe_rect = _safe_area_in_viewport(size)
+	var outer_pad = clamp(14.0 * ui_scale, 12.0, 26.0)
+	safe_rect = safe_rect.grow(-outer_pad)
