@@ -1,0 +1,180 @@
+		tile_size = floor(min(usable.size.x / float(cols), usable.size.y / float(rows)))
+		tile_size = max(18.0, tile_size)
+		var maze_size := Vector2(cols * tile_size, rows * tile_size)
+		maze_rect = Rect2(usable.position + (usable.size - maze_size) * 0.5, maze_size)
+
+	joy_radius = clamp(size.y * 0.115, 72.0, 112.0)
+	joy_center = Vector2(max(joy_radius + 34.0, size.x * 0.105), size.y - joy_radius - 24.0)
+	power_radius = clamp(size.y * 0.09, 62.0, 92.0)
+	power_center = Vector2(size.x - max(power_radius + 34.0, size.x * 0.095), size.y - power_radius - 35.0)
+	queue_redraw()
+
+func _process(delta: float) -> void:
+	if state == "play" and not paused:
+		_update_game(delta)
+	_update_visuals(delta)
+	queue_redraw()
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		var key := event.keycode
+		if key == KEY_W or key == KEY_UP:
+			_set_player_dir(Vector2.UP)
+		elif key == KEY_S or key == KEY_DOWN:
+			_set_player_dir(Vector2.DOWN)
+		elif key == KEY_A or key == KEY_LEFT:
+			_set_player_dir(Vector2.LEFT)
+		elif key == KEY_D or key == KEY_RIGHT:
+			_set_player_dir(Vector2.RIGHT)
+		elif key == KEY_SPACE:
+			_use_power()
+		elif key == KEY_P or key == KEY_ESCAPE:
+			_handle_back_or_pause()
+		return
+
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			_touch_down(event.index, event.position)
+		else:
+			_touch_up(event.index, event.position)
+	elif event is InputEventScreenDrag:
+		_touch_drag(event.index, event.position)
+
+func _touch_down(index: int, pos: Vector2) -> void:
+	if state == "menu":
+		_hit_button(pos, menu_buttons)
+		return
+	if state == "end":
+		_hit_button(pos, end_buttons)
+		return
+	if paused:
+		_hit_button(pos, pause_buttons)
+		return
+	if state != "play":
+		return
+
+	if pos.distance_to(joy_center) <= joy_radius * 1.5:
+		joy_pointer = index
+		joy_active = true
+		_update_joystick(pos)
+		_haptic(8)
+	elif pos.distance_to(power_center) <= power_radius * 1.35:
+		power_pressed = true
+		_use_power()
+		_haptic(16)
+
+func _touch_drag(index: int, pos: Vector2) -> void:
+	if joy_active and index == joy_pointer:
+		_update_joystick(pos)
+
+func _touch_up(index: int, _pos: Vector2) -> void:
+	if index == joy_pointer:
+		joy_pointer = -1
+		joy_active = false
+		joy_knob = Vector2.ZERO
+		joy_dir = Vector2.ZERO
+	power_pressed = false
+
+func _update_joystick(pos: Vector2) -> void:
+	var raw := pos - joy_center
+	var max_len := joy_radius * 0.58
+	var length := raw.length()
+	if length < joy_radius * 0.13:
+		joy_knob = Vector2.ZERO
+		return
+
+	var capped := raw.normalized() * min(length, max_len)
+	joy_knob = capped
+
+	var next_dir := Vector2.ZERO
+	if abs(raw.x) > abs(raw.y) * 1.10:
+		next_dir = Vector2.RIGHT if raw.x > 0.0 else Vector2.LEFT
+	elif abs(raw.y) > abs(raw.x) * 1.10:
+		next_dir = Vector2.DOWN if raw.y > 0.0 else Vector2.UP
+	elif joy_dir == Vector2.ZERO:
+		if abs(raw.x) >= abs(raw.y):
+			next_dir = Vector2.RIGHT if raw.x > 0.0 else Vector2.LEFT
+		else:
+			next_dir = Vector2.DOWN if raw.y > 0.0 else Vector2.UP
+	else:
+		next_dir = joy_dir
+
+	if next_dir != Vector2.ZERO and next_dir != joy_dir:
+		joy_dir = next_dir
+		_set_player_dir(next_dir)
+		_haptic(5)
+
+func _set_player_dir(d: Vector2) -> void:
+	if reverse_timer > 0.0:
+		d = -d
+	if player.is_empty():
+		return
+	player.queued = d
+
+func _handle_back_or_pause() -> void:
+	if state == "play":
+		paused = not paused
+		_haptic(10)
+	elif state == "end":
+		state = "menu"
+
+func _start_game(new_mode: String) -> void:
+	mode = new_mode
+	state = "play"
+	paused = false
+	level = 1
+	score = 0
+	lives = 3
+	time_left = 120.0
+	inventory = ""
+	shield = false
+	speed_timer = 0.0
+	magnet_timer = 0.0
+	reverse_timer = 0.0
+	ghost_rush_timer = 0.0
+	double_score_timer = 0.0
+	chaos_timer = rng.randf_range(7.0, 12.0)
+	streak = 0
+	streak_timer = 0.0
+	power_mode = 0.0
+	ghost_combo = 0
+	fruits.clear()
+	power_pickups.clear()
+	particles.clear()
+	popups.clear()
+	_load_level(0)
+	countdown = 3.2
+	_haptic(18)
+
+func _load_level(index: int) -> void:
+	var lines := maps[index % maps.size()].split("\n")
+	rows = lines.size()
+	cols = lines[0].length()
+	grid.clear()
+	ghosts.clear()
+	ghost_spawns.clear()
+	pellets_left = 0
+	total_pellets = 0
+
+	for y in range(rows):
+		var row: Array[String] = []
+		for x in range(cols):
+			var c := lines[y].substr(x, 1)
+			if c == "P":
+				player_spawn = Vector2(x + 0.5, y + 0.5)
+				player = _new_actor(player_spawn, Vector2.RIGHT, 7.4)
+				c = "."
+			elif c in ["1", "2", "3", "4"]:
+				var gi := int(c) - 1
+				var types := ["hunter", "ambusher", "drifter", "guard"]
+				var colors := [C_RED, C_PURPLE, C_GREEN, C_GOLD]
+				var spawn := Vector2(x + 0.5, y + 0.5)
+				var ghost := _new_actor(spawn, DIRS[rng.randi_range(0, 3)], 5.0 + gi * 0.10)
+				ghost.type = types[gi]
+				ghost.color = colors[gi]
+				ghost.home = spawn
+				ghost.eyes = false
+				ghosts.append(ghost)
+				ghost_spawns.append(spawn)
+				c = "."
+			if c == "." or c == "o":
