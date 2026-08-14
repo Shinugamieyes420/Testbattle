@@ -1,3 +1,39 @@
+		"guard":
+			var nearest := _nearest_power_tile(g.pos)
+			if nearest.x >= 0 and g.pos.distance_to(player.pos) > 4.5:
+				target = nearest
+
+	return _best_dir_to_target(tile, options, target, false)
+
+func _best_dir_to_target(start: Vector2i, options: Array, target: Vector2i, flee: bool) -> Vector2:
+	var best := options[0]
+	var best_score := -999999 if flee else 999999
+	for d in options:
+		var next := start + Vector2i(int(d.x), int(d.y))
+		var score_d := _maze_distance(next, target, 90)
+		if flee:
+			if score_d > best_score:
+				best_score = score_d
+				best = d
+		else:
+			if score_d < best_score:
+				best_score = score_d
+				best = d
+	return best
+
+func _maze_distance(start: Vector2i, goal: Vector2i, max_nodes: int) -> int:
+	goal.x = clamp(goal.x, 0, cols - 1)
+	goal.y = clamp(goal.y, 0, rows - 1)
+	if start == goal:
+		return 0
+
+	var queue: Array = [start]
+	var distances := {start: 0}
+	var head := 0
+
+	while head < queue.size() and head < max_nodes:
+		var cur: Vector2i = queue[head]
+		head += 1
 		var cd: int = distances[cur]
 		for d in DIRS:
 			var nxt := cur + Vector2i(int(d.x), int(d.y))
@@ -147,34 +183,3 @@ func _use_power() -> void:
 func _dash_player() -> void:
 	if player.dir == Vector2.ZERO:
 		return
-	for _i in range(4):
-		var tile := Vector2i(floor(player.pos.x), floor(player.pos.y))
-		if not _can_move(tile, player.dir):
-			break
-		player.pos += player.dir
-
-func _pulse_bomb() -> void:
-	for g in ghosts:
-		if not g.eyes and g.pos.distance_to(player.pos) < 6.0:
-			_add_score(150, g.pos, "STUN +150")
-			g.pos = g.home
-			g.dir = DIRS[rng.randi_range(0, 3)]
-	shake = 15.0
-
-func _apply_magnet() -> void:
-	var radius := 2.35
-	for y in range(rows):
-		for x in range(cols):
-			if grid[y][x] != ".":
-				continue
-			var p := Vector2(x + 0.5, y + 0.5)
-			if player.pos.distance_to(p) <= radius:
-				grid[y][x] = " "
-				pellets_left -= 1
-				_add_score(10, p)
-	if pellets_left <= 0:
-		_next_level()
-
-func _check_collisions() -> void:
-	for g in ghosts:
-		if player.pos.distance_to(g.pos) >= 0.58:
