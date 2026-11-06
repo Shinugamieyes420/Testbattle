@@ -74,7 +74,7 @@ public class MainActivity extends Activity {
             vibrationOn=getPreferences(0).getBoolean("snake_vibration",true);
             vibrator=(Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
             try {sound=new ToneGenerator(AudioManager.STREAM_MUSIC,35);} catch(Exception ignored){}
-            try(InputStream s=getAssets().open("sprites.png")){atlas=BitmapFactory.decodeStream(s);}catch(Exception ignored){}
+            atlas=makeAtlas();
             Random stars=new Random(1473);
             for(int i=0;i<starX.length;i++){starX[i]=stars.nextInt(W);starY[i]=stars.nextInt(H);starR[i]=.5f+stars.nextFloat()*1.2f;}
         }
@@ -260,6 +260,58 @@ public class MainActivity extends Activity {
             for(int x=0;x<=W;x+=35)c.drawLine(x,0,x,H,p);
             for(int y=0;y<=H;y+=35)c.drawLine(0,y,W,y,p);
         }
+
+        Bitmap makeAtlas(){
+            Bitmap b=Bitmap.createBitmap(512,512,Bitmap.Config.ARGB_8888);
+            Canvas c=new Canvas(b);
+            Paint a=new Paint(3);
+            int[] green={0xff31dd6e,0xff16ac50,0xff93ff9d};
+            for(int id=0;id<16;id++){
+                int xx=(id%4)*128,yy=(id/4)*128;
+                c.save();c.translate(xx,yy);
+                int color=id<4?0xff24d76b:id<6?0xff21baf5:id<8?0xffb65cf7:0xffff6672;
+                if(id<8){
+                    a.setColor(0x80000000);c.drawOval(12,30,116,119,a);
+                    a.setShader(new LinearGradient(0,5,128,115,new int[]{0xffd2fff1,color,0xff075339},null,Shader.TileMode.CLAMP));
+                    c.drawRoundRect(11,16,117,111,36,36,a);a.setShader(null);
+                    a.setColor(0xffeaffd0);
+                    c.drawOval(25,25,47,48,a);c.drawOval(76,25,98,48,a);
+                    a.setColor(0xff17283e);
+                    c.drawCircle(35,36,7,a);c.drawCircle(86,36,7,a);
+                    a.setColor(0xaaffffff);c.drawOval(22,18,74,31,a);
+                    if(id==3){a.setColor(color);Path tail=new Path();tail.moveTo(110,64);tail.lineTo(20,24);tail.lineTo(20,104);tail.close();c.drawPath(tail,a);}
+                }else if(id==8||id==9){
+                    a.setShadowLayer(8,0,3,0x77553300);a.setColor(id==8?0xffef344d:0xffffcf34);
+                    c.drawCircle(64,75,43,a);a.clearShadowLayer();
+                    a.setColor(0xffffbaba);c.drawOval(37,47,55,67,a);
+                    a.setColor(0xff69c950);c.drawOval(63,17,103,49,a);
+                    a.setColor(0xff6d492a);a.setStrokeWidth(9);c.drawLine(62,39,67,22,a);
+                }else if(id==10||id==11||id==15){
+                    a.setColor(id==10?0xff35e7f6:id==11?0xffc95fff:0xffffa5de);
+                    Path star=new Path();
+                    for(int k=0;k<10;k++){double ang=k*Math.PI/5-Math.PI/2;float r=k%2==0?49:23;float x=64+(float)Math.cos(ang)*r;float y=64+(float)Math.sin(ang)*r;if(k==0)star.moveTo(x,y);else star.lineTo(x,y);}
+                    star.close();c.drawPath(star,a);
+                    a.setColor(0xccffffff);a.setStyle(Paint.Style.STROKE);a.setStrokeWidth(4);c.drawPath(star,a);a.setStyle(Paint.Style.FILL);
+                }else if(id==12||id==13){
+                    a.setColor(id==12?0xffffcc55:0xff51f1ff);c.drawCircle(64,64,51,a);
+                    a.setColor(0xff165076);c.drawCircle(64,64,40,a);
+                    a.setColor(0xfffff5a2);a.setStrokeWidth(7);a.setStyle(Paint.Style.STROKE);
+                    c.drawCircle(64,64,28,a);a.setStyle(Paint.Style.FILL);
+                    a.setColor(id==12?0xffffd256:0xff65faff);
+                    a.setTextAlign(Paint.Align.CENTER);a.setTypeface(Typeface.DEFAULT_BOLD);a.setTextSize(51);
+                    c.drawText(id==12?"◆":"❄",64,80,a);
+                }else if(id==14){
+                    a.setColor(0xff713b78);c.drawCircle(64,67,45,a);
+                    a.setColor(0xffff5577);
+                    for(int k=0;k<7;k++){c.save();c.rotate(k*360f/7,64,64);
+                        Path spike=new Path();spike.moveTo(49,39);spike.lineTo(64,4);spike.lineTo(79,39);spike.close();c.drawPath(spike,a);c.restore();}
+                    a.setColor(0xffff879e);c.drawCircle(50,55,7,a);
+                }
+                c.restore();
+            }
+            return b;
+        }
+
         void drawSprite(Canvas c,int index,float x,float y,float s,float degrees){
             if(atlas==null){p.reset();p.setAntiAlias(true);p.setColor(COLORS[skin]);c.drawCircle(x+s/2,y+s/2,s*.42f,p);return;}
             int cw=atlas.getWidth()/4,ch=atlas.getHeight()/4;
